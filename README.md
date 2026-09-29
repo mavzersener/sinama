@@ -7,7 +7,7 @@ hipotezi, rakip açıklamaları ve "bilinmeyen" seçeneğini sınanabilir biçim
 uygun yöntemleri kendisi seçer ve sonucu kanıtı, belirsizliği ve en güçlü rakip
 açıklamasıyla birlikte sunar.
 
-> **Durum: A0 — iskelet.** Kod henüz hasat edilmedi.
+> **Durum: A2 — çekirdek hasadı.** A0 (iskelet) ve A1 (özel GitHub deposu) kapandı.
 > Karar: [KARARLAR/ADR-001](KARARLAR/ADR-001-tek-program.md) ·
 > Hasat defteri: [HASAT.md](HASAT.md) ·
 > Yapay zekâ ajanları için: [AGENTS.md](AGENTS.md)

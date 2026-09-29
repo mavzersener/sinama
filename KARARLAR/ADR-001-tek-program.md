@@ -67,8 +67,16 @@ kapanır.
   çalışır tutulur.
 - Geri dönüş: kaynak projeler dondurulmuş hâlde durur; her aşamada eskiye dönülebilir.
 
-## Açık konular
+## İlerleme
 
-- Commit e-postası: GitHub noreply adresine geçiş — ilk push'tan önce karar
-  (geçmiş tek commit; düzeltmesi ucuz).
-- `gh` CLI kurulumu (A1; indirme gerektirir, onaylı).
+| Aşama | Durum | Kanıt |
+|---|---|---|
+| A0 | Kapandı — 29.09.2026 | `dd7cca2`; bekçi 19 test, iki mutasyon yakalandı, gerçek depoda veri+token commit'i reddedildi |
+| A1 | Kapandı — 29.09.2026 | `origin` = github.com/mavzersener/sinama (özel: oturumsuz web ve API 404); yerel ve uzak `main` aynı commit |
+| A2 | Açık | — |
+
+## Kapanan konular
+
+- Commit e-postası: kişisel e-posta kaldı; depo özel olduğu için noreply'e geçilmedi.
+- `gh` CLI gerekmedi: kimlik doğrulamayı Git for Windows'un Credential Manager'ı
+  (`credential.helper=manager`) tarayıcı üzerinden yaptı; hiçbir şey indirilmedi.

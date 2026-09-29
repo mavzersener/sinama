@@ -6,8 +6,10 @@ Dağınık projelerden hasatla kurulur. İşe başlamadan bu dosyayı, ADR-001'i
 
 ## Şu anki aşama
 
-**A0 — iskelet (yerel).** Sıradaki: A1 GitHub özel depo → A2 çekirdek hasadı.
-Aşama tablosu ADR-001'dedir. Aynı anda tek aşama açıktır; aşamayı proje sahibi kapatır.
+**A2 — çekirdek hasadı (açık).** A0 ve A1 kapandı; depo GitHub'da özel
+(`origin`), D: diskinde yedekli (`yedek`). Aşama tablosu ve ilerleme ADR-001'dedir.
+Aynı anda tek aşama açıktır; aşamayı proje sahibi kapatır. GitHub'a her push proje
+sahibinin onayıyla yapılır; D: yedeğine commit sonrası otomatik gider.
 
 ## Mutlak kurallar
 

@@ -21,6 +21,14 @@ Programın bilimsel gücünü **ölçmek** için gerçeği önceden bilinen sent
    günceller (CI `--dogrula` bunu zorlar) — her bilimsel davranış değişikliği diff'te
    görünür. İlk ölçüm `sonuclar/v0_ilk_olcum.json`'da dondurulmuştur (önce/sonra için).
 
+## Sürümler
+
+- **v0** (`kilit.json`, `vakalar/`, `sonuclar/v0*.json`): V1 kümelenme, V2 bildirim
+  artefaktı, V3 ortak MO. Donmuştur; K2.4 ölçütü hatalıdır (v1'de V2b ile değiştirildi).
+- **v1** (`v1/`): V2b kanal sayımı, V4 LISA, V5 yükselen sıcak nokta, V6 bölge
+  anomalisi, V7 yayılmış seri. v0'a dokunmadan eklendi; kendi kilidi v0
+  bağımlılıklarını da kapsar. Bulgular: `v1/sonuclar/v1_bulgular.md`.
+
 ## Düzeyler
 
 - **v0 — çekirdek:** araçların gerçeğe göre doğruluğu, yanlış alarmı ve çıktı
@@ -36,4 +44,8 @@ PYTHONUTF8=1 python kiyas/kos.py
 
 ```bash
 PYTHONUTF8=1 python kiyas/kos.py --dogrula
+```
+
+```bash
+PYTHONUTF8=1 python kiyas/v1/kos_v1.py --dogrula
 ```

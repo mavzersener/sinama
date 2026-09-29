@@ -1,0 +1,151 @@
+{
+  "surum": "v1",
+  "kilit": {
+    "kiyas/v1/vakalar/v2b_kanal.json": "96d74783ed8078ea24c6dcd61f582a2fc5e9f121292a5fecc37c4b83b5256f6b",
+    "kiyas/v1/vakalar/v4_lisa.json": "d9765f05e5db5fa8378a158664219a4076dba00c53c481dda94f0a246d1c621e",
+    "kiyas/v1/vakalar/v5_yukselen.json": "b5a4a56b56aa64709a511585e57d368f9f91185a408deeeed3c5096dc620077b",
+    "kiyas/v1/vakalar/v6_anomali.json": "9c13b4488cd46c31dc72b2e3e7a455db78eeb0e0a97ef6ca106bf9d43c055b8a",
+    "kiyas/v1/vakalar/v7_yayilan_seri.json": "2d3759171501f1aea380c1287cc2d67588baee2535f788f05622b55126c38d60",
+    "kiyas/v1/uretec_v1.py": "6cb8c321ad2680dd543c8750ba356c9aea151f66ade80b84a4612e2780a5cdf0",
+    "kiyas/v1/kos_v1.py": "b452a9704f741838aba2bba1b408ac00ec8d5834e914118026df5131f1aa9747",
+    "kiyas/uretec.py": "9040a2ad53d48f154a1d15c96f2bfefc151509b3a437f3911167bf672e81524f",
+    "kiyas/kos.py": "1774027a0da650b068169ae7c7a1523bfaa9d9a6bcbd5e14698827694599b764"
+  },
+  "ortam": {
+    "python": "3.14.0",
+    "sistem": "Windows"
+  },
+  "vakalar": [
+    {
+      "kimlik": "V2b",
+      "ad": "Kanal ayrıştırma yeteneği (v0 K2.4'ün düzeltilmiş ölçütü)",
+      "tohum_adedi": 30,
+      "olcutler": [
+        {
+          "kimlik": "K2b.1",
+          "deger": 1.0,
+          "yon": ">=",
+          "esik": 1.0,
+          "gecti": true,
+          "ongoru": "GEÇER beklenir. DÜRÜST NOT: bu öngörü v0 keşfinde (aynı araç, farklı tohumlar) görülenle bilgilendirilmiştir; bağımsız bir öngörü değildir."
+        }
+      ],
+      "ek_olcumler": {}
+    },
+    {
+      "kimlik": "V4",
+      "ad": "Yerel Moran (LISA): gerçek küme mi, sahte küme mi?",
+      "tohum_adedi": 30,
+      "olcutler": [
+        {
+          "kimlik": "K4.1",
+          "deger": 1.0,
+          "yon": ">=",
+          "esik": 0.9,
+          "gecti": true,
+          "ongoru": null
+        },
+        {
+          "kimlik": "K4.2",
+          "deger": 0.8,
+          "yon": "<=",
+          "esik": 0.1,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir: hücre başına düzeltmesiz p<0,05 (Gi*'deki A4.1 öncesi kusurun aynısı); elle yazılmış 20 hücrelik küçük girdide bile 2 'anlamlı' LL verdi (29.09.2026)"
+        }
+      ],
+      "ek_olcumler": {
+        "csr_ortalama_anlamli_hucre": 2.0667,
+        "csr_tur_dagilimi": {
+          "LL": 13,
+          "HH": 21,
+          "HL": 15,
+          "LH": 13
+        }
+      }
+    },
+    {
+      "kimlik": "V5",
+      "ad": "Yükselen sıcak nokta mı, rastgele dalgalanma mı?",
+      "tohum_adedi": 30,
+      "olcutler": [
+        {
+          "kimlik": "K5.1",
+          "deger": 0.7,
+          "yon": ">=",
+          "esik": 0.9,
+          "gecti": false,
+          "ongoru": null
+        },
+        {
+          "kimlik": "K5.2",
+          "deger": 0.9,
+          "yon": "<=",
+          "esik": 0.1,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir: 'sıcak' tanımı bölgeler arası GÖRELİ yüzdeliktir (her dönem tanım gereği ~%10 bölge 'sıcak'); 'kalıcı' kategorisi anlamlılık sınaması içermiyor; Mann-Kendall bölge başına düzeltmesiz p<0,10 (kod incelemesi, 29.09.2026)"
+        }
+      ],
+      "ek_olcumler": {
+        "homojen_ortalama_sicak_bolge": 2.3,
+        "homojen_kategori_dagilimi": {
+          "kalıcı": 60,
+          "yeni sıcak nokta": 9
+        },
+        "artanda_gercek_disi_sicak_bolge_tohum_orani": 0.8667
+      }
+    },
+    {
+      "kimlik": "V6",
+      "ad": "Anomali bölgesi mi, çoklu karşılaştırma mı?",
+      "tohum_adedi": 30,
+      "olcutler": [
+        {
+          "kimlik": "K6.1",
+          "deger": 0.9667,
+          "yon": ">=",
+          "esik": 0.9,
+          "gecti": true,
+          "ongoru": null
+        },
+        {
+          "kimlik": "K6.2",
+          "deger": 0.4,
+          "yon": "<=",
+          "esik": 0.1,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir: 'anlamli' listesi düzeltmesiz p ≤ 0,01 ile kuruluyor; q (FDR) hesaplanıyor ama karar onunla verilmiyor; 50 testte en az bir yanlış alarm olasılığı ≈ %40 (kod incelemesi, 29.09.2026)"
+        }
+      ],
+      "ek_olcumler": {
+        "homojen_ortalama_anlamli_bolge": 0.4333
+      }
+    },
+    {
+      "kimlik": "V7",
+      "ad": "Geniş alana yayılmış seri: uzay-zaman süzgecinin bedeli",
+      "tohum_adedi": 30,
+      "olcutler": [
+        {
+          "kimlik": "K7.1",
+          "deger": 0.2533,
+          "yon": ">=",
+          "esik": 0.8,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir: A4.2'nin varsayılan uzay-zaman süzgeci (2 km / 60 gün) yayılmış serinin çiftlerinin çoğunu eler — kesinlik uğruna ödenen geri çağırma bedeli (ilerleme.md genelleme notu)"
+        },
+        {
+          "kimlik": "K7.2",
+          "deger": 0.1667,
+          "yon": "<=",
+          "esik": 1.0,
+          "gecti": true,
+          "ongoru": "GEÇER beklenir: taban oranı ağırlığı yayılımdan bağımsız"
+        }
+      ],
+      "ek_olcumler": {
+        "ortalama_isaretlenen_cift": 2.7
+      }
+    }
+  ]
+}

@@ -60,8 +60,10 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
         with:
           python-version: "3.12"
-      - name: Kilit + yeniden ölçüm = kayıtlı sonuç
+      - name: Kilit + yeniden ölçüm = kayıtlı sonuç (v0)
         run: python kiyas/kos.py --dogrula
+      - name: Kilit + yeniden ölçüm = kayıtlı sonuç (v1)
+        run: python kiyas/v1/kos_v1.py --dogrula
 
   cekirdek:
     name: çekirdek tam kapı (${{ matrix.os }}, py${{ matrix.python }})

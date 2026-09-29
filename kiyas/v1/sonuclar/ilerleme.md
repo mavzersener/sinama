@@ -4,18 +4,18 @@ Aynı ön-kayıtlı kıyas (v1, eşikler değişmedi), değişen çekirdek. Her 
 çekirdek değişikliğinden sonraki tam ölçümdür; sayılar o commit'teki `v1.json`'dadır.
 Kalın: önceki sütuna göre değişen.
 
-| Ölçüt | Eşik | İlk ölçüm `169e7e4` | A4.5 LISA + anomali FDR |
-|---|---|---|---|
-| K2b.1 kanal sayımı birebir | = 1 | 1,000 | 1,000 |
-| K4.1 LISA gücü | ≥ 0,90 | 1,000 | **0,467** |
-| K4.2 LISA yanlış alarmı | ≤ 0,10 | 0,800 | **0,033** |
-| K5.1 yükselen sıcak nokta gücü | ≥ 0,90 | 0,700 | 0,700 |
-| K5.2 yükselen sıcak nokta yanlış alarmı | ≤ 0,10 | 0,900 | 0,900 |
-| K6.1 anomali gücü | ≥ 0,90 | 0,967 | 0,967 |
-| K6.2 anomali yanlış alarmı | ≤ 0,10 | 0,400 | **0,067** |
-| K7.1 yayılmış seri geri çağırma | ≥ 0,80 | 0,253 | 0,253 |
-| K7.2 bağımsızlardan yanlış çift | ≤ 1 | 0,167 | 0,167 |
-| **Geçen** | | **4/9** | **5/9** |
+| Ölçüt | Eşik | İlk ölçüm `169e7e4` | A4.5 LISA + anomali FDR | A4.6 yükselen sıcak nokta |
+|---|---|---|---|---|
+| K2b.1 kanal sayımı birebir | = 1 | 1,000 | 1,000 | 1,000 |
+| K4.1 LISA gücü | ≥ 0,90 | 1,000 | **0,467** | 0,467 |
+| K4.2 LISA yanlış alarmı | ≤ 0,10 | 0,800 | **0,033** | 0,033 |
+| K5.1 yükselen sıcak nokta gücü | ≥ 0,90 | 0,700 | 0,700 | **0,900** |
+| K5.2 yükselen sıcak nokta yanlış alarmı | ≤ 0,10 | 0,900 | 0,900 | **0,000** |
+| K6.1 anomali gücü | ≥ 0,90 | 0,967 | 0,967 | 0,967 |
+| K6.2 anomali yanlış alarmı | ≤ 0,10 | 0,400 | **0,067** | 0,067 |
+| K7.1 yayılmış seri geri çağırma | ≥ 0,80 | 0,253 | 0,253 | 0,253 |
+| K7.2 bağımsızlardan yanlış çift | ≤ 1 | 0,167 | 0,167 | 0,167 |
+| **Geçen** | | **4/9** | **5/9** | **7/9** |
 
 ## Notlar
 
@@ -34,3 +34,15 @@ Kalın: önceki sütuna göre değişen.
   bağlamında kaçırılan kümeden daha ağırdır ve kaçırılan kümeyi Gi* hattı yakalar.
   K4.1 başarısızlığı yöntemin dürüst sınırı olarak kalır; eşik gevşetilmedi. Araç
   uyarısı: sıcak nokta sorusu için `sicak_nokta_gi`; düzeltmesiz sayı kanıt değil.
+- **A4.6 — yükselen sıcak nokta (yeniden tasarım):** sıcaklık dönem içi anlamlılıkla
+  (`bolge_anomali`: aşırı yayılım testi → Poisson/NB, FDR), trend Poisson log-doğrusal
+  skor testiyle (quasi-Poisson, FDR; Mann-Kendall 4 dönemde yalnız kusursuz artışta
+  anlamlıydı), kategori eksiksiz karar tablosuyla. Sahte sıcak nokta %90 → %0,
+  artan bölgeyi bulma %70 → %90 (tam eşikte). Üç öngörü de (ölçümden önce) doğru.
+  **Dürüstlük ek ölçümü** (`kiyas/kesif/a46_yukselen.py`): yeni "son dönemde sıcak"
+  kategorisi kilitli koşucunun saymadığı bir sıcaklık iddiasıdır; homojen veride
+  "sıcak değil" dışındaki HER kategori sayıldığında oran %3 (1/30 tohum). Artan bölge
+  3/30 tohumda "son dönemde sıcak" kaldı (sıcak görünür, trend FDR'yi geçmedi).
+  Eşitlik kusuru ve sınıflandırma boşluğu testle kapandı. **Belgelenmiş sınır:**
+  aynı dönemde birkaç yüksek bölge varsa NB modeli orta yüksekliği maskeler
+  (testte kilitli; değişirse bilinçli karar gerekir).

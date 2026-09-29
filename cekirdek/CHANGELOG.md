@@ -2,6 +2,26 @@
 
 ## [Yayımlanmamış]
 
+### Yükselen sıcak nokta yeniden tasarımı (A4.6, BİLİMSEL DOĞRULUK)
+BMK v1: homojen veride %90 sahte sıcak nokta (K5.2), artan bölgeyi %70
+yakalama (K5.1). Keşif: "sıcak" bölgeler arası göreli yüzdelikti (tanım gereği
+~%10 bölge sıcak; eşitlikte HEPSİ "kalıcı"); Mann-Kendall 4 dönemde yalnız
+kusursuz artışta anlamlı (en iyi p 0,089) ve düzeltmesizdi; son yarıda sıcak +
+trend anlamsız bölge hiçbir dala girmeyip "sıcak değil" oluyordu.
+- Sıcaklık: her dönemde `bolge_anomali` (aşırı yayılım testi → Poisson/NB,
+  Benjamini–Hochberg).
+- Trend: `_poisson_trend` log-doğrusal skor testi; quasi-Poisson dispersiyon
+  (φ ≥ 1); bölgeler arasında BH. Çıktıda `trend_z/p/q`, `sicak_donemler`,
+  `dispersiyon`; parametre `sicak_yuzdelik` → `q_esik`.
+- Kategori: `_ehsa_kategori` karar tablosu, tüm desenler tanımlı; yeni
+  kategori "son dönemde sıcak"; "kalıcı" dönemlerin ≥ %75'inde sıcaklık ister.
+- Uyarı: NB maskelemesi ve az dönemde trend gücü.
+- BMK v1: K5.2 0,90 → 0,00; K5.1 0,70 → 0,90. Ek ölçüm (yeni kategori dahil
+  her sıcaklık iddiası): %3.
+Testler: eski 4 bölgelik göreli-yüzdelik testleri yerine yalıtılmış kategori
+senaryoları, eşit veride sıcak yok, boşluk testi, T=3–6 eksiksizlik, Poisson
+skoru, NB maskeleme sınırı. Boşluk ve anlamlılıksız sıcaklık mutasyonları yakalandı.
+
 ### LISA ve bölge anomalisi çoklu test düzeltmesi (A4.5, BİLİMSEL DOĞRULUK)
 BMK v1: LISA rastgele desenlerin %80'inde sahte küme/aykırı değer (K4.2);
 bölge anomalisi 50 homojen bölgede %40 sahte "anlamlı" (K6.2) — ikisinde de

@@ -68,28 +68,25 @@
       "olcutler": [
         {
           "kimlik": "K5.1",
-          "deger": 0.7,
+          "deger": 0.9,
           "yon": ">=",
           "esik": 0.9,
-          "gecti": false,
+          "gecti": true,
           "ongoru": null
         },
         {
           "kimlik": "K5.2",
-          "deger": 0.9,
+          "deger": 0.0,
           "yon": "<=",
           "esik": 0.1,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir: 'sıcak' tanımı bölgeler arası GÖRELİ yüzdeliktir (her dönem tanım gereği ~%10 bölge 'sıcak'); 'kalıcı' kategorisi anlamlılık sınaması içermiyor; Mann-Kendall bölge başına düzeltmesiz p<0,10 (kod incelemesi, 29.09.2026)"
         }
       ],
       "ek_olcumler": {
-        "homojen_ortalama_sicak_bolge": 2.3,
-        "homojen_kategori_dagilimi": {
-          "kalıcı": 60,
-          "yeni sıcak nokta": 9
-        },
-        "artanda_gercek_disi_sicak_bolge_tohum_orani": 0.8667
+        "homojen_ortalama_sicak_bolge": 0,
+        "homojen_kategori_dagilimi": {},
+        "artanda_gercek_disi_sicak_bolge_tohum_orani": 0.0333
       }
     },
     {

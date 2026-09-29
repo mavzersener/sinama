@@ -264,23 +264,67 @@ class TestCografiProfil(unittest.TestCase):
 
 
 class TestEmergingHotspot(unittest.TestCase):
-    SERILER = {
-        "artan": [1, 2, 4, 7, 12, 20],
-        "kalici": [15, 16, 14, 17, 15, 16],
-        "tarihsel": [18, 16, 12, 5, 2, 1],
-        "soguk": [0, 1, 0, 1, 0, 1],
-    }
+    # A4.6: sıcaklık dönem içi ANLAMLILIKLA (bolge_anomali: Poisson/NB + FDR),
+    # trend Poisson skor testiyle (quasi-Poisson + FDR). Eski testler 4 bölgelik
+    # göreli-yüzdelik davranışını ("her dönemin en yükseği sıcak") kodluyordu;
+    # BMK v1'de bu tanım homojen veride %90 sahte sıcak nokta üretti.
+    @staticmethod
+    def _tek(seri):
+        """20 sabit arka plan bölgesi + incelenen tek bölge X; X'in kategorisi."""
+        s = {f"bg{i:02d}": [10] * len(seri) for i in range(20)}
+        s["X"] = seri
+        return next(r for r in mi.emerging_hotspot(s)["sonuclar"] if r["bolge"] == "X")
 
-    def test_artan_yeni_sicak_nokta(self):
-        r = mi.emerging_hotspot(self.SERILER)
-        kat = {s["bolge"]: s["kategori"] for s in r["sonuclar"]}
-        self.assertEqual(kat["artan"], "yeni sıcak nokta")
+    def test_kategori_karar_tablosu(self):
+        beklenen = {
+            (10, 10, 11, 25, 35, 45): "yeni sıcak nokta",
+            (30, 30, 30, 30, 30, 30): "kalıcı",
+            (40, 38, 35, 10, 10, 10): "tarihsel",
+            (30, 35, 42, 50, 60, 70): "yoğunlaşan",
+            (70, 60, 50, 42, 35, 30): "sönen",
+            (10, 10, 10, 30, 10, 10): "son dönemde sıcak",
+            (30, 10, 10, 10, 10, 30): "sporadik",
+            (10, 10, 10, 10, 10, 10): "sıcak değil",
+        }
+        for seri, kat in beklenen.items():
+            self.assertEqual(self._tek(list(seri))["kategori"], kat, seri)
 
-    def test_kalici_ve_tarihsel(self):
-        r = mi.emerging_hotspot(self.SERILER)
-        kat = {s["bolge"]: s["kategori"] for s in r["sonuclar"]}
-        self.assertEqual(kat["kalici"], "kalıcı")
-        self.assertEqual(kat["tarihsel"], "tarihsel")
+    def test_homojen_ve_esit_veride_sicak_nokta_yok(self):
+        # eski eşitlik kusuru: eşik >= ile 25 eşit bölgenin HEPSİ "kalıcı" idi
+        r = mi.emerging_hotspot({f"b{i}": [12] * 6 for i in range(25)})
+        self.assertEqual(r["ozet"], {"sıcak değil": 25})
+
+    def test_siniflandirma_boslugu_kapandi(self):
+        # eski kusur: son yarıda sıcak + trend anlamsız → "sıcak değil"
+        self.assertEqual(mi._ehsa_kategori([False, False, True, True], "durağan"),
+                         "son dönemde sıcak")
+
+    def test_karar_tablosu_eksiksiz(self):
+        import itertools
+        izinli = {"yeni sıcak nokta", "son dönemde sıcak", "yoğunlaşan", "sönen",
+                  "kalıcı", "tarihsel", "sporadik", "sıcak değil"}
+        for T in (3, 4, 5, 6):
+            for desen in itertools.product([False, True], repeat=T):
+                for yon in ("artan", "azalan", "durağan"):
+                    kat = mi._ehsa_kategori(list(desen), yon)
+                    self.assertIn(kat, izinli)
+                    self.assertEqual(kat == "sıcak değil", not any(desen), (desen, yon))
+
+    def test_poisson_trend_skoru(self):
+        z = mi._poisson_trend([12, 19, 29, 41])["z"]
+        self.assertGreater(z, 3.0)                       # 4 dönemde bile güçlü
+        self.assertAlmostEqual(mi._poisson_trend([41, 29, 19, 12])["z"], -z)
+        self.assertEqual(mi._poisson_trend([10, 10, 10, 10])["z"], 0.0)
+        self.assertEqual(mi._poisson_trend([0, 0, 0])["z"], 0.0)
+
+    def test_sinir_cok_sicak_noktada_orta_sicaklik_maskelenir(self):
+        # BELGELENMİŞ SINIR: aynı dönemde birkaç yüksek bölge varsa aşırı
+        # yayılım testi NB'ye geçer ve orta yükseklik (30'a karşı 10) sıcak
+        # sayılmaz. Bu davranış değişirse bilinçli karar gerekir.
+        s = {f"bg{i:02d}": [10] * 6 for i in range(20)}
+        s.update({"kalici": [30] * 6, "a": [70] * 6, "b": [40] * 6})
+        kat = {r["bolge"]: r["kategori"] for r in mi.emerging_hotspot(s)["sonuclar"]}
+        self.assertEqual(kat["kalici"], "sıcak değil")
 
     def test_esit_olmayan_uzunluk_reddi(self):
         self.assertIn("hata", mi.emerging_hotspot({"a": [1, 2, 3], "b": [1, 2]}))

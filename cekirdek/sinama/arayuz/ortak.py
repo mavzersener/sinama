@@ -222,6 +222,12 @@ ARAC_UYARILARI = {
     "brifing_uret": ["belirsizlik notu zorunludur; ürün sınırlarını beyan "
                       "etmeden çıkamaz"],
     "risk_arazi": ["RTM risk faktörü türlerini sayar; çıktı olasılık değildir"],
+    # A4.6 — yükselen sıcak nokta: anlamlılık tabanlı; sınırlar belgelendi.
+    "yukselen_sicak_nokta": ["sıcaklık dönem içi anlamlılıkla (Poisson/NB, FDR) belirlenir; "
+                             "aynı dönemde birkaç yüksek bölge varsa orta yükseklik "
+                             "maskelenebilir",
+                             "az dönemde (ör. 4) trend gücü sınırlıdır; kategori müdahale "
+                             "kararı değil inceleme ipucudur"],
     # A4.5 — LISA çoklu test düzeltmeli; güç sınırı BMK v1 K4.1'de ölçüldü.
     "yerel_kumeleme": ["karar çoklu test düzeltmelidir (FDR); kompakt tek hücrelik "
                        "yoğunlaşmayı güvenilir yakalamaz — sıcak nokta sorusu için "

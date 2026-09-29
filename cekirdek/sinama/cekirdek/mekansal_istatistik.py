@@ -22,7 +22,7 @@ from typing import Any, Dict, List, Optional
 
 from . import mekan
 from . import regresyon
-from .ileri import fdr_benjamini_hochberg
+from .ileri import bolge_anomali, fdr_benjamini_hochberg
 
 
 def _normal_p_iki_yonlu(z: float) -> float:
@@ -555,16 +555,84 @@ def _mann_kendall(seri: List[float]) -> Dict[str, Any]:
     return {"S": S, "tau": round(tau, 4), "z": round(z, 4), "p": p, "yon": yon}
 
 
-def emerging_hotspot(seriler: Dict[str, List[float]],
-                     sicak_yuzdelik: float = 90.0) -> Dict[str, Any]:
-    """Emerging Hotspot Analysis (Chainey Böl.6): her bölgenin zaman serisini
-    Mann-Kendall trendi + sıcaklık durumuna göre sınıflar. Kalıcı/yoğunlaşan/
-    yeni/sönen/tarihsel/sporadik ayrımı yapar (ESRI EHSA sadeleştirmesi).
+EHSA_FDR_Q = 0.05
 
-    Args: seriler {bölge: [dönem0_sayı, dönem1_sayı, ...]}; tüm seriler eşit
-    uzunlukta olmalı. sicak_yuzdelik: bir dönemde "sıcak" sayılma eşiği
-    (bölgeler arası yüzdelik).
-    Returns: {sonuclar:[{bolge, kategori, tau, trend_p, son, ilk}], ozet, n_donem}.
+
+def _poisson_trend(seri: List[float]) -> Dict[str, float]:
+    """Sayım serisinde log-doğrusal trend için SKOR testi (eşit dönem uzunluğu).
+
+    H0: tüm dönemlerde aynı oran. Toplam N verildiğinde sayımlar çok terimlidir
+    (p_t = 1/T); U = Σ (t − t̄)·c_t için E[U] = 0, Var[U] = N·Σ(t − t̄)²/T.
+    Mann-Kendall bir sıra testidir ve 4 dönemde yalnız kusursuz artan seride
+    anlamlı olabilir (en iyi p = 0,089; BMK v1 keşfi); sayım verisi için skor
+    testi hem uygun hem güçlüdür.
+
+    Returns: {"z": z, "U": U, "N": N}; N = 0 ise z = 0.
+    """
+    T = len(seri)
+    N = float(sum(seri))
+    if N <= 0 or T < 2:
+        return {"z": 0.0, "U": 0.0, "N": N}
+    ort = (T - 1) / 2.0
+    U = sum((t - ort) * c for t, c in enumerate(seri))
+    var = N * sum((t - ort) ** 2 for t in range(T)) / T
+    return {"z": U / math.sqrt(var) if var > 0 else 0.0, "U": U, "N": N}
+
+
+def _ehsa_kategori(sicak: List[bool], yon: str) -> str:
+    """Sıcaklık deseni × trend yönü → kategori (TÜM girdiler için tanımlı).
+
+    Önceki sürümde "son yarıda sıcak, ilk yarıda değil, trend anlamsız" bölge
+    hiçbir dala girmeyip "sıcak değil" oluyordu (BMK v1 keşfi). Tanımlar
+    (ESRI EHSA'nın sadeleştirilmiş uyarlaması):
+      sıcak değil        hiçbir dönemde anlamlı sıcak değil
+      yeni sıcak nokta   yalnız son yarıda sıcak + anlamlı artan trend
+      son dönemde sıcak  yalnız son yarıda sıcak, trend artan değil
+      yoğunlaşan         iki yarıda da sıcak + anlamlı artan trend
+      sönen              iki yarıda da sıcak + anlamlı azalan trend
+      kalıcı             iki yarıda da sıcak, trend yok, dönemlerin ≥ %75'inde sıcak
+      tarihsel           yalnız ilk yarıda sıcak
+      sporadik           diğer sıcaklık desenleri
+    """
+    T = len(sicak)
+    if not any(sicak):
+        return "sıcak değil"
+    yari = max(1, T // 2)
+    ilk, son = any(sicak[:yari]), any(sicak[T - yari:])
+    if son and not ilk:
+        return "yeni sıcak nokta" if yon == "artan" else "son dönemde sıcak"
+    if son and ilk:
+        if yon == "artan":
+            return "yoğunlaşan"
+        if yon == "azalan":
+            return "sönen"
+        return "kalıcı" if sum(sicak) >= 0.75 * T else "sporadik"
+    if ilk:
+        return "tarihsel"
+    return "sporadik"
+
+
+def emerging_hotspot(seriler: Dict[str, List[float]],
+                     q_esik: float = EHSA_FDR_Q) -> Dict[str, Any]:
+    """Emerging Hotspot Analysis (Chainey Böl.6): bölgelerin zaman serisini
+    ANLAMLI sıcaklık + ANLAMLI trende göre sınıflar (A4.6).
+
+    BMK v1: homojen veride %90 sahte sıcak nokta (K5.2) ve artan bölgeyi %70
+    yakalama (K5.1). Nedenler: "sıcak" bölgeler arası GÖRELİ yüzdelikti (her
+    dönem tanım gereği ~%10 bölge sıcak; eşitlikte hepsi), "kalıcı" anlamlılık
+    içermiyordu, trend 4 dönemde güçsüz ve düzeltmesiz Mann-Kendall'dı, bir
+    sınıflandırma boşluğu vardı. Şimdi:
+    - sıcak(bölge, dönem): o dönemin bölge sayımlarında ileri.bolge_anomali
+      (aşırı yayılım testi → Poisson/NB, Benjamini–Hochberg q ≤ q_esik);
+    - trend: Poisson log-doğrusal skor testi, aşırı yayılıma karşı
+      quasi-Poisson (φ = bölgeler arası Pearson dispersiyonu, en az 1),
+      bölgeler arasında Benjamini–Hochberg q ≤ q_esik;
+    - kategori: _ehsa_kategori karar tablosu (tüm desenler tanımlı).
+
+    Args: seriler {bölge: [dönem0_sayı, ...]}; tüm seriler eşit uzunlukta.
+          q_esik: sıcaklık ve trend için FDR düzeyi.
+    Returns: {sonuclar:[{bolge, kategori, sicak_donemler, trend_z, trend_p,
+              trend_q, son, ilk}], ozet, n_donem, dispersiyon, not}.
     """
     if not seriler:
         return {"hata": "seri yok"}
@@ -574,53 +642,51 @@ def emerging_hotspot(seriler: Dict[str, List[float]],
     T = uzunluklar.pop()
     if T < 3:
         return {"hata": "en az 3 dönem gerekir", "n_donem": T}
+    bolgeler = list(seriler)
 
-    # her dönem için bölgeler-arası sıcaklık eşiği (yüzdelik)
-    def _yuzdelik(degerler, y):
-        d = sorted(degerler)
-        if not d:
-            return 0.0
-        k = (len(d) - 1) * y / 100.0
-        alt = int(k)
-        return d[alt] + (k - alt) * (d[min(alt + 1, len(d) - 1)] - d[alt])
+    # 1) dönem içi anlamlı sıcaklık (bölgeler arası, FDR)
+    sicak = {b: [False] * T for b in bolgeler}
+    for t in range(T):
+        sayim = {b: seriler[b][t] for b in bolgeler}
+        if sum(sayim.values()) <= 0 or len(sayim) < 3:
+            continue
+        for x in bolge_anomali(sayim, alfa=q_esik)["anlamli"]:
+            sicak[x["bolge"]][t] = True
 
-    esikler = [_yuzdelik([s[t] for s in seriler.values()], sicak_yuzdelik)
-               for t in range(T)]
-    yari = max(1, T // 2)
+    # 2) trend: quasi-Poisson skor testi + FDR
+    ki_kare, sd = 0.0, 0
+    for b in bolgeler:
+        ort = sum(seriler[b]) / T
+        if ort > 0:
+            ki_kare += sum((c - ort) ** 2 for c in seriler[b]) / ort
+            sd += T - 1
+    phi = max(1.0, ki_kare / sd) if sd else 1.0
+    trend = {}
+    for b in bolgeler:
+        z = _poisson_trend(seriler[b])["z"] / math.sqrt(phi)
+        trend[b] = (z, math.erfc(abs(z) / math.sqrt(2.0)))
+    qs = fdr_benjamini_hochberg([trend[b][1] for b in bolgeler])
 
     sonuclar = []
     ozet: Dict[str, int] = {}
-    for bolge, seri in seriler.items():
-        mk = _mann_kendall(seri)
-        sicak_donem = [seri[t] >= esikler[t] and seri[t] > 0 for t in range(T)]
-        sicak_oran = sum(sicak_donem) / T
-        ilk_sicak = any(sicak_donem[:yari])
-        son_sicak = any(sicak_donem[T - yari:])
-        if son_sicak and mk["yon"] == "artan" and not ilk_sicak:
-            kat = "yeni sıcak nokta"
-        elif son_sicak and mk["yon"] == "artan":
-            kat = "yoğunlaşan"
-        elif son_sicak and mk["yon"] == "azalan":
-            kat = "sönen"
-        elif son_sicak and ilk_sicak:
-            kat = "kalıcı"
-        elif ilk_sicak and not son_sicak:
-            kat = "tarihsel"
-        elif sicak_oran > 0 and 0.0 < sicak_oran < 0.5:
-            kat = "sporadik"
-        else:
-            kat = "sıcak değil"
+    for b, q in zip(bolgeler, qs):
+        z, p = trend[b]
+        yon = ("artan" if z > 0 else "azalan") if q <= q_esik else "durağan"
+        kat = _ehsa_kategori(sicak[b], yon)
         ozet[kat] = ozet.get(kat, 0) + 1
-        sonuclar.append({"bolge": bolge, "kategori": kat,
-                         "tau": mk["tau"], "trend_p": mk["p"],
-                         "son": seri[-1], "ilk": seri[0]})
-    sira = {"yeni sıcak nokta": 0, "yoğunlaşan": 1, "kalıcı": 2, "sönen": 3,
-            "tarihsel": 4, "sporadik": 5, "sıcak değil": 6}
+        sonuclar.append({"bolge": b, "kategori": kat,
+                         "sicak_donemler": [t for t in range(T) if sicak[b][t]],
+                         "trend_z": round(z, 4), "trend_p": round(p, 6), "trend_q": q,
+                         "son": seriler[b][-1], "ilk": seriler[b][0]})
+    sira = {"yeni sıcak nokta": 0, "yoğunlaşan": 1, "son dönemde sıcak": 2, "kalıcı": 3,
+            "sönen": 4, "tarihsel": 5, "sporadik": 6, "sıcak değil": 7}
     sonuclar.sort(key=lambda s: (sira.get(s["kategori"], 9), -s["son"]))
     return {"sonuclar": sonuclar, "ozet": ozet, "n_donem": T,
-            "not": ("kategori zaman serisi trendine (Mann-Kendall) + sıcaklık "
-                    "durumuna dayanır; 'yeni sıcak nokta' ve 'yoğunlaşan' "
-                    "öncelikli müdahale adaylarıdır.")}
+            "dispersiyon": round(phi, 4),
+            "not": ("sıcaklık dönem içi anlamlılıkla (Poisson/NB, FDR) ve trend Poisson "
+                    "skor testiyle (quasi-Poisson, FDR) belirlenir; kategori bir inceleme "
+                    "ipucudur, müdahale kararı değildir. Az dönemde (ör. 4) trend gücü "
+                    "sınırlıdır.")}
 
 
 def konsantrasyon_dagilim(once: List[float], sonra: List[float]) -> Dict[str, Any]:

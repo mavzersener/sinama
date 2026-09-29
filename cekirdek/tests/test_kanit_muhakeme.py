@@ -89,8 +89,11 @@ class TestK11_PII_Yok(unittest.TestCase):
         for o in kanit.oku(tmp, d.manifesto["oturum_id"]):
             self.assertIn("zaman", o)
             self.assertIn("olay", o)
-        # sözleşme: olaylar yalnız olay/faz/ozet/gerekce alanlarından kurulu
-        izinli = {"zaman", "olay", "faz", "ozet", "gerekce", "onceki_hash", "zincir"}
+        # Paket 06: olay şeması sürümlüdür; gerekçe yalnız manifestoda,
+        # olayda ise kanonik commitment olarak bulunabilir. v2: "zincir"
+        # yapısal sürüm alanıdır (değer taşımaz, PII değil).
+        izinli = {"zaman", "surum", "olay", "faz", "ozet",
+                  "gerekce_digest", "onceki_hash", "zincir"}
         for o in kanit.oku(tmp, d.manifesto["oturum_id"]):
             self.assertTrue(set(o) <= izinli, f"beklenmedik alan: {set(o) - izinli}")
         # argüman DEĞERİ sızıntısı yok: kişi adı/telefon kalıbı bulunmamalı

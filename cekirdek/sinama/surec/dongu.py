@@ -123,7 +123,7 @@ class AnalizDongusu:
 
     def _kaydet(self, arac, ozet, gerekce=None):
         adim = {"zaman": _simdi(), "faz": self.manifesto["faz"],
-                "arac": arac, "ozet": str(ozet)[:500]}
+                "arac": arac, "ozet": ozet}
         if gerekce is not None:
             gecersiz = GEREKCE_ZORUNLU - set(gerekce)
             if gecersiz:
@@ -131,6 +131,7 @@ class AnalizDongusu:
                     f"gerekçe eksik alan: {sorted(gecersiz)}; "
                     f"zorunlu: {sorted(GEREKCE_ZORUNLU)}")
             adim["gerekce"] = dict(gerekce)
+            adim["gerekce_digest"] = kanit.gerekce_digest(adim["gerekce"])
         self.manifesto["gecmis"].append(adim)
 
     # --- faz geçişleri ---
@@ -313,10 +314,9 @@ def kaydet(dongu, log_dir):
     islenen = len(kanit.oku(log_dir, m["oturum_id"]))  # akıştan türet
     for adim in m["gecmis"][islenen:]:
         olay = {"olay": adim["arac"], "faz": adim["faz"],
-                "ozet": adim.get("ozet", "")[:200]}
-        if "gerekce" in adim:
-            olay["gerekce"] = {k: str(v)[:300]
-                               for k, v in adim["gerekce"].items()}
+                "ozet": adim.get("ozet")}
+        if "gerekce_digest" in adim:
+            olay["gerekce_digest"] = adim["gerekce_digest"]
         kanit.olay_yaz(log_dir, m["oturum_id"], olay)
     m.pop("olay_sayaci", None)  # eski sürüm kalıntısı; artık kullanılmıyor
     yol = kanit._oturum_yolu(log_dir, m["oturum_id"], ".json", olustur=True)
@@ -335,8 +335,8 @@ def _akistan_gecmis(olaylar):
     for o in olaylar:
         adim = {"zaman": o.get("zaman"), "faz": o.get("faz"),
                 "arac": o.get("olay"), "ozet": o.get("ozet", "")}
-        if "gerekce" in o:
-            adim["gerekce"] = o["gerekce"]
+        if "gerekce_digest" in o:
+            adim["gerekce_digest"] = o["gerekce_digest"]
         g.append(adim)
     return g
 
@@ -359,7 +359,7 @@ def yukle(oturum_id, log_dir):
     olaylar = kanit.oku(log_dir, oturum_id)
     n_akis, n_gecmis = len(olaylar), len(m["gecmis"])
     if n_akis > n_gecmis:
-        if kanit.dogrula(log_dir, oturum_id)["saglam"]:
+        if kanit._zincir_dogrula(olaylar)["saglam"]:
             m["gecmis"] = _akistan_gecmis(olaylar)
             m["kanit_uyari"] = (f"çökme onarımı: {n_akis - n_gecmis} adım "
                                 "olay akışından geri yüklendi")

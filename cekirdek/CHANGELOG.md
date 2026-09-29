@@ -2,6 +2,27 @@
 
 ## [Yayımlanmamış]
 
+### P06 mahremiyet + 07 zincir v2 birleşimi (A2.3, GÜVENLİK)
+P06 hazırlık kopyasında (ChatGPT/Codex) yazılmış ama kanonik depoya hiç
+aktarılmamıştı; kanonik depoda ise P06'sız 07 (zincir v2) vardı. Kanonikte
+olay akışına dinamik grup etiketleri ve gerekçe metni yazılıyordu (kopyanın
+P06 testleri kanoniğe karşı 5/5 kırmızıydı). Üçlü birleştirmeyle ikisi bir
+arada:
+- `olay_yaz` kaydı BEYAZ LİSTEYLE kurar: `olay`, `faz`, `guvenli_ozet()` ile
+  sabit adlı sayısal `ozet`, varsa `gerekce_digest`; üstüne `zincir: 2`
+  (çağıran ezemez). Ham özet, gerekçe metni, grup etiketi akışa girmez.
+- Gerekçe yerel manifestoda kalır; akış SHA-256 taahhüdünü taşır
+  (`gerekce_digest`, `gerekce_bagi_dogrula`).
+- `_zincir_dogrula(olaylar)`: v2 anlamı (bağ alanı hash'te, sürüm düşürme
+  reddi, `korumasiz_olay`, `zincir_son_hash`); `dogrula()` buna manifesto
+  gerekçe bağını ekler (`gerekce_bagi`).
+- `olay_yaz` docstring'i eskimişti (alanları "çağıran sorumlu" diyordu);
+  beyaz liste davranışını anlatacak şekilde düzeltildi.
+Test: `test_duzeltme_06_mahremiyet.py` (5), `test_duzeltme_08_p06_v2.py` (3):
+kayıt iki düzeltmeyi de taşır; uygulamanın kendi hash'ini bilen saldırganın
+ortadan kurcalaması yakalanır; gerekçe değişince bağ kopar, zincir alanları
+korunur. Mutasyonlar (v1 hash'e dönüş, beyaz listenin kalkması) yakalandı.
+
 ### Sınama'ya hasat ve yeni ad: `suc_analizi` → `sinama` (A2, 29.09.2026)
 Bu çekirdek `C:\Projects\suc_analizi` @ `20d6e2c`'den birebir hasat edildi
 (ADR-001, HASAT.md). Kanonik paket bu makinenin üç ortamına editable kurulu

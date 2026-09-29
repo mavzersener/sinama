@@ -516,16 +516,26 @@ def main():
             z109 = json.loads(r["content"][0]["text"])["sonuc"]["urun"]
             check("brifing + muhakeme + belirsizlik", "Muhakeme İzi" in z109
                   and "Belirsizlik ve sınırlar" in z109)
-            # Katman 1: olay akışı dosyada, gerekçe içeriyor, PII değeri yok
+            # Paket 06: Katman 1 sürümlü güvenli özet + gerekçe commitment
+            # taşır; gerekçenin kendisi yalnız gizli manifestodadır.
             import glob
             akislar = glob.glob(os.path.join(LOG_DIR, "oturumlar", f"{OID}.olaylar.jsonl"))
             ham = ""
             if akislar:
                 with open(akislar[0], encoding="utf-8") as f:
                     ham = f.read()
-            satir_sayisi = len([s for s in ham.splitlines() if s.strip()])
-            check("olay akışı / gerekçe / PII", len(akislar) == 1 and satir_sayisi == 6
-                  and "hipotez" in ham and "Vatandas" not in ham and "0555" not in ham)
+            olaylar = [json.loads(s) for s in ham.splitlines() if s.strip()]
+            analiz_olaylari = [o for o in olaylar
+                                if o.get("olay") == "grid_hotspot"]
+            digest = (analiz_olaylari[0].get("gerekce_digest")
+                      if len(analiz_olaylari) == 1 else "")
+            hex_mi = (isinstance(digest, str) and len(digest) == 64
+                      and all(c in "0123456789abcdef" for c in digest))
+            check("olay akışı / digest / PII", len(akislar) == 1 and len(olaylar) == 6
+                  and all(o.get("surum") == "b06" for o in olaylar)
+                  and hex_mi and "hipotez" not in ham
+                  and "liman-merkez" not in ham and "Vatandas" not in ham
+                  and "0555" not in ham)
 
             print("--- v6.5: DAYANIKLILIK + HATA TAKSONOMİSİ (H1/H2) ---")
             # H2.3: her hata tipi yapısal bildirilir + düzeltici ÖNERİ taşır

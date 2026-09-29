@@ -117,7 +117,9 @@ def muhakeme_izi(manifesto):
     b = ["## Muhakeme İzi", "",
          "*Bu bölümdeki bloklar iki türdedir: **OLGU** (aracın ölçtüğü) ve",
          "**GEREKÇE** (analistin/modelin yorumu). Gerekçe olgu değildir;*",
-         "*sınanabilir, reddedilebilir ve insan onayına tabidir.*", ""]
+         "*sınanabilir, reddedilebilir ve insan onayına tabidir.*", "",
+         "*Gerekçe ve analitik ayrıntılar yerel gizli manifesto kaynağından "
+         "okunur; olay akışı yalnız güvenli özet ve commitment taşır.*", ""]
     adimlar = [g for g in manifesto.get("gecmis", [])
                if g.get("faz") == "ANALIZ" and g.get("arac") != "analize_gec"]
     if not adimlar:

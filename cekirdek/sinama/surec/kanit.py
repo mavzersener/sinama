@@ -35,8 +35,10 @@ Kanıt kaybı asla sessiz değildir (DOKTRIN kural 22).
 
 import hashlib
 import json
+import math
 import os
 import re
+import numbers
 import tempfile
 import time
 
@@ -44,6 +46,60 @@ from ..cekirdek.hatalar import GuvenlikHatasi, VeriHatasi
 
 
 _OTURUM_ID = re.compile(r"[A-Za-z0-9_-]{1,64}\Z")
+_GUVENLI_SAYISAL_ALANLAR = frozenset({
+    "n", "girdi_n", "kullanilan_n", "dislanan_n", "adet", "hucre",
+    "nni", "p", "q", "oran", "egim", "istatistik", "z", "t",
+    "df", "serbestlik", "gozlenen", "beklenen", "toplam",
+})
+
+
+def guvenli_ozet(sonuc):
+    """Sonuçtan yalnız sabit anahtarlı sayısal olay özeti üretir.
+
+    Olay akışı kişisel metin, dinamik grup adı veya ham sonucu taşımaz.
+    Tanınmayan sonuçlar hata vermez; ``ozet_uretılemedi`` metadata'sına
+    dönüşür. Böylece kanıt yazımı, bir ``str(sonuc)`` geri dönüş yoluyla
+    hassas içerik sızdırmaz.
+    """
+    if not isinstance(sonuc, dict):
+        return {"durum": "ozet_uretilemedi", "sayisal": {}}
+    sayisal = {}
+    for ad in _GUVENLI_SAYISAL_ALANLAR:
+        deger = sonuc.get(ad)
+        if (isinstance(deger, numbers.Real) and not isinstance(deger, bool)
+                and math.isfinite(deger)):
+            sayisal[ad] = deger
+    if not sayisal and sonuc and all(
+            isinstance(deger, numbers.Real) and not isinstance(deger, bool)
+            and math.isfinite(deger) and deger >= 0
+            for deger in sonuc.values()):
+        # Frekans gibi dinamik grup→adet eşlemelerinde grup etiketleri
+        # olay akışına giremez; yalnız toplam gözlem sayısı güvenlidir.
+        sayisal["toplam"] = sum(sonuc.values())
+    return {"durum": "ozet_uretildi" if sayisal else "ozet_uretilemedi",
+            "sayisal": sayisal}
+
+
+def gerekce_digest(gerekce):
+    """Gizli manifesto gerekçesini kanonik SHA-256 commitment'a bağlar."""
+    metin = json.dumps(gerekce, ensure_ascii=False, sort_keys=True,
+                       separators=(",", ":"))
+    return hashlib.sha256(metin.encode("utf-8")).hexdigest()
+
+
+def gerekce_bagi_dogrula(manifesto, olaylar):
+    """Manifestodaki gerekçe commitment'larının olay akışıyla bağını sınar."""
+    adimlar = [a for a in manifesto.get("gecmis", [])
+               if a.get("gerekce_digest")]
+    baglar = [o for o in olaylar if o.get("gerekce_digest")]
+    if len(adimlar) != len(baglar):
+        return {"saglam": False, "neden": "gerekçe commitment sayısı uyuşmuyor"}
+    for adim, olay in zip(adimlar, baglar):
+        if (not isinstance(adim.get("gerekce"), dict)
+                or gerekce_digest(adim["gerekce"]) != adim["gerekce_digest"]
+                or olay["gerekce_digest"] != adim["gerekce_digest"]):
+            return {"saglam": False, "neden": "gerekçe digest uyuşmuyor"}
+    return {"saglam": True, "neden": None}
 
 
 def _oturum_yolu(log_dir, oturum_id, uzanti, olustur=False):
@@ -163,20 +219,27 @@ def dosya_kimligi(yol):
 def olay_yaz(log_dir, oturum_id, olay):
     """
     Değişmez olay akışına tek kayıt ekler (append-only).
-    olay: {'olay': adım adı, 'faz': ..., 'arac': ...,
-           'arg_anahtarlari': [...], 'girdi_n': ..., 'ozet': ...}
-    DEĞER yazılmaz; çağıran bu sözleşmeden sorumludur (audit ile aynı kural).
-    P2 (v6.4): her kayıt onceki_hash ile zincirlenir — kurcalama kanıtı
-    kanit.dogrula ile sınanır.
-    Dönüş: yazılan kayıt (zaman damgası + zincir hash'i eklenmiş).
+    Kayıt BEYAZ LİSTEYLE kurulur (P06): yalnız 'olay', 'faz', guvenli_ozet()
+    ile sabit adlı sayısal 'ozet' ve varsa 'gerekce_digest' yazılır; çağıranın
+    gönderdiği diğer alanlar (ham özet, gerekçe metni, dinamik grup etiketi)
+    akışa GİRMEZ — sözleşmeyi çağıran değil bu fonksiyon uygular. Gerekçenin
+    kendisi yerel manifestoda kalır; akış yalnız SHA-256 taahhüdünü taşır
+    (gerekce_bagi_dogrula).
+    P2 + v2 (v6.9): her kayıt zincir sürümü ve onceki_hash ile zincirlenir;
+    bağ alanı hash'e dahildir — kurcalama kanıtı kanit.dogrula ile sınanır.
+    Dönüş: yazılan kayıt.
     """
-    kayit = {"zaman": _simdi(), **{k: v for k, v in olay.items()
-                                   if k not in ("onceki_hash", "zincir")}}
+    kayit = {"zaman": _simdi(), "surum": "b06",
+             "olay": olay.get("olay", "bilinmeyen"),
+             "faz": olay.get("faz", "BILINMEYEN"),
+             "ozet": guvenli_ozet(olay.get("ozet"))}
+    if isinstance(olay.get("gerekce_digest"), str):
+        kayit["gerekce_digest"] = olay["gerekce_digest"]
     akis = _akis_yolu(log_dir, oturum_id, olustur=True)
     kayit["zincir"] = ZINCIR_SURUMU  # çağıran ezemez
     kayit["onceki_hash"] = _son_hash(akis)
     with open(akis, "a", encoding="utf-8") as f:
-        f.write(json.dumps(kayit, ensure_ascii=False, default=str) + "\n")
+        f.write(json.dumps(kayit, ensure_ascii=False) + "\n")
         f.flush()
         os.fsync(f.fileno())  # H1.2: çökmede olay kaybolmasın
     return kayit
@@ -203,11 +266,12 @@ def atomik_json_yaz(yol, nesne):
             os.unlink(gecici)
 
 
-def dogrula(log_dir, oturum_id):
+def _zincir_dogrula(olaylar):
     """
-    P2: zincir bütünlüğü sınaması. Her kaydın onceki_hash'i bir önceki
-    kaydın zincir hash'ine eşit olmalı; ilk kayıt None taşımalı. v2 bir kez
-    başladıysa sonrası v1 olamaz (sürüm düşürme saldırısı).
+    P2: salt hash-zinciri bütünlüğü (olay listesi üzerinde). Her kaydın
+    onceki_hash'i bir önceki kaydın zincir hash'ine eşit olmalı; ilk kayıt
+    None taşımalı. v2 bir kez başladıysa sonrası v1 olamaz (sürüm düşürme
+    saldırısı).
 
     Dönüş: {'saglam': bool, 'olay_sayisi': n, 'bozuk_adim': i|None,
             'zincir_bas_hash': ilk kaydın hash'i,
@@ -216,9 +280,8 @@ def dogrula(log_dir, oturum_id):
     Not: son kaydın kendisindeki değişiklik ancak zincir_son_hash dışarıda
     saklanıp karşılaştırılırsa saptanır (her hash zincirinin sınırı).
     """
-    olaylar = oku(log_dir, oturum_id)
-
     def _bozuk(i):
+        """Bozuk zincir sonucu: hash'ler güvenilmez olduğu için None."""
         return {"saglam": False, "olay_sayisi": len(olaylar), "bozuk_adim": i,
                 "zincir_bas_hash": None, "zincir_son_hash": None}
 
@@ -244,6 +307,31 @@ def dogrula(log_dir, oturum_id):
         sonuc["uyari"] = (f"{korumasiz} olay eski (v1) biçimde: bağ alanı "
                           "hash'e dahil değil; bu kayıtlarda ortadaki bir "
                           "değişiklik saptanamaz")
+    return sonuc
+
+
+def dogrula(log_dir, oturum_id):
+    """Hash zincirini ve mevcutsa manifesto gerekçe bağını birlikte sınar.
+
+    Dönüş: _zincir_dogrula() sözlüğü + 'gerekce_bagi' ('manifesto_yok' |
+    'dogrulandi' | 'gerekce_bagi_bozuk' | 'manifesto_gecersiz'). Bağ bozuksa
+    'saglam' False olur; zincirin kendi alanları (zincir_son_hash dahil)
+    zincir sağlamsa yine raporlanır.
+    """
+    olaylar = oku(log_dir, oturum_id)
+    sonuc = _zincir_dogrula(olaylar)
+    manifesto_yolu = _oturum_yolu(log_dir, oturum_id, ".json")
+    bag_saglam, bag_durumu = True, "manifesto_yok"
+    if os.path.isfile(manifesto_yolu):
+        try:
+            with open(manifesto_yolu, encoding="utf-8") as f:
+                manifesto = json.load(f)
+            bag_saglam = gerekce_bagi_dogrula(manifesto, olaylar)["saglam"]
+            bag_durumu = "dogrulandi" if bag_saglam else "gerekce_bagi_bozuk"
+        except (OSError, ValueError, json.JSONDecodeError):
+            bag_saglam, bag_durumu = False, "manifesto_gecersiz"
+    sonuc["saglam"] = sonuc["saglam"] and bag_saglam
+    sonuc["gerekce_bagi"] = bag_durumu
     return sonuc
 
 

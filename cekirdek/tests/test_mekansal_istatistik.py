@@ -60,6 +60,30 @@ class TestGetisOrd(unittest.TestCase):
         r = mi.getis_ord(_grid(lambda i, j: 4), bant_km=2.5)
         self.assertIn("hata", r)
 
+    # --- A4: çoklu test düzeltmesi (BMK v0 K1.6: rastgele desenlerin %70'inde
+    # sahte "sıcak nokta" — düzeltmesiz %90 bandı karar veriyordu) ---
+    def test_zayif_tek_hucre_coklu_testte_elenir(self):
+        # |z|=1.8 düzeltmesiz %90'dır; 36 testte FDR'den geçmemeli
+        k = mi.gi_siniflandir([1.8] + [0.0] * 35)
+        self.assertEqual(set(k["tur"]), {"anlamsız"})
+        self.assertLess(k["p"][0], 0.10)            # düzeltmesiz "anlamlı" olurdu
+
+    def test_guclu_hucre_duzeltmeden_sonra_da_anlamli(self):
+        k = mi.gi_siniflandir([4.0, -4.0] + [0.0] * 34)
+        self.assertEqual(k["tur"][:2], ["sıcak", "soğuk"])
+        self.assertEqual(set(k["tur"][2:]), {"anlamsız"})
+        self.assertTrue(all(q >= p - 1e-9 for p, q in zip(k["p"], k["q"])))
+
+    def test_cikti_coklu_test_ozeti_ve_tutarlilik(self):
+        h = _grid(lambda i, j: 20 if (i < 2 and j < 2) else 1)
+        r = mi.getis_ord(h, bant_km=2.5)
+        ct = r["coklu_test"]
+        self.assertEqual(ct["yontem"], "Benjamini-Hochberg FDR")
+        self.assertEqual(ct["test_sayisi"], len(h))
+        self.assertEqual(r["sicak"], sum(1 for s in r["sonuclar"] if s["tur"] == "sıcak"))
+        self.assertGreaterEqual(ct["duzeltmesiz_sicak"], r["sicak"])
+        self.assertTrue(all("p" in s and "q" in s for s in r["sonuclar"]))
+
 
 class TestYerelMoran(unittest.TestCase):
     def test_kose_kumesi_HH(self):

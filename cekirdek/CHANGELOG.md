@@ -2,6 +2,20 @@
 
 ## [Yayımlanmamış]
 
+### Gi* çoklu test düzeltmesi (A4.1, BİLİMSEL DOĞRULUK)
+BMK v0 (K1.6): tamamen rastgele desenlerin %70'inde en az bir hücre "sıcak"
+etiketi alıyordu — karar düzeltmesiz %90 z bandıyla, ~36 hücrede tek tek
+veriliyordu. Artık `tur` iki yönlü p = erfc(|z|/√2) üzerinden
+Benjamini–Hochberg q-değerleriyle (q ≤ 0,05) belirlenir
+(`gi_siniflandir`; çekirdekteki `ileri.fdr_benjamini_hochberg` kullanıldı).
+- Hücre başına `p`, `q`; üst düzeyde `coklu_test` (yöntem, eşik, test sayısı,
+  düzeltmesiz sıcak/soğuk sayısı — düzeltmenin neyi elediği görünür).
+- `guven` düzeltmesiz z bandı olarak kaldı ve öyle belgelendi (literatürle
+  karşılaştırma için; tek başına karar için kullanılmaz).
+- BMK: yanlış alarm 0,70 → 0,00; güç 1,00 → 0,90 (eşikte — bilinen ödünleşim).
+Test: 3 yeni (zayıf tek hücre elenir, güçlü hücre kalır, çıktı özeti tutarlı);
+düzeltmesiz karara dönüş mutasyonu yakalandı.
+
 ### P06 mahremiyet + 07 zincir v2 birleşimi (A2.3, GÜVENLİK)
 P06 hazırlık kopyasında (ChatGPT/Codex) yazılmış ama kanonik depoya hiç
 aktarılmamıştı; kanonik depoda ise P06'sız 07 (zincir v2) vardı. Kanonikte

@@ -51,7 +51,7 @@
         },
         {
           "kimlik": "K1.5",
-          "deger": 1.0,
+          "deger": 0.9,
           "yon": ">=",
           "esik": 0.9,
           "gecti": true,
@@ -59,15 +59,15 @@
         },
         {
           "kimlik": "K1.6",
-          "deger": 0.7,
+          "deger": 0.0,
           "yon": "<=",
           "esik": 0.1,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir: sicak_nokta_gi çoklu test düzeltmesi yapmıyor ve %90 güveni de 'sıcak' sayıyor (kod incelemesi, 29.09.2026)"
         }
       ],
       "ek_olcumler": {
-        "csr_ortalama_sicak_hucre": 1.6333,
+        "csr_ortalama_sicak_hucre": 0,
         "csr_ortalama_test_edilen_hucre": 35.9,
         "ortalama_nni": {
           "odakli": 0.9557,

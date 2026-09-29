@@ -22,6 +22,7 @@ from typing import Any, Dict, List, Optional
 
 from . import mekan
 from . import regresyon
+from .ileri import fdr_benjamini_hochberg
 
 
 def _normal_p_iki_yonlu(z: float) -> float:
@@ -119,13 +120,43 @@ def global_moran(hucreler: List[Dict[str, Any]], bant_km: Optional[float] = None
             "n": n, "bant_km": round(bant, 4), "kullanilan_deger": deger_alan}
 
 
+GI_FDR_Q = 0.05
+
+
+def gi_siniflandir(z_degerleri: List[float], q_esik: float = GI_FDR_Q) -> Dict[str, Any]:
+    """Gi* z-skorlarını ÇOKLU TEST DÜZELTMELİ sınıflandırır (A4, BMK K1.6).
+
+    Her hücre ayrı bir testtir; n hücrede düzeltmesiz %95 eşiği rastgele
+    desende bile ~%5·n hücreyi "anlamlı" işaretler (BMK v0: tamamen rastgele
+    desenlerin %70'inde en az bir sahte "sıcak nokta"). Karar iki yönlü
+    p = erfc(|z|/√2) üzerinden Benjamini–Hochberg q-değerleriyle verilir
+    (ArcGIS'in Gi* için FDR seçeneğiyle aynı ilke).
+
+    Args:
+        z_degerleri: hücre sırasıyla Gi* z-skorları.
+        q_esik: yanlış keşif oranı eşiği (varsayılan 0,05).
+
+    Returns:
+        {"p": [...], "q": [...], "tur": ["sıcak"|"soğuk"|"anlamsız", ...]}
+    """
+    p = [math.erfc(abs(z) / math.sqrt(2.0)) for z in z_degerleri]
+    q = fdr_benjamini_hochberg(p)
+    tur = [("sıcak" if z > 0 else "soğuk") if qi <= q_esik and z != 0 else "anlamsız"
+           for z, qi in zip(z_degerleri, q)]
+    return {"p": p, "q": q, "tur": tur}
+
+
 def getis_ord(hucreler: List[Dict[str, Any]], bant_km: Optional[float] = None,
-              deger_alan: str = "adet") -> Dict[str, Any]:
-    """Getis-Ord Gi*: hücre bazında sıcak/soğuk nokta z-skoru + güven bandı.
+              deger_alan: str = "adet", q_esik: float = GI_FDR_Q) -> Dict[str, Any]:
+    """Getis-Ord Gi*: hücre bazında sıcak/soğuk nokta, çoklu test düzeltmeli.
 
     Gi* kendini de komşu sayar (yıldız). z>0 sıcak (yüksek değer kümesi),
-    z<0 soğuk. Güven: |z|≥1.65 %90, ≥1.96 %95, ≥2.58 %99.
-    Returns: {sonuclar:[{lat,lon,adet,gi_z,guven,tur}], sicak, soguk, n, bant_km}.
+    z<0 soğuk. KARAR ('tur') Benjamini–Hochberg FDR ile verilir
+    (gi_siniflandir). 'guven' düzeltmesiz z bandıdır (|z|≥1.65 %90, ≥1.96 %95,
+    ≥2.58 %99) — literatürle karşılaştırma için bilgi amaçlıdır, tek başına
+    karar için KULLANILMAZ.
+    Returns: {sonuclar:[{lat,lon,adet,gi_z,p,q,guven,tur}], sicak, soguk,
+              coklu_test, n, bant_km}.
     """
     n = len(hucreler)
     if n < 3:
@@ -137,30 +168,37 @@ def getis_ord(hucreler: List[Dict[str, Any]], bant_km: Optional[float] = None,
         return {"hata": "tüm hücre değerleri eşit; Gi* tanımsız", "n": n}
 
     komsu, bant = _komsuluk(hucreler, bant_km)
-    sonuclar = []
-    sicak = soguk = 0
+    zler = []
     for i in range(n):
         yildiz = komsu[i] + [i]  # kendini dahil et
         w = len(yildiz)
         lag = sum(x[j] for j in yildiz)
         payda = S * math.sqrt(max((n * w - w * w) / (n - 1), 1e-12))
-        gi = (lag - X * w) / payda if payda > 0 else 0.0
-        guven = _guven_bandi(gi)
-        if guven and gi > 0:
-            tur = "sıcak"; sicak += 1
-        elif guven and gi < 0:
-            tur = "soğuk"; soguk += 1
-        else:
-            tur = "anlamsız"
+        zler.append((lag - X * w) / payda if payda > 0 else 0.0)
+    karar = gi_siniflandir(zler, q_esik)
+    sonuclar = []
+    for i, gi in enumerate(zler):
         sonuclar.append({"lat": round(hucreler[i]["lat"], 6),
                          "lon": round(hucreler[i]["lon"], 6),
                          "adet": hucreler[i].get(deger_alan),
-                         "gi_z": round(gi, 4), "guven": guven, "tur": tur})
+                         "gi_z": round(gi, 4),
+                         "p": round(karar["p"][i], 6), "q": karar["q"][i],
+                         "guven": _guven_bandi(gi), "tur": karar["tur"][i]})
     sonuclar.sort(key=lambda s: -s["gi_z"])
+    sicak = karar["tur"].count("sıcak")
+    soguk = karar["tur"].count("soğuk")
+    duz_sicak = sum(1 for z in zler if z > 0 and _guven_bandi(z))
+    duz_soguk = sum(1 for z in zler if z < 0 and _guven_bandi(z))
     return {"sonuclar": sonuclar, "sicak": sicak, "soguk": soguk,
+            "coklu_test": {"yontem": "Benjamini-Hochberg FDR", "q_esik": q_esik,
+                           "test_sayisi": n,
+                           "duzeltmesiz_sicak": duz_sicak,
+                           "duzeltmesiz_soguk": duz_soguk},
             "n": n, "bant_km": round(bant, 4),
             "not": ("Gi* z-skoru olay YOĞUNLUĞUNU test eder; kayıt yoğunluğu "
-                    "gerçek suç yoğunluğundan sapabilir (raporlama yanlılığı).")}
+                    "gerçek suç yoğunluğundan sapabilir (raporlama yanlılığı). "
+                    "'tur' çoklu test düzeltmelidir (FDR); 'guven' düzeltmesiz "
+                    "z bandıdır ve tek başına karar için kullanılmaz.")}
 
 
 def yerel_moran(hucreler: List[Dict[str, Any]], bant_km: Optional[float] = None,

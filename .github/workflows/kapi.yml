@@ -46,6 +46,23 @@ jobs:
       - name: Bekçi — tüm commit'ler
         run: python betikler/veri_bekcisi.py --gecmis
 
+  kiyas:
+    # BMK kapı DEĞİLDİR (başarısız ölçüt bir bulgudur); burada yalnız ön-kayıt
+    # kilidinin sağlamlığı ve yeniden ölçümün kayıtlı sonuçla BİREBİR aynı olduğu
+    # denetlenir. Kayıtlı sonuç Windows/py3.14'te üretildi; burada Linux/py3.12
+    # — platformlar arası tekrar üretilebilirlik.
+    name: BMK — kilit ve tekrar üretilebilirlik
+    needs: bekci
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        with:
+          python-version: "3.12"
+      - name: Kilit + yeniden ölçüm = kayıtlı sonuç
+        run: python kiyas/kos.py --dogrula
+
   cekirdek:
     name: çekirdek tam kapı (${{ matrix.os }}, py${{ matrix.python }})
     needs: bekci

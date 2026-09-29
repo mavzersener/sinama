@@ -17,6 +17,11 @@ Programın bilimsel gücünü **ölçmek** için gerçeği önceden bilinen sent
 4. **Araçlar resmi yoldan çağrılır** (`sinama.arayuz.sunucu.arac_calistir`, MCP ile aynı
    boru hattı) ve sade kullanıcının göreceği varsayılan argümanlarla.
 
+5. **Sonuç dosyası davranışın aynasıdır.** `sonuclar/v0.json` güncel çekirdeğin v0
+   kıyasındaki sonucudur; çekirdek davranışını değiştiren commit onu AYNI commit'te
+   günceller (CI `--dogrula` bunu zorlar) — her bilimsel davranış değişikliği diff'te
+   görünür. İlk ölçüm `sonuclar/v0_ilk_olcum.json`'da dondurulmuştur (önce/sonra için).
+
 ## Düzeyler
 
 - **v0 — çekirdek:** araçların gerçeğe göre doğruluğu, yanlış alarmı ve çıktı

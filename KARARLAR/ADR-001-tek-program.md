@@ -74,7 +74,8 @@ kapanır.
 | A0 | Kapandı — 29.09.2026 | `dd7cca2`; bekçi 19 test, iki mutasyon yakalandı, gerçek depoda veri+token commit'i reddedildi |
 | A1 | Kapandı — 29.09.2026 | `origin` = github.com/mavzersener/sinama (özel: oturumsuz web ve API 404); yerel ve uzak `main` aynı commit |
 | A2 | Kapandı — 29.09.2026 | `cekirdek/` = suc_analizi `20d6e2c` birebir hasadı (93 dosyanın 92'si blob düzeyinde aynı); paket adı `sinama` (aynı adla import konuma göre kanoniği alıyordu — ölçüldü, testle kilitlendi); P06 mahremiyet + 07 zincir v2 üçlü birleşimi (birleşik testler, iki mutasyon yakalandı). CI koşusu `36516719251`: bekçi tüm geçmişte (8 commit), çekirdek tam kapı Linux py3.12 (505 test, kapsam %94,1) ve Windows py3.14 (505 test, %93,7) — hepsi yeşil |
-| A3 | Açık | — |
+| A3 | Kapandı — 29.09.2026 | BMK v0: ön-kayıt `db8bf95` (11:47:42, sonuç görülmeden kilit) → ölçüm `ef1b5a6`. 15 ölçütün 6'sı geçti; kod incelemesinden yazılan 6/6 öngörü doğrulandı; öngörülmeyen 3 başarısızlık keşifle açıklandı (biri ölçüt tasarım hatası, v1'de düzeltilecek). CI `36519746996`: Windows/py3.14'te üretilen sonuç Linux/py3.12'de birebir yeniden üretildi. Bulgular: `kiyas/sonuclar/v0_bulgular.md` |
+| A4 | Açık | — |
 
 ## Kapanan konular
 

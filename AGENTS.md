@@ -6,8 +6,8 @@ Dağınık projelerden hasatla kurulur. İşe başlamadan bu dosyayı, ADR-001'i
 
 ## Şu anki aşama
 
-**A3 — BMK v0 (açık):** üç sentetik vaka ve çekirdeğin başlangıç ölçümü.
-A0 (iskelet), A1 (özel GitHub deposu) ve A2 (çekirdek hasadı) kapandı; depo
+**A4 — bilimsel güç (açık):** BMK v0 bulgularının giderilmesi; ilk iş seri
+eşleştirme ve Gi* yanlış alarmı (`kiyas/sonuclar/v0_bulgular.md`). A0–A3 kapandı; depo
 GitHub'da özel (`origin`), D: diskinde yedekli (`yedek`). Aşama tablosu ve ilerleme ADR-001'dedir.
 Aynı anda tek aşama açıktır; aşamayı proje sahibi kapatır. GitHub'a her push proje
 sahibinin onayıyla yapılır; D: yedeğine commit sonrası otomatik gider.

@@ -410,13 +410,20 @@ def _(a):
 
 
 
-@arac("seri_eslestirme", "MO metin benzerliğiyle seri suç eşleştirme",
+@arac("seri_eslestirme", "Seri suç ADAYI eşleştirme: MO benzerliği (taban oranıyla "
+      "ağırlıklı) + uzay-zaman yakınlığı. Aday bir inceleme hipotezidir, aynı fail "
+      "iddiası değildir",
       sema({"mo_alan": {"type": "string"},
-            "esik": {"type": "number", "default": 0.6}}, ["mo_alan"]))
+            "esik": {"type": "number", "default": 0.6},
+            "mesafe_km": {"type": "number", "default": tekrar.SERI_MESAFE_KM},
+            "gun": {"type": "integer", "default": tekrar.SERI_GUN}}, ["mo_alan"]))
 def _(a):
     k = kayitlari_getir(a)
     quadratic_guard(k, "seri_eslestirme")
-    return tekrar.seri_eslestirme(k, a["mo_alan"], a.get("esik", 0.6))
+    _pozitif(a.get("mesafe_km", tekrar.SERI_MESAFE_KM), "mesafe_km")
+    return tekrar.seri_eslestirme(k, a["mo_alan"], a.get("esik", 0.6),
+                                  a.get("mesafe_km", tekrar.SERI_MESAFE_KM),
+                                  a.get("gun", tekrar.SERI_GUN))
 
 
 

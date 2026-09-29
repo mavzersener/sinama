@@ -2,6 +2,26 @@
 
 ## [Yayımlanmamış]
 
+### Seri ADAYI eşleştirme: taban oranı + uzay-zaman (A4.2, BİLİMSEL DOĞRULUK)
+BMK v0 (K3.2–K3.4): düz Jaccard, çok yaygın bir MO ifadesini paylaşan
+BAĞIMSIZ olayları seri sayıyordu (kesinlik %5; bağımsız faillerin 190
+çiftinin 190'ı); çıktı uyarı taşımıyor, insan onayı istemiyordu.
+- `tekrar.seri_eslestirme`: IDF ağırlıklı Jaccard (Ružička; idf = ln(N/df),
+  her kayıtta geçen kelime 0 ağırlık) + uzay-zaman yakınlığı (varsayılan
+  `SERI_MESAFE_KM`=2, `SERI_GUN`=60; araç şemasında `mesafe_km`, `gun`).
+  Koordinat/tarih yoksa çift `uzay_zaman: "bilinmiyor"` ile döner.
+  Her çift: `benzerlik`, `jaccard` (şeffaflık), `mesafe_km`, `gun_farki`,
+  `ayni_fail_cikarimi: False`. Çift içi sıra kimliğe göre kanonik (yeni test
+  girdi sırasına bağımlılığı yakaladı).
+- Kişi/kayıt bağlantısı sınıfı — `seri_eslestirme`, `bulanik_eslesme`,
+  `ag_analizi`: insan onayı + "benzerlik/bağlantı kimlik değildir" uyarısı.
+  (Son ikisi BMK'da ölçülmüyor; ilke gereği eklendi.)
+- BMK: kesinlik 0,050 → 0,970; geri çağırma 1,00'da kaldı; K3.3 ve K3.4 → 1.
+  Genelleme sınırı: V3 dar bir seri (250 m / 21 gün); yayılan seriler için
+  BMK v1 varyantı gerekir.
+Test: `tests/test_seri_eslestirme.py` (8); v0 davranışına dönüş mutasyonu
+iki testçe yakalandı.
+
 ### Gi* çoklu test düzeltmesi (A4.1, BİLİMSEL DOĞRULUK)
 BMK v0 (K1.6): tamamen rastgele desenlerin %70'inde en az bir hücre "sıcak"
 etiketi alıyordu — karar düzeltmesiz %90 z bandıyla, ~36 hücrede tek tek

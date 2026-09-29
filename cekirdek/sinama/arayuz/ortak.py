@@ -222,6 +222,18 @@ ARAC_UYARILARI = {
     "brifing_uret": ["belirsizlik notu zorunludur; ürün sınırlarını beyan "
                       "etmeden çıkamaz"],
     "risk_arazi": ["RTM risk faktörü türlerini sayar; çıktı olasılık değildir"],
+    # A4.2 — kişi/kayıt bağlantısı sınıfı: benzerlik ya da bağlantı KİMLİK değildir.
+    "seri_eslestirme": ["dönen çiftler SERİ ADAYIDIR (inceleme hipotezi): MO "
+                        "benzerliği aynı fail ya da kimlik anlamına gelmez; insan "
+                        "incelemesi gerekir",
+                        "benzerlik bu veri setindeki MO yaygınlığıyla ağırlıklıdır; "
+                        "küçük veri setinde ağırlıklar kararsızdır"],
+    "bulanik_eslesme": ["yazım benzerliği kimlik doğrulaması değildir; eşleşen "
+                        "kayıtların aynı kişi olduğu insan incelemesiyle "
+                        "doğrulanmalıdır"],
+    "ag_analizi": ["merkezilik ya da bağlantı suçluluk göstergesi değildir; "
+                   "ağ bir inceleme hipotezidir, fail/kimlik çıkarımı insan "
+                   "incelemesi gerektirir"],
 }
 
 
@@ -607,6 +619,9 @@ for _ad in ("risk_skorla", "bolge_anomali", "kontrol_grafigi", "cusum",
             "yakin_tekrar", "knox_tablosu", "nni", "kde_yogunluk",
             "grid_hotspot", "coklu_regresyon", "lojistik_regresyon", "power_few",
             "agirlikli_kde", "zarar_hesapla"):
+    ARAC_POLITIKALARI[_ad]["insan_onayi"] = True
+# A4.2 — kişi/kayıt bağlantısı iddiası taşıyabilen araçlar (BMK v0 K3.4)
+for _ad in ("seri_eslestirme", "bulanik_eslesme", "ag_analizi"):
     ARAC_POLITIKALARI[_ad]["insan_onayi"] = True
 
 # Dış importlar için uyumluluk görünümleri; bağımsız ikinci listeler değildir.

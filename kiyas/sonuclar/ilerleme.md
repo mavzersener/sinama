@@ -4,24 +4,24 @@ Aynı ön-kayıtlı kıyas (v0, eşikler değişmedi), değişen çekirdek. Her 
 çekirdek değişikliğinden sonra yapılan tam ölçümdür; sayılar o commit'teki
 `v0.json`'dadır. Kalın: önceki sütuna göre değişen.
 
-| Ölçüt | Eşik | İlk ölçüm `ef1b5a6` | A4.1 Gi* FDR |
-|---|---|---|---|
-| K1.1 NNI gücü | ≥ 0,90 | 0,233 | 0,233 |
-| K1.2 NNI yanlış alarmı | ≤ 0,10 | 0,000 | 0,000 |
-| K1.3 Moran gücü | ≥ 0,90 | 0,967 | 0,967 |
-| K1.4 Moran yanlış alarmı | ≤ 0,10 | 0,000 | 0,000 |
-| K1.5 Gi* gücü | ≥ 0,90 | 1,000 | **0,900** |
-| K1.6 Gi* yanlış alarmı | ≤ 0,10 | 0,700 | **0,000** |
-| K2.1 CUSUM kırılma zamanı | ≥ 0,90 | 0,467 | 0,467 |
-| K2.2 kayıtlı artış | ≥ 0,90 | 1,000 | 1,000 |
-| K2.3 sahte trend | ≤ 0,10 | 1,000 | 1,000 |
-| K2.4 kanal ayrıştırma (ölçüt hatalı) | ≥ 0,90 | 0,800 | 0,800 |
-| K2.5 ITS aracı | = 1 | 0 | 0 |
-| K3.1 seri geri çağırma | ≥ 0,90 | 1,000 | 1,000 |
-| K3.2 seri kesinliği | ≥ 0,90 | 0,050 | 0,050 |
-| K3.3 "benzerlik ≠ kimlik" uyarısı | = 1 | 0 | 0 |
-| K3.4 insan onayı | = 1 | 0 | 0 |
-| **Geçen** | | **6/15** | **7/15** |
+| Ölçüt | Eşik | İlk ölçüm `ef1b5a6` | A4.1 Gi* FDR | A4.2 seri adayı |
+|---|---|---|---|---|
+| K1.1 NNI gücü | ≥ 0,90 | 0,233 | 0,233 | 0,233 |
+| K1.2 NNI yanlış alarmı | ≤ 0,10 | 0,000 | 0,000 | 0,000 |
+| K1.3 Moran gücü | ≥ 0,90 | 0,967 | 0,967 | 0,967 |
+| K1.4 Moran yanlış alarmı | ≤ 0,10 | 0,000 | 0,000 | 0,000 |
+| K1.5 Gi* gücü | ≥ 0,90 | 1,000 | **0,900** | 0,900 |
+| K1.6 Gi* yanlış alarmı | ≤ 0,10 | 0,700 | **0,000** | 0,000 |
+| K2.1 CUSUM kırılma zamanı | ≥ 0,90 | 0,467 | 0,467 | 0,467 |
+| K2.2 kayıtlı artış | ≥ 0,90 | 1,000 | 1,000 | 1,000 |
+| K2.3 sahte trend | ≤ 0,10 | 1,000 | 1,000 | 1,000 |
+| K2.4 kanal ayrıştırma (ölçüt hatalı) | ≥ 0,90 | 0,800 | 0,800 | 0,800 |
+| K2.5 ITS aracı | = 1 | 0 | 0 | 0 |
+| K3.1 seri geri çağırma | ≥ 0,90 | 1,000 | 1,000 | 1,000 |
+| K3.2 seri kesinliği | ≥ 0,90 | 0,050 | 0,050 | **0,970** |
+| K3.3 "benzerlik ≠ kimlik" uyarısı | = 1 | 0 | 0 | **1** |
+| K3.4 insan onayı | = 1 | 0 | 0 | **1** |
+| **Geçen** | | **6/15** | **7/15** | **10/15** |
 
 ## Notlar
 
@@ -31,3 +31,13 @@ Aynı ön-kayıtlı kıyas (v0, eşikler değişmedi), değişen çekirdek. Her 
   Bu, çoklu test düzeltmesinin bilinen ödünleşimidir. q eşiği sonuca bakılarak
   gevşetilmedi (0,05 standart değer); güç kaybı ileride daha güçlü bir yöntemle
   (ör. komşuluk bağımlılığını hesaba katan düzeltme) ele alınabilir — yeni ölçümle.
+- **A4.2 (seri adayı):** MO benzerliği taban oranıyla ağırlıklı (IDF-Jaccard) +
+  uzay-zaman yakınlığı (varsayılan 2 km / 60 gün); her çift "seri adayı" ve
+  `ayni_fail_cikarimi: false`; uyarı + insan onayı. Kesinlik %5 → %97, geri çağırma
+  %100'de kaldı; tohum başına işaretlenen çift 201,6 → 10,3, bağımsız faillerden
+  yanlış çift 190 → 0,33. Ölçümden önce yazılan dört öngörünün dördü doğru çıktı.
+  **Dikkat (genelleme):** V3 tek bir senaryodur; seri kayıtları 250 m ve 21 gün
+  içinde. Daha geniş alana yayılan seriler varsayılan 2 km / 60 gün süzgecine
+  takılır — bunu ölçmek için BMK v1'e yayılan seri varyantı eklenmeli.
+  Aynı sınıftan `bulanik_eslesme` ve `ag_analizi`'ye de insan onayı + uyarı
+  eklendi; bunlar BMK'da **ölçülmüyor** (ilke gereği, ölçüm değil).

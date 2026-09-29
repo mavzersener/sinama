@@ -5,10 +5,13 @@ Kayıt alanları: id, tarih (datetime), lat, lon, adres/mağdur anahtarı.
 Sadece standart kütüphane.
 """
 
+import math
 import random
 from collections import Counter, defaultdict
+from datetime import date
 from itertools import combinations
 from .mekan import haversine_km
+from .veri import koordinat_al
 from .kaynak_butce import _pozitif, _sim_butce
 
 
@@ -69,28 +72,91 @@ def knox_tablosu(kayitlar, mesafe_bantlari=None, gun_bantlari=None):
     return dict(tablo)
 
 
-def seri_eslestirme(kayitlar, mo_alan, benzerlik_esik=0.6):
+SERI_MESAFE_KM = 2.0
+SERI_GUN = 60
+
+
+def _tarih_gunu(v):
+    """datetime/date ya da ISO metni → gün sırası (toordinal); çözülemezse None."""
+    if hasattr(v, "toordinal"):
+        return v.toordinal()
+    if isinstance(v, str) and len(v) >= 10:
+        try:
+            return date.fromisoformat(v[:10]).toordinal()
+        except ValueError:
+            return None
+    return None
+
+
+def seri_eslestirme(kayitlar, mo_alan, benzerlik_esik=0.6,
+                    mesafe_km=SERI_MESAFE_KM, gun=SERI_GUN):
     """
-    Basit seri suç eşleştirme: MO metinlerini kelime kümeleriyle
-    Jaccard benzerliği üzerinden karşılaştırır.
+    Seri suç ADAYI eşleştirme (A4.2): MO benzerliği TABAN ORANIYLA ağırlıklı
+    ve uzay-zaman yakınlığıyla birlikte.
+
+    Neden: düz Jaccard, çok yaygın bir MO ifadesini ("kapı kırılarak girildi")
+    paylaşan BAĞIMSIZ olayları seri sayıyordu (BMK v0 K3.2: kesinlik %5;
+    bağımsız faillerin 190 çiftinin 190'ı işaretlendi). Bağlantı analizi
+    literatüründe davranışın ayırt ediciliği (nadirliği) ile olaylar arası
+    mesafe ve zaman en güçlü ayırıcılardır (Bennell & Canter 2002;
+    Bennell & Jones 2005).
+
+    - Benzerlik: IDF ağırlıklı Jaccard (Ružička),
+      Σ idf(A∩B) / Σ idf(A∪B), idf(t) = ln(N / df(t)); N ve df bu veri
+      setindeki MO'lu kayıtlardan. Her kayıtta geçen kelimenin ağırlığı 0'dır.
+    - Uzay-zaman: iki kayıtta da koordinat VE tarih varsa çift ancak
+      mesafe ≤ mesafe_km ve gün farkı ≤ gun ise aday olur; yoksa çift
+      'uzay_zaman': 'bilinmiyor' ile döner (yalnız MO — zayıf kanıt).
+    - Dönen her çift bir SERİ ADAYIDIR: inceleme hipotezi, aynı fail ya da
+      kimlik iddiası DEĞİLDİR ('ayni_fail_cikarimi': False).
+
+    Args:
+        kayitlar: olay kayıtları ('id', MO alanı; varsa lat/lon ve tarih).
+        mo_alan: MO metninin alanı.
+        benzerlik_esik: ağırlıklı benzerlik eşiği (varsayılan 0,6).
+        mesafe_km: uzay yakınlığı üst sınırı (km).
+        gun: zaman yakınlığı üst sınırı (gün).
+
+    Returns:
+        [{id1, id2, benzerlik, jaccard, mesafe_km, gun_farki, uzay_zaman,
+          ayni_fail_cikarimi}] — benzerliğe göre azalan.
     """
     def kelime_kumesi(s):
-        """Metni küçük harfli kelime kümesine çevirir (Jaccard için; iç yardımcı).
-        """
+        """Metni küçük harfli kelime kümesine çevirir (iç yardımcı)."""
         return set(str(s or "").lower().split())
-    kumeler = {k.get("id"): kelime_kumesi(k.get(mo_alan)) for k in kayitlar}
+
+    girdiler = []
+    for k in kayitlar:
+        kume = kelime_kumesi(k.get(mo_alan))
+        if kume:
+            girdiler.append((k.get("id"), kume, koordinat_al(k), _tarih_gunu(k.get("tarih"))))
+    n = len(girdiler)
+    df = Counter(t for _, kume, _, _ in girdiler for t in kume)
+    idf = {t: math.log(n / d) for t, d in df.items()}
+
     sonuc = []
-    ids = list(kumeler.keys())
-    for i in range(len(ids)):
-        for j in range(i + 1, len(ids)):
-            a, b = kumeler[ids[i]], kumeler[ids[j]]
-            if not a or not b:
+    for (id1, a, k1, t1), (id2, b, k2, t2) in combinations(girdiler, 2):
+        birlesim = sum(idf[t] for t in a | b)
+        if birlesim <= 0:
+            continue
+        agirlikli = sum(idf[t] for t in a & b) / birlesim
+        if agirlikli < benzerlik_esik:
+            continue
+        if str(id1) > str(id2):   # çift içi sıra girdi sırasına bağlı olmasın
+            id1, id2 = id2, id1
+        cift = {"id1": id1, "id2": id2, "benzerlik": round(agirlikli, 3),
+                "jaccard": round(len(a & b) / len(a | b), 3),
+                "mesafe_km": None, "gun_farki": None,
+                "uzay_zaman": "bilinmiyor", "ayni_fail_cikarimi": False}
+        if k1 and k2 and t1 is not None and t2 is not None:
+            mesafe = haversine_km(k1[0], k1[1], k2[0], k2[1])
+            fark = abs(t1 - t2)
+            if mesafe > mesafe_km or fark > gun:
                 continue
-            jacc = len(a & b) / len(a | b)
-            if jacc >= benzerlik_esik:
-                sonuc.append({"id1": ids[i], "id2": ids[j],
-                              "benzerlik": round(jacc, 3)})
-    sonuc.sort(key=lambda x: -x["benzerlik"])
+            cift.update({"mesafe_km": round(mesafe, 3), "gun_farki": fark,
+                         "uzay_zaman": "yakin"})
+        sonuc.append(cift)
+    sonuc.sort(key=lambda x: (-x["benzerlik"], str(x["id1"]), str(x["id2"])))
     return sonuc
 
 

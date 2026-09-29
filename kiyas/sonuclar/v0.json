@@ -141,32 +141,32 @@
         },
         {
           "kimlik": "K3.2",
-          "deger": 0.0496,
+          "deger": 0.9702,
           "yon": ">=",
           "esik": 0.9,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir: seri_eslestirme düz Jaccard kullanıyor, MO yaygınlığını (taban oranı) hesaba katmıyor; ortak MO grubunun çiftleri 0,6 eşiğini geçer (kod incelemesi, 29.09.2026)"
         },
         {
           "kimlik": "K3.3",
-          "deger": 0.0,
+          "deger": 1.0,
           "yon": ">=",
           "esik": 1.0,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir: araç uyarı taşımıyor (ARAC_UYARILARI boş)"
         },
         {
           "kimlik": "K3.4",
-          "deger": 0.0,
+          "deger": 1.0,
           "yon": ">=",
           "esik": 1.0,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir: araç insan onayı listesinde değil"
         }
       ],
       "ek_olcumler": {
-        "ortalama_isaretlenen_cift": 201.6333,
-        "ortalama_ortak_mo_yanlis_cift": 190
+        "ortalama_isaretlenen_cift": 10.3333,
+        "ortalama_ortak_mo_yanlis_cift": 0.3333
       }
     }
   ]

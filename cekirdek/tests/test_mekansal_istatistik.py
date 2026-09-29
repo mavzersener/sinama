@@ -2,7 +2,7 @@
 """mekansal_istatistik: Global Moran's I, Getis-Ord Gi*, eşitlik testleri."""
 import unittest
 
-from suc_analizi.cekirdek import mekansal_istatistik as mi
+from sinama.cekirdek import mekansal_istatistik as mi
 
 
 def _grid(deger_fn, boyut=6, adim=0.02):

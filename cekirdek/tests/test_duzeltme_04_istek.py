@@ -10,18 +10,18 @@ import unittest
 from datetime import datetime
 from unittest.mock import patch
 
-from suc_analizi.arayuz import sunucu, ortak
-from suc_analizi.arayuz.sema import sema_dogrula
-from suc_analizi.cekirdek import mekan, tekrar, hipotez
-from suc_analizi.cekirdek.hatalar import KullanimHatasi
+from sinama.arayuz import sunucu, ortak
+from sinama.arayuz.sema import sema_dogrula
+from sinama.cekirdek import mekan, tekrar, hipotez
+from sinama.cekirdek.hatalar import KullanimHatasi
 
 
 class TestIstek(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
-        self.env = patch.dict(os.environ, SUC_ANALIZI_LOG_DIR=self.tmp.name,
-                              SUC_ANALIZI_VERI_KOKU=self.tmp.name)
+        self.env = patch.dict(os.environ, SINAMA_LOG_DIR=self.tmp.name,
+                              SINAMA_VERI_KOKU=self.tmp.name)
         self.env.start()
         self.addCleanup(self.env.stop)
 
@@ -55,7 +55,7 @@ class TestIstek(unittest.TestCase):
     def test_transport_byte_siniri_ve_sonlu_json(self):
         ping = '{"id":8,"method":"ping"}\n'
         r = self.transport('"'+'ü'*100+'"\n'+ping,
-                           SUC_ANALIZI_MAKS_ISTEK_BYTE='128')
+                           SINAMA_MAKS_ISTEK_BYTE='128')
         self.assertEqual(r[0]['error']['code'], -32600)
         self.assertEqual(r[1]['id'], 8)
         r = self.transport('{"id":NaN,"method":"ping"}\n'+ping)

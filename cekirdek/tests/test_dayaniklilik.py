@@ -14,11 +14,11 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from suc_analizi.cekirdek import regresyon
-from suc_analizi.cekirdek.hatalar import (SucAnaliziHatasi, VeriHatasi,
+from sinama.cekirdek import regresyon
+from sinama.cekirdek.hatalar import (SucAnaliziHatasi, VeriHatasi,
                                           GuvenlikHatasi, KullanimHatasi)
-from suc_analizi.kalite import guvenlik, KapiRed
-from suc_analizi.surec import dongu, kanit
+from sinama.kalite import guvenlik, KapiRed
+from sinama.surec import dongu, kanit
 
 GEREKCE = {"hipotez": "h", "yorum": "y"}
 
@@ -128,7 +128,7 @@ class TestK22_KanitDayanikliligi(unittest.TestCase):
 
     def test_kesif_kanit_kaybi_meta_bayragi(self):
         """H1.3 (keşif): yazılamayan adım meta'da GÜRÜLTÜLÜ işaretlenir."""
-        from suc_analizi.arayuz import sunucu
+        from sinama.arayuz import sunucu
         paket = sunucu._basari_paketi(
             "nni", {"nni": 0.62},
             {"uygun": True, "sebepler": ["belirgin engel yok"]},
@@ -159,7 +159,7 @@ class TestH2_HataTaksonomisi(unittest.TestCase):
         self.assertIn("VIF", cm.exception.oneri)
 
     def test_kullanim_hatasi(self):
-        from suc_analizi.arayuz import ortak
+        from sinama.arayuz import ortak
         with self.assertRaises(KullanimHatasi) as cm:
             ortak.iki_vektor({"gruplar": {"a": [1], "b": [2], "c": [3]}})
         self.assertEqual(cm.exception.tip, "kullanim")
@@ -173,7 +173,7 @@ class TestH2_HataTaksonomisi(unittest.TestCase):
             self.assertTrue(issubclass(s, SucAnaliziHatasi))
 
     def _sahte_arac(self, istisna):
-        from suc_analizi.arayuz.ortak import ARACLAR
+        from sinama.arayuz.ortak import ARACLAR
         def fn(a):
             raise istisna
         ARACLAR["sahte_h2"] = {"fn": fn, "aciklama": "t",
@@ -189,7 +189,7 @@ class TestH2_HataTaksonomisi(unittest.TestCase):
         self.addCleanup(lambda: ARACLAR.pop("sahte_h2", None))
 
     def test_sunucu_esleme_veri_tipi(self):
-        from suc_analizi.arayuz import sunucu
+        from sinama.arayuz import sunucu
         self._sahte_arac(VeriHatasi("n yetersiz", oneri="daha fazla veri"))
         r = sunucu.isle({"method": "tools/call", "id": 9,
                          "params": {"name": "sahte_h2", "arguments": {}}})
@@ -199,7 +199,7 @@ class TestH2_HataTaksonomisi(unittest.TestCase):
         self.assertIn("ÖNERİ: daha fazla veri", metin)
 
     def test_sunucu_esleme_sistem_tipi(self):
-        from suc_analizi.arayuz import sunucu
+        from sinama.arayuz import sunucu
         self._sahte_arac(RuntimeError("gizli iç ayrıntı"))
         r = sunucu.isle({"method": "tools/call", "id": 10,
                          "params": {"name": "sahte_h2", "arguments": {}}})
@@ -213,7 +213,7 @@ class TestH62_ProtokolAnlasmasi(unittest.TestCase):
     istemci sürümü reddedilmez, uyarı notuyla devam edilir."""
 
     def _init(self, v):
-        from suc_analizi.arayuz import sunucu
+        from sinama.arayuz import sunucu
         return sunucu.isle({"method": "initialize", "id": 1,
                             "params": {"protocolVersion": v,
                                        "capabilities": {},

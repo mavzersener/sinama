@@ -1,7 +1,7 @@
 """İstek ömrüyle sınırlı metadata ve hazırlanmış girdi önbelleği."""
 from contextvars import ContextVar
 
-_istek = ContextVar('suc_analizi_istek', default=None)
+_istek = ContextVar('sinama_istek', default=None)
 
 
 def yeni_baglam():

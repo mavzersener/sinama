@@ -15,8 +15,8 @@ sahibinin onayıyla yapılır; D: yedeğine commit sonrası otomatik gider.
 
 1. **Özel veri ve sır depoya giremez.** Gerçek veri (CSV/XLSX/JSONL/DB), oturum ve
    kanıt kayıtları, Bilgi Notları, `.env`, anahtarlar. Veri kökü depo dışındadır
-   (bugün `C:\Users\ASUS\Documents\suc_veri`; A2'de `SINAMA_VERI_KOKU` olarak
-   sabitlenecek). Test verisi yalnız sentetiktir ve yalnız `*/sentetik/` altında durur.
+   ve `SINAMA_VERI_KOKU` ile verilir (yerelde `C:\Users\ASUS\Documents\suc_veri`).
+   Test verisi yalnız sentetiktir ve yalnız `*/sentetik/` altında durur.
    `betikler/veri_bekcisi.py` commit ve push'ta çalışır — devre dışı bırakma,
    kuralı gevşetme; gerekçeli istisna yalnız `betikler/bekci_izinleri.txt`.
 2. **Hasat, yeniden yazım değil.** Kaynaktan yalnız izlenen dosyaları al:
@@ -61,8 +61,17 @@ sahibinin onayıyla yapılır; D: yedeğine commit sonrası otomatik gider.
 Yorumlar, belgeler ve commit mesajları Türkçe; tanımlayıcılar ASCII Türkçe
 (`oturum_id`, `veri_bagla`) — hasat edilen kodun üslubunu sürdür.
 
+## Çekirdek (`cekirdek/`)
+
+`suc_analizi`'den hasat edilen deterministik çekirdek; Python paketi **`sinama`**
+(`cekirdek/sinama/`). Kendi iç düzeniyle durur: testler `cekirdek/` köküne göreli
+yollar kullanır, bu yüzden çekirdek komutları `cekirdek/` içinden koşar. Paketi
+hiçbir ortama `suc_analizi` adıyla kurma; kanonik depo o adla üç ortamda kurulu.
+
 ## Test
 
 ```bash
-PYTHONUTF8=1 python -m unittest discover -s tests
+PYTHONUTF8=1 python -m unittest discover -s tests            # kök: bekçi
+cd cekirdek && PYTHONUTF8=1 python -m unittest discover -s tests   # çekirdek birim
+cd cekirdek && PYTHONUTF8=1 sh test.sh                        # çekirdek tam kapı
 ```

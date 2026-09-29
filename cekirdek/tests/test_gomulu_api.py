@@ -15,11 +15,11 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from suc_analizi.arayuz import sunucu
-from suc_analizi.arayuz.istek_baglam import baglam
-from suc_analizi.arayuz.ortak import AracSemaHatasi
-from suc_analizi.cekirdek import veri
-from suc_analizi.cekirdek.hatalar import KullanimHatasi, SucAnaliziHatasi
+from sinama.arayuz import sunucu
+from sinama.arayuz.istek_baglam import baglam
+from sinama.arayuz.ortak import AracSemaHatasi
+from sinama.cekirdek import veri
+from sinama.cekirdek.hatalar import KullanimHatasi, SucAnaliziHatasi
 
 SATIRLAR = [
     {"olay_id": f"E{i}", "tur": "hirsizlik" if i % 3 else "gasp",
@@ -33,8 +33,8 @@ class TestGomuluApi(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
-        env = patch.dict(os.environ, SUC_ANALIZI_LOG_DIR=self.tmp.name,
-                         SUC_ANALIZI_VERI_KOKU=self.tmp.name)
+        env = patch.dict(os.environ, SINAMA_LOG_DIR=self.tmp.name,
+                         SINAMA_VERI_KOKU=self.tmp.name)
         env.start()
         self.addCleanup(env.stop)
 

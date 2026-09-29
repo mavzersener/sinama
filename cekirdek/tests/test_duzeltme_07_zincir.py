@@ -11,7 +11,7 @@ import json
 import tempfile
 import unittest
 
-from suc_analizi.surec import kanit
+from sinama.surec import kanit
 
 
 def _yaz(yol, kayitlar):

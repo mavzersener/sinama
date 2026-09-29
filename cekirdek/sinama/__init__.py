@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-suc_analizi — Saf Python suç analizi paketi (sıfır dış bağımlılık).
+sinama — Saf Python suç analizi paketi (sıfır dış bağımlılık).
 
 Katmanlı mimari (v6.1, G1):
   cekirdek/  saf istatistik + veri erişimi
@@ -8,8 +8,8 @@ Katmanlı mimari (v6.1, G1):
   surec/     PPDAC döngüsü + analiz ürünleri
   arayuz/    ince MCP transportu (sunucu) + araç adaptörleri
 
-Geriye uyumluluk: eski düz modül yolları (from suc_analizi import mekan,
-import suc_analizi.sunucu vb.) sys.modules takma adlarıyla korunur.
+Geriye uyumluluk: eski düz modül yolları (from sinama import mekan,
+import sinama.sunucu vb.) sys.modules takma adlarıyla korunur.
 """
 
 __version__ = "6.8.0"

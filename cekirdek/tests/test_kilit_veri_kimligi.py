@@ -23,8 +23,8 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from suc_analizi.surec import dongu, kanit, kilit
-from suc_analizi.cekirdek.hatalar import VeriHatasi
+from sinama.surec import dongu, kanit, kilit
+from sinama.cekirdek.hatalar import VeriHatasi
 
 
 class DosyaKimligiTestleri(unittest.TestCase):

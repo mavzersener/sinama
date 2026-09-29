@@ -19,8 +19,8 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from suc_analizi import kalite, veri, dongu, rapor
-from suc_analizi import sunucu
+from sinama import kalite, veri, dongu, rapor
+from sinama import sunucu
 
 
 def _mekan_veri(n=40, bozuk=False):
@@ -189,9 +189,9 @@ class TestK8_OturumBirim(unittest.TestCase):
         self.tmp = tempfile.mkdtemp()
         # önceki değeri sakla: pop() sonradan gelen testlerin ortamını
         # bozuyordu (v6.6: ./oturumlar sızıntısı bu yüzdendi)
-        self._eski_log = os.environ.get("SUC_ANALIZI_LOG_DIR")
-        os.environ["SUC_ANALIZI_LOG_DIR"] = self.tmp
-        from suc_analizi.arayuz import sunucu as srv
+        self._eski_log = os.environ.get("SINAMA_LOG_DIR")
+        os.environ["SINAMA_LOG_DIR"] = self.tmp
+        from sinama.arayuz import sunucu as srv
         self.srv = srv
 
     def _cagir(self, ad, arg, rid=1):
@@ -233,9 +233,9 @@ class TestK8_OturumBirim(unittest.TestCase):
 
     def tearDown(self):
         if self._eski_log is None:
-            os.environ.pop("SUC_ANALIZI_LOG_DIR", None)
+            os.environ.pop("SINAMA_LOG_DIR", None)
         else:
-            os.environ["SUC_ANALIZI_LOG_DIR"] = self._eski_log
+            os.environ["SINAMA_LOG_DIR"] = self._eski_log
 
 
 if __name__ == "__main__":

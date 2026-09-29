@@ -20,7 +20,7 @@ import unittest
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 KOK = pathlib.Path(__file__).resolve().parent.parent
-PAKET = KOK / "suc_analizi"
+PAKET = KOK / "sinama"
 
 BIRIM = re.compile(r"_(km|km2|gun|saat|dk|mb|tl|oran|yuzde|m2)$")
 
@@ -65,7 +65,7 @@ class TestDokumanStandardi(unittest.TestCase):
         self.assertEqual(kusurlar, [])
 
     def test_arac_aciklamalari_dolu(self):
-        from suc_analizi.arayuz.ortak import ARACLAR
+        from sinama.arayuz.ortak import ARACLAR
         bos = [ad for ad, t in ARACLAR.items()
                if not (t.get("aciklama") or "").strip()]
         self.assertEqual(bos, [])
@@ -75,8 +75,8 @@ class TestH51_Loglama(unittest.TestCase):
     """H5.1: seviyeli loglama; audit akışı loglayıcıdan bağımsız."""
 
     def test_hata_seviyesi_error(self):
-        from suc_analizi.arayuz import sunucu
-        from suc_analizi.arayuz.ortak import ARACLAR
+        from sinama.arayuz import sunucu
+        from sinama.arayuz.ortak import ARACLAR
         def fn(a):
             raise RuntimeError("iç ayrıntı")
         ARACLAR["sahte_h5"] = {"fn": fn, "aciklama": "t",
@@ -90,27 +90,27 @@ class TestH51_Loglama(unittest.TestCase):
                                             "veri_sinifi": "sentetik",
                                             "butce_turu": "dogrusal"}}
         self.addCleanup(lambda: ARACLAR.pop("sahte_h5", None))
-        with self.assertLogs("suc_analizi", level="ERROR") as cm:
+        with self.assertLogs("sinama", level="ERROR") as cm:
             sunucu.isle({"method": "tools/call", "id": 1,
                          "params": {"name": "sahte_h5", "arguments": {}}})
         self.assertTrue(any("ARAÇ HATASI" in s for s in cm.output))
 
     def test_seviye_env_ile_ayarlanir(self):
-        from suc_analizi.arayuz.ortak import logger_kur
+        from sinama.arayuz.ortak import logger_kur
         import logging
-        eski = os.environ.get("SUC_ANALIZI_LOG_SEVIYE")
-        os.environ["SUC_ANALIZI_LOG_SEVIYE"] = "ERROR"
+        eski = os.environ.get("SINAMA_LOG_SEVIYE")
+        os.environ["SINAMA_LOG_SEVIYE"] = "ERROR"
         try:
             self.assertEqual(logger_kur().level, logging.ERROR)
         finally:
             if eski is None:
-                os.environ.pop("SUC_ANALIZI_LOG_SEVIYE", None)
+                os.environ.pop("SINAMA_LOG_SEVIYE", None)
             else:
-                os.environ["SUC_ANALIZI_LOG_SEVIYE"] = eski
+                os.environ["SINAMA_LOG_SEVIYE"] = eski
         logger_kur()  # varsayılan seviyeye geri
 
     def test_kurulum_idempotent(self):
-        from suc_analizi.arayuz.ortak import logger_kur
+        from sinama.arayuz.ortak import logger_kur
         logger_kur()
         n1 = len(logger_kur().handlers)
         logger_kur()
@@ -119,7 +119,7 @@ class TestH51_Loglama(unittest.TestCase):
 
 def _hedef_yolu(dosya, dugum):
     """Göreli importun hedef yolunu parça listesi olarak çözümler
-    (örn. ['suc_analizi', 'kalite', 'profil']); stdlib/dış paket → None."""
+    (örn. ['sinama', 'kalite', 'profil']); stdlib/dış paket → None."""
     parcalar = list(dosya.parent.relative_to(KOK).parts)
     seviye = dugum.level or 0
     if seviye == 0:
@@ -127,7 +127,7 @@ def _hedef_yolu(dosya, dugum):
     else:
         kok_parcalar = parcalar[:len(parcalar) - (seviye - 1)]
         hedef = kok_parcalar + (dugum.module or "").split(".")
-    if hedef[:1] == ["suc_analizi"] and len(hedef) > 1:
+    if hedef[:1] == ["sinama"] and len(hedef) > 1:
         return hedef
     return None
 
@@ -160,7 +160,7 @@ class TestKatmanIhlali(unittest.TestCase):
                     yol = None
                     for a in dugum.names:
                         hs = a.name.split(".")
-                        if hs[:1] == ["suc_analizi"] and len(hs) > 1:
+                        if hs[:1] == ["sinama"] and len(hs) > 1:
                             yol = hs
                 else:
                     continue

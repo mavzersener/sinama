@@ -29,6 +29,12 @@ taşınır ve her parçanın kaynağı buraya yazılır (ADR-001 md.2).
 |---|---|---|---|---|---|---|
 | 29.09.2026 | `cekirdek/` | `C:\Projects\suc_analizi` | `20d6e2c` | izlenen ağacın tamamı; hariç: `oturumlar/` (sentetik test oturumları), `.githooks/` (kanonik depoya özgü tüketici kapıları), `.gitattributes` (kök kapsıyor), `suc_analizi_audit.log` (izlenen boş log), `release.sh` (Kimi ortamına, `/mnt/agents/output`'a yazıyor) | 493 birim (1 atlama) + kapsam kapısı + `test_mcp.py` 132 kontrol + 2 demo — hepsi yeşil | 93 dosya; 92'si kaynak blob'larıyla birebir. `tests/test_faz_f.py`: 2 satıra yalnız `bekci:izin` yorumu (kural 7) |
 
+## Uyarlamalar (hasattan sonra, ayrı commit'lerle)
+
+| Tarih | Kapsam | Ne değişti | Doğrulama |
+|---|---|---|---|
+| 29.09.2026 | `cekirdek/` | paket `suc_analizi` → `sinama`, `SUC_ANALIZI_*` → `SINAMA_*`, dağıtım/komut/MCP adı `sinama`; CHANGELOG tarihçesi eski adla kaldı | 497 test (493 + 4 paket kimliği), kapsam kapısı aynı 23 modül / %93,7, test_mcp 132/0, demolar; paket kimliği testi mutasyonla sınandı |
+
 ## Kaynak depoların başları (29.09.2026)
 
 | Depo | Baş | Rol |

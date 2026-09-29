@@ -2,7 +2,7 @@
 """bolge_oran / ham_oran_karsilastir — nüfusa oranlı bölge analizi (R12)."""
 import unittest
 
-from suc_analizi.cekirdek import iliski
+from sinama.cekirdek import iliski
 
 
 class TestHamOranKarsilastir(unittest.TestCase):
@@ -34,16 +34,16 @@ class TestHamOranKarsilastir(unittest.TestCase):
 
 class TestBolgeOranArac(unittest.TestCase):
     def test_nufussuz_ham_sayi_uyarisi(self):
-        from suc_analizi.arayuz import araclar  # noqa: F401
-        from suc_analizi.arayuz.ortak import ARACLAR
+        from sinama.arayuz import araclar  # noqa: F401
+        from sinama.arayuz.ortak import ARACLAR
         rows = [{"grid_id": "G1"}] * 50 + [{"grid_id": "G2"}] * 10
         r = ARACLAR["bolge_oran"]["fn"]({"satirlar": rows, "bolge_alan": "grid_id"})
         self.assertIn("sayimlar", r)
         self.assertIn("R12", r["not"])
 
     def test_nufuslu_oran_karsilastirma(self):
-        from suc_analizi.arayuz import araclar  # noqa: F401
-        from suc_analizi.arayuz.ortak import ARACLAR
+        from sinama.arayuz import araclar  # noqa: F401
+        from sinama.arayuz.ortak import ARACLAR
         rows = ([{"grid_id": "A", "nufus": 100000}] * 100 +
                 [{"grid_id": "C", "nufus": 2000}] * 15)
         r = ARACLAR["bolge_oran"]["fn"]({"satirlar": rows, "bolge_alan": "grid_id",

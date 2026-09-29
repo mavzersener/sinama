@@ -18,7 +18,7 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from suc_analizi.surec import dongu, rapor, kanit
+from sinama.surec import dongu, rapor, kanit
 
 
 def _resmi_dongu():

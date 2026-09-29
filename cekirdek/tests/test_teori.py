@@ -2,7 +2,7 @@
 """teori.py — kriminolojik teori yorum katmanı testleri."""
 import unittest
 
-from suc_analizi.cekirdek import teori
+from sinama.cekirdek import teori
 
 
 class TestTeori(unittest.TestCase):

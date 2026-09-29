@@ -9,7 +9,7 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from suc_analizi.cekirdek import skor, degerlendirme
+from sinama.cekirdek import skor, degerlendirme
 
 
 class TestRiskSkoru(unittest.TestCase):

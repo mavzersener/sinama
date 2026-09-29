@@ -138,12 +138,12 @@ def main():
                                 rng.randint(500, 60000)])
 
             env = dict(os.environ)
-            env["SUC_ANALIZI_VERI_KOKU"] = VERI_DIR
-            env["SUC_ANALIZI_LOG_DIR"] = LOG_DIR
+            env["SINAMA_VERI_KOKU"] = VERI_DIR
+            env["SINAMA_LOG_DIR"] = LOG_DIR
 
             def baslat(kok=VERI_DIR, env_ek=None):
                 e = dict(env)
-                e["SUC_ANALIZI_VERI_KOKU"] = kok
+                e["SINAMA_VERI_KOKU"] = kok
                 if env_ek:
                     e.update(env_ek)
                 process = MCPProcess(e)
@@ -153,12 +153,12 @@ def main():
 
             # --- kök guard testleri (Faz 0.2) ---
             print("--- KÖK GUARD ---")
-            e = dict(env); del e["SUC_ANALIZI_VERI_KOKU"]
+            e = dict(env); del e["SINAMA_VERI_KOKU"]
             p0 = subprocess.run([sys.executable, 'mcp_sunucu.py'], capture_output=True,
                                 text=True, encoding="utf-8", env=e, cwd=BASE, timeout=10, input="")
-            check("env'siz başlatma reddedildi:", p0.returncode != 0 and "SUC_ANALIZI_VERI_KOKU ayarlanmalı" in p0.stderr)
+            check("env'siz başlatma reddedildi:", p0.returncode != 0 and "SINAMA_VERI_KOKU ayarlanmalı" in p0.stderr)
             p0b = subprocess.run([sys.executable, 'mcp_sunucu.py'], capture_output=True,
-                                 text=True, encoding="utf-8", env={**env, "SUC_ANALIZI_VERI_KOKU": "/"},
+                                 text=True, encoding="utf-8", env={**env, "SINAMA_VERI_KOKU": "/"},
                                  cwd=BASE, timeout=10, input="")
             check("kök='/' reddedildi:", p0b.returncode != 0 and "çok geniş" in p0b.stderr)
 
@@ -237,7 +237,7 @@ def main():
             satir = json.loads(r["content"][0]["text"])["sonuc"][0]
             check("beyaz liste:", set(satir.keys()) == {"id", "tur"})
             # 5) pii_mi token doğruluğu (birim mantığı)
-            from suc_analizi import sunucu
+            from sinama import sunucu
             check("'adet' PII sayılmıyor / 'magdur_ad' sayılıyor",
                   not sunucu.pii_mi("adet") and sunucu.pii_mi("magdur_ad"))
             # 6) şema doğrulama (Faz 1.2)
@@ -263,7 +263,7 @@ def main():
 
             p.close()
             # 9) audit logu (Faz 1.3)
-            audit_yol = os.path.join(LOG_DIR, "suc_analizi_audit.log")
+            audit_yol = os.path.join(LOG_DIR, "sinama_audit.log")
             with open(audit_yol, encoding='utf-8') as f:
                 satirlar = f.read().strip().split("\n")
             ornek = json.loads(satirlar[0])

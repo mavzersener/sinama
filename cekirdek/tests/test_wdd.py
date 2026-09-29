@@ -2,7 +2,7 @@
 """WDD testi (Weighted Displacement Difference) — degerlendirme.wdd_testi."""
 import unittest
 
-from suc_analizi.cekirdek import degerlendirme as d
+from sinama.cekirdek import degerlendirme as d
 
 
 class TestWDD(unittest.TestCase):

@@ -19,15 +19,15 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from suc_analizi import kalite, veri
-from suc_analizi.arayuz import ortak, sunucu as srv, sema as sema_mod
-from suc_analizi.cekirdek import ileri, zarar
+from sinama import kalite, veri
+from sinama.arayuz import ortak, sunucu as srv, sema as sema_mod
+from sinama.cekirdek import ileri, zarar
 
 
 class TestK15_YolHapsi(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.mkdtemp()
-        os.environ["SUC_ANALIZI_VERI_KOKU"] = self.tmp
+        os.environ["SINAMA_VERI_KOKU"] = self.tmp
         with open(os.path.join(self.tmp, "ok.csv"), "w") as f:
             f.write("a\n1\n")
 
@@ -50,7 +50,7 @@ class TestK15_YolHapsi(unittest.TestCase):
         self.assertTrue(yol.endswith("ag.json"))
 
     def tearDown(self):
-        os.environ.pop("SUC_ANALIZI_VERI_KOKU", None)
+        os.environ.pop("SINAMA_VERI_KOKU", None)
 
 
 class TestK16_Tavanlar(unittest.TestCase):
@@ -73,9 +73,9 @@ class TestK16_Tavanlar(unittest.TestCase):
             veri.MAKS_SATIR = eski
 
     def test_dosya_boyut_tavani(self):
-        from suc_analizi.kalite import guvenlik
+        from sinama.kalite import guvenlik
         tmp = tempfile.mkdtemp()
-        os.environ["SUC_ANALIZI_VERI_KOKU"] = tmp
+        os.environ["SINAMA_VERI_KOKU"] = tmp
         with open(os.path.join(tmp, "k.csv"), "w") as f:
             f.write("a\n1\n")
         eski = guvenlik.MAKS_DOSYA_MB
@@ -85,7 +85,7 @@ class TestK16_Tavanlar(unittest.TestCase):
                 veri.guvenli_yol("k.csv")
         finally:
             guvenlik.MAKS_DOSYA_MB = eski
-            os.environ.pop("SUC_ANALIZI_VERI_KOKU", None)
+            os.environ.pop("SINAMA_VERI_KOKU", None)
 
 
 class TestK17_AuditSozlesme(unittest.TestCase):
@@ -166,7 +166,7 @@ class TestK21_KurumAgirlikTablosu(unittest.TestCase):
 
     def setUp(self):
         self.tmp = tempfile.mkdtemp()
-        os.environ["SUC_ANALIZI_VERI_KOKU"] = self.tmp
+        os.environ["SINAMA_VERI_KOKU"] = self.tmp
         with open(os.path.join(self.tmp, "kurum.json"), "w") as f:
             json.dump({"hırsızlık": 250, "kapkaç": 500}, f)
 
@@ -176,7 +176,7 @@ class TestK21_KurumAgirlikTablosu(unittest.TestCase):
         self.assertEqual(agirliklar["hırsızlık"], 250)
 
     def test_agirlik_yolu_arac_uzerinden(self):
-        os.environ["SUC_ANALIZI_LOG_DIR"] = tempfile.mkdtemp()
+        os.environ["SINAMA_LOG_DIR"] = tempfile.mkdtemp()
         try:
             c = srv.isle({"jsonrpc": "2.0", "id": 1, "method": "tools/call",
                           "params": {"name": "zarar_hesapla",
@@ -187,10 +187,10 @@ class TestK21_KurumAgirlikTablosu(unittest.TestCase):
             sonuc = json.loads(c["result"]["content"][0]["text"])["sonuc"]
             self.assertEqual(sonuc["toplam_zarar"], 750)
         finally:
-            os.environ.pop("SUC_ANALIZI_LOG_DIR", None)
+            os.environ.pop("SINAMA_LOG_DIR", None)
 
     def tearDown(self):
-        os.environ.pop("SUC_ANALIZI_VERI_KOKU", None)
+        os.environ.pop("SINAMA_VERI_KOKU", None)
 
 
 # ---------------- DOKTRİN KAPSAM HARİTASI (meta-kanıt) ----------------

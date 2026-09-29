@@ -3,9 +3,9 @@ import copy
 import unittest
 from unittest.mock import patch
 
-from suc_analizi.arayuz import ortak, araclar
-from suc_analizi.cekirdek import regresyon, hipotez
-from suc_analizi.cekirdek.hatalar import VeriHatasi
+from sinama.arayuz import ortak, araclar
+from sinama.cekirdek import regresyon, hipotez
+from sinama.cekirdek.hatalar import VeriHatasi
 
 
 class TestRegresyon(unittest.TestCase):

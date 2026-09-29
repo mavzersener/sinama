@@ -8,7 +8,7 @@ demo2.py — Yeni modüllerin uçtan uca testi
 import random
 from datetime import datetime, timedelta
 
-from suc_analizi import (orneklem, iliski, olcek, degerlendirme,
+from sinama import (orneklem, iliski, olcek, degerlendirme,
                          ileri, ag, zaman, mekan)
 
 random.seed(7)

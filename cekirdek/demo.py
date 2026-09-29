@@ -7,7 +7,7 @@ demo.py — Sentetik veriyle tüm analizlerin uçtan uca testi.
 import random
 from datetime import datetime, timedelta
 
-from suc_analizi import (veri, istatistik, zaman, mekan, tekrar, ag,
+from sinama import (veri, istatistik, zaman, mekan, tekrar, ag,
                          kume, skor)
 
 random.seed(42)

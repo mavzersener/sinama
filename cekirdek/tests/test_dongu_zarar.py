@@ -8,7 +8,7 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from suc_analizi import zarar, dongu, rapor, mekan, veri
+from sinama import zarar, dongu, rapor, mekan, veri
 
 
 KAYIT = ([{"tur": "hırsızlık", "mahalle": "A", "lat": 41.0, "lon": 29.0}] * 50

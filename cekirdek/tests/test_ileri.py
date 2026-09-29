@@ -10,7 +10,7 @@ import random
 import unittest
 from datetime import datetime
 
-from suc_analizi.cekirdek import ileri
+from sinama.cekirdek import ileri
 
 
 class TestDonemselHotspot(unittest.TestCase):

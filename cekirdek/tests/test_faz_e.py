@@ -16,7 +16,7 @@ from datetime import datetime, timedelta
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from suc_analizi.cekirdek import ileri, iliski, mekan, tekrar, hipotez
+from sinama.cekirdek import ileri, iliski, mekan, tekrar, hipotez
 
 
 class TestE1_NegatifBinom(unittest.TestCase):

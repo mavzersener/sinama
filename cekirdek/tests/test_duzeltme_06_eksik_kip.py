@@ -11,8 +11,8 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from suc_analizi.arayuz import ortak, sunucu
-from suc_analizi.cekirdek.hatalar import KullanimHatasi
+from sinama.arayuz import ortak, sunucu
+from sinama.cekirdek.hatalar import KullanimHatasi
 
 SATIRLAR = [{"olay_id": f"E{i}", "tur": "a" if i % 2 else "b", "deger": float(i)}
             for i in range(1, 31)]
@@ -34,8 +34,8 @@ class TestEksikKip(unittest.TestCase):
     def setUp(self):
         tmp = tempfile.TemporaryDirectory()
         self.addCleanup(tmp.cleanup)
-        env = patch.dict(os.environ, SUC_ANALIZI_LOG_DIR=tmp.name,
-                         SUC_ANALIZI_VERI_KOKU=tmp.name)
+        env = patch.dict(os.environ, SINAMA_LOG_DIR=tmp.name,
+                         SINAMA_VERI_KOKU=tmp.name)
         env.start()
         self.addCleanup(env.stop)
 

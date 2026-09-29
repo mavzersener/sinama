@@ -214,7 +214,7 @@ python demo2.py    # kitap temelli + ileri analizler
 
 ## Mimari (v6.1 — katmanlı yapı)
 ```
-suc_analizi/
+sinama/
   cekirdek/   16 saf modül (istatistik + veri erişimi; dışa bağımlılık yok)
   kalite/     profil.py + kapi.py (TEK gate otoritesi) + guvenlik.py
   surec/      dongu.py (PPDAC durum makinesi) + rapor.py (ürünler)
@@ -225,7 +225,7 @@ Kurallar: gate mantığı yalnız `kalite/kapi.py`'de yazılır; uygulama tek
 noktada (`dispatch_gate`); araç katmanında gate kodu yoktur. Gate'li her
 analiz çağrısı — standalone bile — arka planda minimal keşif oturumu
 açar (G3): profil, kapı kararı ve adım izi manifestoya düşer. Eski düz
-import yolları (`from suc_analizi import mekan` vb.) korunur.
+import yolları (`from sinama import mekan` vb.) korunur.
 
 ## Güvenlik Notu
 Modüller ağ erişimi açmaz, dış servis çağırmaz. KVKK kapsamındaki
@@ -241,15 +241,15 @@ stdio transport üzerinde satır bazlı JSON-RPC 2.0 konuşur (protokol
 bir MCP uyumlu istemciyle çalışır.
 
 ### Kurulum
-1. Tüm .py dosyalarını aynı klasöre koyun (örn. /opt/suc_analizi/).
+1. Tüm .py dosyalarını aynı klasöre koyun (örn. /opt/sinama/).
 2. İstemci yapılandırmasına ekleyin (mcp_istemci_ornegi.json):
 
 ```json
 {
   "mcpServers": {
-    "suc-analizi": {
+    "sinama": {
       "command": "python",
-      "args": ["/opt/suc_analizi/mcp_sunucu.py"]
+      "args": ["/opt/sinama/mcp_sunucu.py"]
     }
   }
 }
@@ -292,7 +292,7 @@ Tarih alanı otomatik çözümlenir; lat/lon alan adları varsayılanı
 1. **KRİTİK — Keyfi dosya okuma (kapatıldı):** `csv_yolu` artık
    `veri.guvenli_yol` ile izinli köke kilitli (realpath + commonpath,
    ".." ve sembolik bağ kaçışları reddedilir). Kök:
-   `SUC_ANALIZI_VERI_KOKU` ortam değişkeni (yoksa çalışma dizini).
+   `SINAMA_VERI_KOKU` ortam değişkeni (yoksa çalışma dizini).
    Yalnızca .csv/.tsv/.txt; dosya boyutu ≤ 50 MB.
 2. **YÜKSEK — Traceback sızıntısı (kapatıldı):** beklenmedik hatalarda
    istemciye yalnızca "HATA: <Tip> — işlem başarısız" gider; traceback
@@ -303,9 +303,9 @@ Tarih alanı otomatik çözümlenir; lat/lon alan adları varsayılanı
    bulanik_eslesme) PII benzeri alanlar (ad, telefon, adres, kimlik…)
    varsayılan olarak düşülür; `alanlar` parametresiyle beyaz liste
    verilebilir.
-5. **YAPISAL — Gerçek paket:** modüller artık `suc_analizi` paketi
+5. **YAPISAL — Gerçek paket:** modüller artık `sinama` paketi
    (`__init__.py`, relative import). Dışarıdan
-   `from suc_analizi.mekan import haversine_km` çalışır; jenerik
+   `from sinama.mekan import haversine_km` çalışır; jenerik
    üst-düzey ad çakışması riski kalktı. `mcp_sunucu.py`, `demo*.py` ve
    `test_mcp.py` paketin DIŞINDA ince başlatıcıdır.
 6. **SAYISAL:** Poisson üst kuyruğu log-uzayında (λ>745 underflow
@@ -317,7 +317,7 @@ Tarih alanı otomatik çözümlenir; lat/lon alan adları varsayılanı
 ### Dizin yapısı
 ```
 suc_paket/
-├── suc_analizi/          # paket (13 modül + __init__.py)
+├── sinama/          # paket (13 modül + __init__.py)
 ├── mcp_sunucu.py         # MCP stdio sunucusu (paketi kullanır)
 ├── demo.py, demo2.py     # uçtan uca örnekler
 ├── test_mcp.py           # işlev + GÜVENLİK testleri
@@ -327,7 +327,7 @@ suc_paket/
 
 ### Güvenli çalıştırma
 ```bash
-SUC_ANALIZI_VERI_KOKU=/opt/suc_veri python mcp_sunucu.py
+SINAMA_VERI_KOKU=/opt/suc_veri python mcp_sunucu.py
 ```
 İstemci bu kökün dışındaki hiçbir dosyayı okutamaz (test_mcp.py'de
 kök dışı mutlak yol, ".." kaçışı ve uzantı ihlali testleri dahildir).
@@ -370,10 +370,10 @@ yerel projeksiyona çevirip öyle besleyin.
 
 ### Kurulum (offline / air-gap)
 ```bash
-pip install --no-index dist/suc_analizi-5.0.0-py3-none-any.whl
-SUC_ANALIZI_VERI_KOKU=/opt/suc_veri suc-analizi-mcp
+pip install --no-index dist/sinama-5.0.0-py3-none-any.whl
+SINAMA_VERI_KOKU=/opt/suc_veri sinama-mcp
 # veya paket dizininden:
-SUC_ANALIZI_VERI_KOKU=/opt/suc_veri python -m suc_analizi
+SINAMA_VERI_KOKU=/opt/suc_veri python -m sinama
 ```
 
 ### Test katmanları
@@ -465,7 +465,7 @@ istemci sürümü uyarıyla devam eder. 198 birim test.
 
 ## v6.7 — Olgunlaştırma (H5 loglama/doküman + H4-u katman yönü)
 
-Seviyeli loglama (stdlib logging, SUC_ANALIZI_LOG_SEVIYE; audit
+Seviyeli loglama (stdlib logging, SINAMA_LOG_SEVIYE; audit
 bağımsız). Doküman standardı: public docstring %100, birimli
 parametreler belgeli, genel %89.4 (DOKTRIN 25). Katman bağımlılık yönü
 AST taramasıyla yapısal (DOKTRIN 24) — cekirdek/veri.py'nin ters

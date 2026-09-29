@@ -4,8 +4,8 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from suc_analizi.cekirdek.hatalar import GuvenlikHatasi
-from suc_analizi.surec import dongu, kanit
+from sinama.cekirdek.hatalar import GuvenlikHatasi
+from sinama.surec import dongu, kanit
 
 
 class TestOturumYolu(unittest.TestCase):

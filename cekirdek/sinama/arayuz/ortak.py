@@ -43,10 +43,10 @@ def logger_kur():
     """
     H5.1 (v6.7): paket loglayıcısı — stdlib logging, seviyeli, modül
     etiketli. stderr'e yazar (stdout yalnız JSON-RPC içindir). Seviye
-    SUC_ANALIZI_LOG_SEVIYE ile ayarlanır (varsayılan INFO). Audit akışı
+    SINAMA_LOG_SEVIYE ile ayarlanır (varsayılan INFO). Audit akışı
     bundan BAĞIMSIZDIR ve ayrı kalır (kanıt niteliği taşır).
     """
-    lg = logging.getLogger("suc_analizi")
+    lg = logging.getLogger("sinama")
     if not lg.handlers:
         h = logging.StreamHandler()
         h.setFormatter(logging.Formatter(
@@ -54,7 +54,7 @@ def logger_kur():
             datefmt="%Y-%m-%d %H:%M:%S"))
         lg.addHandler(h)
         lg.propagate = False
-    lg.setLevel(os.environ.get("SUC_ANALIZI_LOG_SEVIYE", "INFO").upper())
+    lg.setLevel(os.environ.get("SINAMA_LOG_SEVIYE", "INFO").upper())
     return lg
 
 
@@ -68,13 +68,13 @@ def log(*a, seviye="INFO"):
 
 def audit_kur():
     """Dönen rotasyonlu audit logu; yalnız meta veri, asla argüman değeri yok."""
-    log_dizin = os.environ.get("SUC_ANALIZI_LOG_DIR") or os.getcwd()
+    log_dizin = os.environ.get("SINAMA_LOG_DIR") or os.getcwd()
     os.makedirs(log_dizin, exist_ok=True)
-    yol = os.path.join(log_dizin, "suc_analizi_audit.log")
+    yol = os.path.join(log_dizin, "sinama_audit.log")
     h = logging.handlers.RotatingFileHandler(
         yol, maxBytes=5 * 1024 * 1024, backupCount=3, encoding="utf-8")
     h.setFormatter(logging.Formatter("%(message)s"))
-    lg = logging.getLogger("suc_analizi_audit")
+    lg = logging.getLogger("sinama_audit")
     lg.setLevel(logging.INFO)
     if not lg.handlers:
         lg.addHandler(h)
@@ -399,7 +399,7 @@ SEMA_REG = sema({"X": {"type": "array", "minItems": 1,
 
 
 def _log_dir():
-    return os.environ.get("SUC_ANALIZI_LOG_DIR") or os.getcwd()
+    return os.environ.get("SINAMA_LOG_DIR") or os.getcwd()
 
 
 def _profil_kayit(a, sayisal_alan=None):

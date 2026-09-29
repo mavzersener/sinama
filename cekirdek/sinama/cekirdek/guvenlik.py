@@ -19,7 +19,7 @@ MAKS_DOSYA_MB = 50
 
 def veri_koku():
     """İzinli kök dizin: ortam değişkeni, yoksa çalışma dizini."""
-    return os.path.realpath(os.environ.get("SUC_ANALIZI_VERI_KOKU") or os.getcwd())
+    return os.path.realpath(os.environ.get("SINAMA_VERI_KOKU") or os.getcwd())
 
 
 def guvenli_yol(yol, kok=None, izinli_uzantilar=None):

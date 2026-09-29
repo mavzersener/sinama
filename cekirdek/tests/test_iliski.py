@@ -7,7 +7,7 @@ Hedef: lambda_, gamma_, capraz_ki_kare, suc_orani.
 
 import unittest
 
-from suc_analizi.cekirdek import iliski
+from sinama.cekirdek import iliski
 
 
 def _kayitlar():

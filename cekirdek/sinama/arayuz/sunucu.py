@@ -239,7 +239,7 @@ def _isle(mesaj):
         # bilinmeyen istemci sürümü reddedilmez, uyarıyla devam edilir
         sonuc = {"protocolVersion": PROTOKOL,
                  "capabilities": {"tools": {}},
-                 "serverInfo": {"name": "suc-analizi", "version": SURUM},
+                 "serverInfo": {"name": "sinama", "version": SURUM},
                  "desteklenenProtokoller": DESTEKLENEN_PROTOKOLLER}
         istemci_v = (params or {}).get("protocolVersion")
         if istemci_v and istemci_v not in DESTEKLENEN_PROTOKOLLER:
@@ -307,8 +307,8 @@ def _isle(mesaj):
 
 def dogrula_kok():
     """Faz 0.2: kök doğrulama guard'ı — güvensiz yapılandırmada başlama."""
-    if not os.environ.get("SUC_ANALIZI_VERI_KOKU"):
-        sys.exit("HATA: SUC_ANALIZI_VERI_KOKU ayarlanmalı "
+    if not os.environ.get("SINAMA_VERI_KOKU"):
+        sys.exit("HATA: SINAMA_VERI_KOKU ayarlanmalı "
                  "(özel, dar kapsamlı veri dizini).")
     kok = veri.veri_koku()
     ev = os.path.realpath(os.path.expanduser("~"))
@@ -334,14 +334,14 @@ def main():
     logger_kur()  # H5.1: seviyeli loglama açılışta kurulur
     kok = dogrula_kok()
     ortak.AUDIT = audit_kur()
-    log(f"suc-analizi MCP sunucusu v{SURUM} — {len(ARACLAR)} araç | "
+    log(f"sinama MCP sunucusu v{SURUM} — {len(ARACLAR)} araç | "
         f"veri kökü: {kok} | oturum: {OTURUM}")
     try:
-        tavan = int(os.environ.get('SUC_ANALIZI_MAKS_ISTEK_BYTE', 8 * 1024 * 1024))
+        tavan = int(os.environ.get('SINAMA_MAKS_ISTEK_BYTE', 8 * 1024 * 1024))
         if tavan <= 0:
             raise ValueError
     except ValueError:
-        sys.exit('HATA: SUC_ANALIZI_MAKS_ISTEK_BYTE pozitif tamsayı olmalı')
+        sys.exit('HATA: SINAMA_MAKS_ISTEK_BYTE pozitif tamsayı olmalı')
     for satir in _sinirli_satirlar(sys.stdin.buffer, tavan):
         mesaj = None
         try:

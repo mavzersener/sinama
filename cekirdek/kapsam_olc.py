@@ -21,7 +21,7 @@ import unittest
 import tempfile
 
 
-def olc(hedef_paket="suc_analizi/cekirdek", coverdir=None):
+def olc(hedef_paket="sinama/cekirdek", coverdir=None):
     """Test raporu ve unittest sonucu döner; her ölçüm ayrı dizindedir.
 
     coverdir verilirse altında benzersiz rapor dizini tutulur. Varsayılan

@@ -68,11 +68,11 @@ with patch('subprocess.Popen', side_effect=AssertionError('process')), \
     def test_kapsam_basari_esik_alti_ve_bos_rapor(self):
         with tempfile.TemporaryDirectory() as tmp:
             taban = Path(tmp) / "taban.json"
-            taban.write_text('{"suc_analizi/cekirdek/a.py": 80}', encoding="utf-8")
+            taban.write_text('{"sinama/cekirdek/a.py": 80}', encoding="utf-8")
             result = mock.Mock()
             result.wasSuccessful.return_value = True
-            for report, expected in (({"suc_analizi/cekirdek/a.py": (9, 1)}, 0),
-                                     ({"suc_analizi/cekirdek/a.py": (7, 3)}, 1), ({}, 1)):
+            for report, expected in (({"sinama/cekirdek/a.py": (9, 1)}, 0),
+                                     ({"sinama/cekirdek/a.py": (7, 3)}, 1), ({}, 1)):
                 with self.subTest(report=report), redirect_stdout(io.StringIO()), \
                      mock.patch.object(kapsam_olc, "TABAN_DOSYA", str(taban)), \
                      mock.patch.object(kapsam_olc, "olc", return_value=(report, result)):
@@ -147,7 +147,7 @@ import test_mcp as m
 original_check, original_process = m.check, m.MCPProcess
 processes, roots = [], []
 def create(env):
-    roots.append(os.path.dirname(env['SUC_ANALIZI_LOG_DIR']))
+    roots.append(os.path.dirname(env['SINAMA_LOG_DIR']))
     p = original_process(env)
     processes.append(p)
     return p
@@ -186,7 +186,7 @@ finally:
              mock.patch.object(kapsam_olc.unittest, "TextTestRunner") as runner:
             loader.return_value.loadTestsFromName.return_value = unittest.TestSuite()
             runner.return_value.run.return_value = result
-            report, actual = kapsam_olc._olc_dizinde("suc_analizi/cekirdek", tmp)
+            report, actual = kapsam_olc._olc_dizinde("sinama/cekirdek", tmp)
         self.assertIs(actual, result)
         self.assertFalse(actual.wasSuccessful())
         self.assertEqual(report, {})

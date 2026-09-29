@@ -2,7 +2,7 @@
 """oneri.py — karar ağacı öneri motoru testleri."""
 import unittest
 
-from suc_analizi.cekirdek import oneri
+from sinama.cekirdek import oneri
 
 
 def _koord_veri(n=60):

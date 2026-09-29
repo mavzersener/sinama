@@ -20,18 +20,18 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 TMP_VERI = tempfile.mkdtemp()
 TMP_LOG = tempfile.mkdtemp()
-os.environ["SUC_ANALIZI_VERI_KOKU"] = TMP_VERI
-os.environ["SUC_ANALIZI_LOG_DIR"] = TMP_LOG
+os.environ["SINAMA_VERI_KOKU"] = TMP_VERI
+os.environ["SINAMA_LOG_DIR"] = TMP_LOG
 
-from suc_analizi.arayuz import sunucu            # noqa: E402
-from suc_analizi.arayuz.ortak import ARACLAR     # noqa: E402
+from sinama.arayuz import sunucu            # noqa: E402
+from sinama.arayuz.ortak import ARACLAR     # noqa: E402
 
 
 def _ortami_kur():
     """setUpClass çağırır — başka testlerin tearDown'u ortam değişkenini
     kaldırırsa (import sırası kırılgandır) tekrar kurar."""
-    os.environ["SUC_ANALIZI_VERI_KOKU"] = TMP_VERI
-    os.environ["SUC_ANALIZI_LOG_DIR"] = TMP_LOG
+    os.environ["SINAMA_VERI_KOKU"] = TMP_VERI
+    os.environ["SINAMA_LOG_DIR"] = TMP_LOG
 
 
 def _kayitlar(n=120, gun=45):

@@ -9,7 +9,7 @@ import tempfile
 import unittest
 from datetime import datetime
 
-from suc_analizi.cekirdek import kume, olcek, veri
+from sinama.cekirdek import kume, olcek, veri
 
 
 class TestCarpisma(unittest.TestCase):

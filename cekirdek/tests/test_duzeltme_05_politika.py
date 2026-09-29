@@ -3,10 +3,10 @@
 
 import unittest
 
-from suc_analizi.arayuz import araclar  # noqa: F401 - kayıt yan etkisi
-from suc_analizi.arayuz import ortak
-from suc_analizi.arayuz.ortak import ARACLAR
-from suc_analizi.cekirdek.hatalar import KullanimHatasi
+from sinama.arayuz import araclar  # noqa: F401 - kayıt yan etkisi
+from sinama.arayuz import ortak
+from sinama.arayuz.ortak import ARACLAR
+from sinama.cekirdek.hatalar import KullanimHatasi
 
 
 class AracPolitikasiTesti(unittest.TestCase):

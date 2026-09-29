@@ -16,8 +16,8 @@ KOK = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 class TestSurumTutarliligi(unittest.TestCase):
     def test_dort_kaynak_tek_gercek(self):
-        from suc_analizi import __version__ as v1
-        from suc_analizi.arayuz.ortak import SURUM as v2
+        from sinama import __version__ as v1
+        from sinama.arayuz.ortak import SURUM as v2
         with open(os.path.join(KOK, "pyproject.toml"),
                   encoding="utf-8") as f:
             v3 = re.search(r'^version\s*=\s*"([^"]+)"', f.read(),

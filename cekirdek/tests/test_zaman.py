@@ -12,7 +12,7 @@ from datetime import datetime
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from suc_analizi.cekirdek import zaman
+from sinama.cekirdek import zaman
 
 
 def K(gun, saat=12, dakika=0, ay=7):

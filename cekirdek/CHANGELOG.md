@@ -2,6 +2,21 @@
 
 ## [Yayımlanmamış]
 
+### Sınama'ya hasat ve yeni ad: `suc_analizi` → `sinama` (A2, 29.09.2026)
+Bu çekirdek `C:\Projects\suc_analizi` @ `20d6e2c`'den birebir hasat edildi
+(ADR-001, HASAT.md). Kanonik paket bu makinenin üç ortamına editable kurulu
+olduğu için aynı ad, dizine göre değişen gölgeleme yaratıyordu; ad değişti:
+- paket `suc_analizi` → `sinama`; dağıtım `suc-analizi` → `sinama`;
+  komut `suc-analizi-mcp` → `sinama-mcp`; MCP `serverInfo.name` → `sinama`;
+- ortam değişkenleri `SUC_ANALIZI_*` → `SINAMA_*` (`VERI_KOKU`, `LOG_DIR`,
+  `LOG_SEVIYE`, `MAKS_ISTEK_BYTE`); eski adlar OKUNMAZ (bu programın eski
+  kullanıcısı yok; kanonik depo kendi adlarıyla yaşamaya devam eder);
+- audit dosyası `suc_analizi_audit.log` → `sinama_audit.log`.
+Bu dosyanın aşağıdaki tarihsel kayıtları eski adla bırakıldı.
+Test: `tests/test_paket_kimligi.py` (4) — `sinama` bu ağaçtan gelir; kanonik
+`suc_analizi` hiçbir yoldan yüklenmez (mutasyonla doğrulandı); alt süreçler
+aynı ağacı görür; kurulu başka bir `sinama` kopyası gölgeleyemez.
+
 ### Gömülü kullanım sözleşmesi: `sunucu.arac_calistir(ad, arg)`
 MCP dışındaki çağıranların (DataFlow ml-service köprüsü, dışa aktarılan
 Python betikleri) TEK kamusal girişi. İstek bağlamını kendisi kurar;

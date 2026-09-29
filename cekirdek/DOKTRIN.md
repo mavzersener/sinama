@@ -1,6 +1,6 @@
 # Suç Analisti Agent Doktrini (system prompt eki)
 
-Bu kurallar, suc_analizi MCP sunucusunu kullanan her agent için ZORUNLUDUR.
+Bu kurallar, sinama MCP sunucusunu kullanan her agent için ZORUNLUDUR.
 Kod kapıyı tutar; model kapının kararına göre uygun analizi seçip yorumlar.
 
 ## Kapı kuralları

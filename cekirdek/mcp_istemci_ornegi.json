@@ -1,12 +1,12 @@
 {
   "mcpServers": {
-    "suc-analizi": {
+    "sinama": {
       "command": "python",
       "args": [
         "/opt/suc_paket/mcp_sunucu.py"
       ],
       "env": {
-        "SUC_ANALIZI_VERI_KOKU": "/opt/suc_veri"
+        "SINAMA_VERI_KOKU": "/opt/suc_veri"
       }
     }
   }

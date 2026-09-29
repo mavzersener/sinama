@@ -222,6 +222,12 @@ ARAC_UYARILARI = {
     "brifing_uret": ["belirsizlik notu zorunludur; ürün sınırlarını beyan "
                       "etmeden çıkamaz"],
     "risk_arazi": ["RTM risk faktörü türlerini sayar; çıktı olasılık değildir"],
+    # A4.5 — LISA çoklu test düzeltmeli; güç sınırı BMK v1 K4.1'de ölçüldü.
+    "yerel_kumeleme": ["karar çoklu test düzeltmelidir (FDR); kompakt tek hücrelik "
+                       "yoğunlaşmayı güvenilir yakalamaz — sıcak nokta sorusu için "
+                       "sicak_nokta_gi kullanın",
+                       "coklu_test.duzeltmesiz_anlamli kanıt değildir, yalnız keşif "
+                       "ipucudur"],
     # A4.2 — kişi/kayıt bağlantısı sınıfı: benzerlik ya da bağlantı KİMLİK değildir.
     "seri_eslestirme": ["dönen çiftler SERİ ADAYIDIR (inceleme hipotezi): MO "
                         "benzerliği aynı fail ya da kimlik anlamına gelmez; insan "

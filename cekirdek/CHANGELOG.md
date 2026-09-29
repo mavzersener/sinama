@@ -2,6 +2,27 @@
 
 ## [Yayımlanmamış]
 
+### LISA ve bölge anomalisi çoklu test düzeltmesi (A4.5, BİLİMSEL DOĞRULUK)
+BMK v1: LISA rastgele desenlerin %80'inde sahte küme/aykırı değer (K4.2);
+bölge anomalisi 50 homojen bölgede %40 sahte "anlamlı" (K6.2) — ikisinde de
+karar birim başına düzeltmesiz p ile veriliyordu (Gi*'nin A4.1 öncesi kusuru).
+- `yerel_moran`: karar permütasyon p'leri üzerinden Benjamini–Hochberg
+  (q ≤ 0,05); hücre başına `q`; `coklu_test` özeti (test sayısı, permütasyon,
+  düzeltmesiz anlamlı sayısı).
+- `bolge_anomali`: "anlamli" kararı q ≤ alfa; alfa artık FDR düzeyi
+  (varsayılan 0,01 → 0,05; hiçbir çağıran vermiyordu).
+- `yerel_kumeleme` uyarısı: kompakt sıcak nokta için `sicak_nokta_gi`;
+  düzeltmesiz sayı kanıt değil.
+- BMK v1: K4.2 0,80 → 0,03; K6.2 0,40 → 0,07; K6.1 0,97'de kaldı.
+  **Bedel: K4.1 LISA gücü 1,00 → 0,47** (öngörü yanlış çıktı; keşif:
+  `kiyas/kesif/a45_lisa_guc.py` — yöntem sınırı, çözünürlük değil). Karar ve
+  gerekçesi `kiyas/v1/sonuclar/ilerleme.md`.
+Testler: eski iki LISA testi (2x2 köşe kümesi, tek ada; 2–4 komşu) düzeltmesiz
+kararı kodluyordu — senaryolar FDR altında tespit edilebilir yapıldı; kaybolan
+küçük küme ödünleşim testiyle belgelendi (yerelde yok, düzeltmesiz sayıda ve
+global Moran'da var); rastgele desende sahte küme yok testi; anomalide q kararı
+testi. Düzeltmenin kaldırılması/zayıflatılması mutasyonları yakalandı.
+
 ### Seri ADAYI eşleştirme: taban oranı + uzay-zaman (A4.2, BİLİMSEL DOĞRULUK)
 BMK v0 (K3.2–K3.4): düz Jaccard, çok yaygın bir MO ifadesini paylaşan
 BAĞIMSIZ olayları seri sayıyordu (kesinlik %5; bağımsız faillerin 190

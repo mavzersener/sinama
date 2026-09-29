@@ -145,6 +145,17 @@ class TestK19_FDR_Otomatik(unittest.TestCase):
         qs = [t["q"] for t in s["tum_sonuclar"]]
         self.assertEqual(qs, sorted(qs))
 
+    def test_anlamli_karari_q_ile(self):
+        # A4.5 (BMK v1 K6.2): 50 bölgede tek sınırda sapma. Düzeltmesiz
+        # p ≤ 0,01 onu "anlamlı" sayardı; çoklu testte (q) elenmeli.
+        sayim = {f"b{i:02d}": 20 for i in range(49)}
+        sayim["b49"] = 33
+        s = ileri.bolge_anomali(sayim)
+        b49 = next(t for t in s["tum_sonuclar"] if t["bolge"] == "b49")
+        self.assertLess(b49["p"], 0.01)
+        self.assertGreater(b49["q"], 0.05)
+        self.assertEqual(s["anlamli"], [])
+
 
 class TestK20_NominalRed(unittest.TestCase):
     def test_nominal_alan_kapi_reddi(self):

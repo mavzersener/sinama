@@ -123,11 +123,14 @@ def neg_binom_ust_kuyruk(gozlenen, beklenen, varyans):
     return _betainc(1.0 - p, k, r)
 
 
-def bolge_anomali(bolge_sayilari, beklenenler=None, alfa=0.01):
+def bolge_anomali(bolge_sayilari, beklenenler=None, alfa=0.05):
     """
     {'bolge': olay_sayisi} sözlüğü için anomali testi.
     beklenenler verilmezse genel ortalama kullanılır.
     Çıktıya BH-FDR q-değerleri eklenir (K10).
+    A4.5: 'anlamli' KARARI q ≤ alfa ile verilir (alfa = FDR düzeyi, varsayılan
+    0,05). Önceden düzeltmesiz p ≤ 0,01 idi: BMK v1 K6.2 — 50 homojen bölgede
+    %40 sahte "anlamlı" (q hesaplanıyor ama karar onunla verilmiyordu).
     v6.3 (Faz E1): aşırı yayılım (var/mean > 1.5) saptandığında p-değerleri
     otomatik olarak NEGATİF BİNOM modelinden hesaplanır — naif Poisson'un
     yanlış-pozitif üretmesi yapısal olarak engellenir (model alanına bakın).
@@ -183,7 +186,7 @@ def bolge_anomali(bolge_sayilari, beklenenler=None, alfa=0.01):
     if len(degerler) > 10:
         notlar.append(f"{len(degerler)} bölge tek tek test edildi; "
                       "çoklu karşılaştırma için q (FDR) kullanın")
-    sonuc = [x for x in tum if x["p"] <= alfa]
+    sonuc = [x for x in tum if x["q"] <= alfa]
     sonuc.sort(key=lambda x: x["p"])
     return {"anlamli": sonuc, "tum_sonuclar": sorted(tum, key=lambda x: x["p"]),
             "notlar": notlar, "model": "neg-binom" if nb_kullan else "poisson",

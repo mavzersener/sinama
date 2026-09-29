@@ -39,28 +39,25 @@
       "olcutler": [
         {
           "kimlik": "K4.1",
-          "deger": 1.0,
+          "deger": 0.4667,
           "yon": ">=",
           "esik": 0.9,
-          "gecti": true,
+          "gecti": false,
           "ongoru": null
         },
         {
           "kimlik": "K4.2",
-          "deger": 0.8,
+          "deger": 0.0333,
           "yon": "<=",
           "esik": 0.1,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir: hücre başına düzeltmesiz p<0,05 (Gi*'deki A4.1 öncesi kusurun aynısı); elle yazılmış 20 hücrelik küçük girdide bile 2 'anlamlı' LL verdi (29.09.2026)"
         }
       ],
       "ek_olcumler": {
-        "csr_ortalama_anlamli_hucre": 2.0667,
+        "csr_ortalama_anlamli_hucre": 0.0333,
         "csr_tur_dagilimi": {
-          "LL": 13,
-          "HH": 21,
-          "HL": 15,
-          "LH": 13
+          "LH": 1
         }
       }
     },
@@ -110,15 +107,15 @@
         },
         {
           "kimlik": "K6.2",
-          "deger": 0.4,
+          "deger": 0.0667,
           "yon": "<=",
           "esik": 0.1,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir: 'anlamli' listesi düzeltmesiz p ≤ 0,01 ile kuruluyor; q (FDR) hesaplanıyor ama karar onunla verilmiyor; 50 testte en az bir yanlış alarm olasılığı ≈ %40 (kod incelemesi, 29.09.2026)"
         }
       ],
       "ek_olcumler": {
-        "homojen_ortalama_anlamli_bolge": 0.4333
+        "homojen_ortalama_anlamli_bolge": 0.0667
       }
     },
     {

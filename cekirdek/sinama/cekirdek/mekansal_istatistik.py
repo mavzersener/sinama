@@ -203,7 +203,7 @@ def getis_ord(hucreler: List[Dict[str, Any]], bant_km: Optional[float] = None,
 
 def yerel_moran(hucreler: List[Dict[str, Any]], bant_km: Optional[float] = None,
                 deger_alan: str = "adet", permutasyon: int = 999,
-                seed: int = 42) -> Dict[str, Any]:
+                seed: int = 42, q_esik: float = GI_FDR_Q) -> Dict[str, Any]:
     """Local Moran's I (LISA, Anselin 1995): sıcak/soğuk kümeyi mekânsal
     AYKIRI DEĞERDEN ayırır. Getis-Ord "nerede yüksek" der; LISA ayrıca
     "yüksek ama çevresi düşük" (aykırı) hücreleri işaretler.
@@ -212,8 +212,12 @@ def yerel_moran(hucreler: List[Dict[str, Any]], bant_km: Optional[float] = None,
       HH yüksek-yüksek (sıcak küme), LL düşük-düşük (soğuk küme),
       HL yüksek-düşük (aykırı: yüksek ada), LH düşük-yüksek (aykırı: düşük ada).
     Anlamlılık koşullu permütasyonla (GeoDa/PySAL yöntemi); seed sabit →
-    determinist (golden test dostu).
-    Returns: {sonuclar:[{lat,lon,adet,Ii,p,kumeleme}], ozet:{...}, n, bant_km}.
+    determinist (golden test dostu). KARAR ('kumeleme') ÇOKLU TEST DÜZELTMELİDİR
+    (A4.5, BMK v1 K4.2: rastgele desenlerin %80'inde sahte küme/aykırı değer —
+    hücre başına düzeltmesiz p<0,05 idi): permütasyon p-değerleri üzerinden
+    Benjamini–Hochberg q ≤ q_esik. 999 permütasyonla en küçük p = 0,001.
+    Returns: {sonuclar:[{lat,lon,adet,Ii,p,q,kumeleme}], ozet:{...}, coklu_test,
+              n, bant_km}.
     """
     n = len(hucreler)
     if n < 3:
@@ -229,13 +233,14 @@ def yerel_moran(hucreler: List[Dict[str, Any]], bant_km: Optional[float] = None,
     rng = random.Random(seed)
     sonuclar = []
     ozet = {"HH": 0, "LL": 0, "HL": 0, "LH": 0, "anlamsız": 0, "izole": 0}
+    adaylar = []   # (sonuclar indeksi, p, çeyrek türü) — karar tüm p'lerden sonra
     for i in range(n):
         k = len(komsu[i])
         if k == 0:
             sonuclar.append({"lat": round(hucreler[i]["lat"], 6),
                              "lon": round(hucreler[i]["lon"], 6),
                              "adet": hucreler[i].get(deger_alan),
-                             "Ii": 0.0, "p": None, "kumeleme": "izole"})
+                             "Ii": 0.0, "p": None, "q": None, "kumeleme": "izole"})
             ozet["izole"] += 1
             continue
         # satır-standart ağırlık (komşu ortalaması): lag = Σ w_ij sapma_j
@@ -250,27 +255,36 @@ def yerel_moran(hucreler: List[Dict[str, Any]], bant_km: Optional[float] = None,
             if abs(Ii_sim) >= abs(Ii):
                 asiri += 1
         p = round((asiri + 1) / (permutasyon + 1), 4)
-        if p < 0.05:
-            if sapma[i] > 0 and lag > 0:
-                kume = "HH"
-            elif sapma[i] < 0 and lag < 0:
-                kume = "LL"
-            elif sapma[i] > 0 and lag < 0:
-                kume = "HL"
-            else:
-                kume = "LH"
+        if sapma[i] > 0 and lag > 0:
+            cyrek = "HH"
+        elif sapma[i] < 0 and lag < 0:
+            cyrek = "LL"
+        elif sapma[i] > 0 and lag < 0:
+            cyrek = "HL"
         else:
-            kume = "anlamsız"
-        ozet[kume] += 1
+            cyrek = "LH"
+        adaylar.append((len(sonuclar), p, cyrek))
         sonuclar.append({"lat": round(hucreler[i]["lat"], 6),
                          "lon": round(hucreler[i]["lon"], 6),
                          "adet": hucreler[i].get(deger_alan),
-                         "Ii": round(Ii, 4), "p": p, "kumeleme": kume})
+                         "Ii": round(Ii, 4), "p": p, "q": None, "kumeleme": None})
+    qs = fdr_benjamini_hochberg([p for _, p, _ in adaylar])
+    duzeltmesiz = 0
+    for (idx, p, cyrek), q in zip(adaylar, qs):
+        duzeltmesiz += p < 0.05
+        kume = cyrek if q <= q_esik else "anlamsız"
+        sonuclar[idx]["q"] = q
+        sonuclar[idx]["kumeleme"] = kume
+        ozet[kume] += 1
     sonuclar.sort(key=lambda s: (s["kumeleme"] == "anlamsız", -(s["Ii"] or 0)))
-    return {"sonuclar": sonuclar, "ozet": ozet, "n": n,
-            "bant_km": round(bant, 4),
+    return {"sonuclar": sonuclar, "ozet": ozet,
+            "coklu_test": {"yontem": "Benjamini-Hochberg FDR", "q_esik": q_esik,
+                           "test_sayisi": len(adaylar), "permutasyon": permutasyon,
+                           "duzeltmesiz_anlamli": duzeltmesiz},
+            "n": n, "bant_km": round(bant, 4),
             "not": ("HL/LH mekânsal aykırı değerdir (çevresinden farklı ada); "
-                    "HH/LL kümedir. Anlamlılık koşullu permütasyonla (seed sabit).")}
+                    "HH/LL kümedir. Anlamlılık koşullu permütasyonla (seed sabit); "
+                    "karar çoklu test düzeltmelidir (FDR, q).")}
 
 
 def merkezsel(noktalar: List[tuple], agirliklar: Optional[List[float]] = None) -> Dict[str, Any]:

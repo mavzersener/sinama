@@ -86,22 +86,45 @@ class TestGetisOrd(unittest.TestCase):
 
 
 class TestYerelMoran(unittest.TestCase):
-    def test_kose_kumesi_HH(self):
-        h = _grid(lambda i, j: 20 if (i < 2 and j < 2) else 1)
-        r = mi.yerel_moran(h, bant_km=2.5)
+    # A4.5: karar Benjamini–Hochberg FDR ile verilir (BMK v1 K4.2: düzeltmesiz
+    # p<0,05 rastgele desenlerin %80'inde sahte küme/aykırı değer üretiyordu).
+    # Eski iki test (2x2 köşe kümesi ve tek ada, 2–4 komşu) düzeltmesiz kararı
+    # kodluyordu: az komşuda koşullu permütasyonun en uç p'si kombinatorik
+    # olarak ~0,005'tir ve 36 testte FDR'yi geçemez. Senaryolar FDR altında
+    # tespit edilebilir hâle getirildi; kaybolan küçük küme ödünleşim testinde.
+    def test_yogun_komsulukta_kume_HH(self):
+        h = _grid(lambda i, j: 20 if (2 <= i <= 4 and 2 <= j <= 4) else 1, boyut=7)
+        r = mi.yerel_moran(h, bant_km=3.0)          # iç hücrelerde 8 komşu
         self.assertGreater(r["ozet"]["HH"], 0)
         hh = [s for s in r["sonuclar"] if s["kumeleme"] == "HH"]
         self.assertTrue(all(s["adet"] == 20 for s in hh))
+        self.assertTrue(all(s["q"] <= r["coklu_test"]["q_esik"] for s in hh))
 
-    def test_heterojen_ada_aykiri_uretir(self):
-        import random
-        rng = random.Random(7)
-        h = [{"lat": 39.0 + i * 0.02, "lon": 32.0 + j * 0.02,
-              "adet": (80 if (i == 3 and j == 3) else rng.randint(1, 5))}
-             for i in range(6) for j in range(6)]
+    def test_yuksek_ada_aykiri_HL(self):
+        # haritanın yarısı yüksek: düşük yarıdaki tek yüksek hücrenin çevresinin
+        # düşük olması gerçekten olağandışıdır (yalnız düşük haritada değildir)
+        h = _grid(lambda i, j: 20 if j < 3 else (20 if (i == 3 and j == 5) else 1), boyut=7)
+        r = mi.yerel_moran(h, bant_km=3.0)
+        ada = [s for s in r["sonuclar"] if s["lat"] == round(39.0 + 3 * 0.02, 6)
+               and s["lon"] == round(32.0 + 5 * 0.02, 6)][0]
+        self.assertEqual(ada["kumeleme"], "HL")
+
+    def test_odunlesim_kucuk_kume_yerelde_kaybolur_kanitta_gorunur(self):
+        # 2x2 köşe kümesi, 2–4 komşu: FDR sonrası yerel küme YOK — ama kanıt
+        # kaybolmaz: düzeltmesiz sayı raporlanır ve global Moran anlamlıdır.
+        h = _grid(lambda i, j: 20 if (i < 2 and j < 2) else 1)
         r = mi.yerel_moran(h, bant_km=2.5)
-        # ada çevresinde mekânsal aykırı değer (HL/LH) beklenir
-        self.assertGreater(r["ozet"]["HL"] + r["ozet"]["LH"], 0)
+        self.assertEqual(r["ozet"]["HH"], 0)
+        self.assertGreaterEqual(r["coklu_test"]["duzeltmesiz_anlamli"], 1)
+        self.assertLess(mi.global_moran(h, bant_km=2.5)["p"], 0.05)
+
+    def test_rastgele_desende_sahte_kume_yok(self):
+        import random
+        rng = random.Random(11)
+        h = _grid(lambda i, j: rng.randint(1, 5), boyut=7)
+        r = mi.yerel_moran(h, bant_km=3.0)
+        anlamli = sum(r["ozet"][t] for t in ("HH", "LL", "HL", "LH"))
+        self.assertEqual(anlamli, 0, r["ozet"])
 
     def test_determinist_sabit_seed(self):
         h = _grid(lambda i, j: 20 if (i < 2 and j < 2) else 1)

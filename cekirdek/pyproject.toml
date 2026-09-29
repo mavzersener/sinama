@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "suc-analizi"
+version = "6.8.0"
+description = "Saf Python suç analizi kütüphanesi ve MCP sunucusu (sıfır dış bağımlılık)"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "Proprietary"}
+keywords = ["crime analysis", "law enforcement", "mcp", "hotspot", "policing"]
+
+[project.scripts]
+suc-analizi-mcp = "suc_analizi.arayuz.sunucu:main"
+
+[tool.setuptools.packages.find]
+include = ["suc_analizi*"]

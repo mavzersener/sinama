@@ -17,12 +17,17 @@ taşınır ve her parçanın kaynağı buraya yazılır (ADR-001 md.2).
 5. Git'siz kaynaktan (ör. hazırlık kopyası) alınan her dosyanın SHA-256'sı not
    sütununa yazılır.
 6. Hasat edilen parça bekçiden geçer; bekçiyi hasat için gevşetmek yasaktır.
+7. **Tek istisna (bekçi uyumu):** bekçinin kişisel veri kuralına takılan sentetik
+   test değerlerine yalnız `bekci:izin` yorumu eklenebilir ve bu ekleme birebir
+   hasat commit'ine girer (bekçi o commit'i başka türlü geçirmez; `--no-verify`
+   ise push'ta yakalanır). Commit mesajı değişen satırları listeler; farkın yalnız
+   yorum eklemesi olduğu, satır sonu yorumu ayıklanmış karşılaştırmayla kanıtlanır.
 
 ## Kayıtlar
 
 | Tarih | Hedef | Kaynak depo | Commit | Alınan | Testler | Not |
 |---|---|---|---|---|---|---|
-| — | — | — | — | — | — | henüz hasat yok (A0) |
+| 29.09.2026 | `cekirdek/` | `C:\Projects\suc_analizi` | `20d6e2c` | izlenen ağacın tamamı; hariç: `oturumlar/` (sentetik test oturumları), `.githooks/` (kanonik depoya özgü tüketici kapıları), `.gitattributes` (kök kapsıyor), `suc_analizi_audit.log` (izlenen boş log), `release.sh` (Kimi ortamına, `/mnt/agents/output`'a yazıyor) | 493 birim (1 atlama) + kapsam kapısı + `test_mcp.py` 132 kontrol + 2 demo — hepsi yeşil | 93 dosya; 92'si kaynak blob'larıyla birebir. `tests/test_faz_f.py`: 2 satıra yalnız `bekci:izin` yorumu (kural 7) |
 
 ## Kaynak depoların başları (29.09.2026)
 

@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+loglar/
+ornek_veri/
+.venv/
+suc_analizi.egg-info/

@@ -5,6 +5,11 @@
 # Bu iş akışı bu yüzden bekçiyi TÜM GEÇMİŞ üzerinde yeniden koşar (üçüncü
 # savunma hattı) ve çekirdeğin tam kapısını Windows ve Linux'ta çalıştırır
 # (cp1252/CRLF gibi Windows tuzakları yalnız Windows'ta görünür).
+#
+# Tekrar üretilebilirlik: eylemler etiketle değil COMMIT SHA'sıyla sabit
+# (etiket taşınabilir, SHA taşınamaz); çalıştırıcı imajları da sabit —
+# `-latest` etiketleri sessizce yeni işletim sistemine geçer. Yükseltme
+# yalnız bilinçli bir commit'le yapılır.
 name: kapi
 
 on:
@@ -27,13 +32,13 @@ env:
 jobs:
   bekci:
     name: veri bekçisi (tüm geçmiş)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
         with:
           python-version: "3.12"
       - name: Bekçi testleri
@@ -50,19 +55,18 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             python: "3.12"
-          - os: windows-latest
+          - os: windows-2025
             python: "3.14"
     defaults:
       run:
         shell: bash
         working-directory: cekirdek
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
         with:
           python-version: ${{ matrix.python }}
-          allow-prereleases: true
       - name: Birim + kapsam + MCP + demolar (test.sh)
         run: sh test.sh

@@ -1,0 +1,8 @@
+# Veri bekçisi izin listesi — YALNIZ yol kurallarını (anahtar dosyası, veri/belge
+# uzantısı, yasak dizin, boyut) atlar. Sır içerik kuralları hiçbir satırla atlanamaz.
+#
+# Biçim (gerekçe zorunlu):
+#   <depo köküne göre POSIX yol>  # <neden gerekli, kim onayladı, tarih>
+#
+# Örnek:
+#   arayuz/public/logo.png  # marka görseli 2.3 MB; proje sahibi onayı 01.10.2026

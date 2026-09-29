@@ -1,0 +1,9 @@
+#!/bin/sh
+# Yedek (C:/Projects/yedekle.sh düzeni): commit sonrası güncel dalı 'yedek' uzağına iter.
+# Disk takılı değilse commit'i ETKİLEMEZ, yalnız uyarır. Kapatmak için bu dosyayı silin.
+# 'yedek' uzağı olmayan klonlarda (ör. GitHub'dan alınan) hiçbir şey yapmaz.
+url=$(git remote get-url yedek 2>/dev/null) || exit 0
+dal=$(git symbolic-ref --short -q HEAD) || exit 0
+git push -q yedek "$dal" 2>/dev/null ||
+  echo "[yedek] UYARI: $dal yedeğe itilemedi ($url) — disk takılı mı? Sonra: bash C:/Projects/yedekle.sh sinama" >&2
+exit 0

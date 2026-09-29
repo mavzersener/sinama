@@ -1,0 +1,65 @@
+# ADR-001 md.5 — veri kökü depo DIŞINDADIR. Bu dosya ikinci savunma hattıdır;
+# birinci hat betikler/veri_bekcisi.py (pre-commit + pre-push). Buradaki bir
+# desenin eksik olması bekçiyi aşmaz; ama bekçiyi de gevşetmeyin.
+
+# --- Veri ve belgeler (yalnız */sentetik/ altında serbest) ---
+*.csv
+*.tsv
+*.xlsx
+*.xls
+*.xlsm
+*.jsonl
+*.ndjson
+*.parquet
+*.db
+*.sqlite
+*.sqlite3
+*.geojson
+*.gpkg
+*.docx
+*.doc
+*.pptx
+*.pdf
+!**/sentetik/**
+
+# --- Oturum, yükleme, log (her yerde) ---
+oturumlar/
+uploads/
+loglar/
+llm_runs/
+dis_kanit/
+*.log
+
+# --- Sır ve anahtar (sentetik altında bile) ---
+.env
+.env.*
+*.env
+!.env.ornek
+*.pem
+*.key
+*.p12
+*.pfx
+auth.json
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# --- Node / ön yüz ---
+node_modules/
+dist/
+.vite/
+coverage/
+test-results/
+playwright-report/
+
+# --- Editör / işletim sistemi ---
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store

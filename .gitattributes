@@ -1,0 +1,18 @@
+# Depoda ve çalışma ağacında LF. Sistem genelinde core.autocrlf=true var;
+# CRLF'e çevrilen sh kancaları kırılır (suc_analizi'de yaşandı).
+* text=auto eol=lf
+
+# Windows betikleri CRLF ister
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# İkili
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary

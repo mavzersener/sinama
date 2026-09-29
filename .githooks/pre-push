@@ -1,0 +1,9 @@
+#!/bin/sh
+# sinama pre-push — itilecek TÜM commit'lerdeki içerik bekçiden geçer
+# (pre-commit --no-verify ile atlanmış olsa bile). Yerel yol uzaklar
+# (D: yedeği) betik içinde atlanır; kural GitHub'a özel veri gitmemesidir.
+set -e
+cd "$(git rev-parse --show-toplevel)"
+export PYTHONUTF8=1 PYTHONDONTWRITEBYTECODE=1
+. ./.githooks/_python.sh
+exec "$PY" betikler/veri_bekcisi.py --push "$1" "$2"

@@ -1,0 +1,11 @@
+#!/bin/sh
+# sinama pre-commit — ADR-001 md.5: özel veri ve sır depoya GİREMEZ.
+#   1) Veri bekçisi index'teki içeriği denetler (çalışma ağacını değil).
+#   2) Birim testleri (A0'da yalnız bekçinin testleri; hasatla büyür).
+# --no-verify ile atlanırsa bekçi push'ta yine çalışır (pre-push).
+set -e
+cd "$(git rev-parse --show-toplevel)"
+export PYTHONUTF8=1 PYTHONDONTWRITEBYTECODE=1
+. ./.githooks/_python.sh
+"$PY" betikler/veri_bekcisi.py --staged
+"$PY" -m unittest discover -s tests -q

@@ -37,6 +37,8 @@ class YolKurallari(unittest.TestCase):
         self.assertTrue(vb.yol_denetle("veri/olaylar.csv", 10))
         self.assertEqual(vb.yol_denetle("tests/sentetik/olaylar.csv", 10), [])
         self.assertTrue(vb.yol_denetle("a/kayit.jsonl", 10))
+        self.assertTrue(vb.yol_denetle("suc_analizi_audit.log", 0),
+                        "boş log da yasak: içerik değil tür kuralı")
 
     def test_env_ve_anahtar_her_yerde_yasak(self):
         self.assertTrue(vb.yol_denetle(".env", 10))

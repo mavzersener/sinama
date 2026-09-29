@@ -56,7 +56,10 @@ VERI_UZANTILARI = frozenset({
     ".parquet", ".feather", ".db", ".sqlite", ".sqlite3", ".geojson",
     ".shp", ".shx", ".dbf", ".gpkg", ".kml", ".kmz", ".mbtiles", ".sav",
     ".dta", ".rds", ".rdata", ".h5", ".hdf5", ".pkl", ".pickle", ".npy",
-    ".npz"})
+    ".npz",
+    # Log işletim verisidir (kim, ne zaman, hangi araç; kötü günde değerler).
+    # suc_analizi_audit.log kanonik depoda izleniyordu — burada tekrarlanmasın.
+    ".log"})
 BELGE_UZANTILARI = frozenset({
     ".docx", ".doc", ".pptx", ".ppt", ".pdf", ".odt", ".rtf", ".msg",
     ".eml", ".mhtml", ".mht"})

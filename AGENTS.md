@@ -75,3 +75,8 @@ PYTHONUTF8=1 python -m unittest discover -s tests            # kök: bekçi
 cd cekirdek && PYTHONUTF8=1 python -m unittest discover -s tests   # çekirdek birim
 cd cekirdek && PYTHONUTF8=1 sh test.sh                        # çekirdek tam kapı
 ```
+
+CI (`.github/workflows/kapi.yml`) her push ve PR'da bekçiyi **tüm geçmiş** üzerinde,
+çekirdek tam kapısını Linux ve Windows'ta koşar. Yerel kancaları görmeyen yollardan
+(Codex bulutu, GitHub web arayüzü) gelen commit'ler için son savunma hattı budur;
+CI kırmızıyken birleştirme yapılmaz.

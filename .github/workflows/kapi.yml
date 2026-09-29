@@ -1,0 +1,68 @@
+# Sınama CI kapısı (ADR-001, A2.4)
+#
+# Yerel kancalar (.githooks) yalnız kurulu oldukları klonda çalışır; Codex
+# bulutu ya da GitHub web arayüzünden gelen commit'ler onları hiç görmez.
+# Bu iş akışı bu yüzden bekçiyi TÜM GEÇMİŞ üzerinde yeniden koşar (üçüncü
+# savunma hattı) ve çekirdeğin tam kapısını Windows ve Linux'ta çalıştırır
+# (cp1252/CRLF gibi Windows tuzakları yalnız Windows'ta görünür).
+name: kapi
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kapi-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHONUTF8: "1"
+  PYTHONDONTWRITEBYTECODE: "1"
+
+jobs:
+  bekci:
+    name: veri bekçisi (tüm geçmiş)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Bekçi testleri
+        run: python -m unittest discover -s tests -v
+      - name: Bekçi — tüm commit'ler
+        run: python betikler/veri_bekcisi.py --gecmis
+
+  cekirdek:
+    name: çekirdek tam kapı (${{ matrix.os }}, py${{ matrix.python }})
+    needs: bekci
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            python: "3.12"
+          - os: windows-latest
+            python: "3.14"
+    defaults:
+      run:
+        shell: bash
+        working-directory: cekirdek
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          allow-prereleases: true
+      - name: Birim + kapsam + MCP + demolar (test.sh)
+        run: sh test.sh

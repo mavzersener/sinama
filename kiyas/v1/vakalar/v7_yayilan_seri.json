@@ -1,0 +1,31 @@
+{
+  "kimlik": "V7",
+  "ad": "Geniş alana yayılmış seri: uzay-zaman süzgecinin bedeli",
+  "surum": "v1",
+  "soru": "Bu konut hırsızlıklarında seri suç var mı?",
+  "uretec": {"islev": "uretec.v3_seri (v0 üreteci, değiştirilmeden; yalnız seri yayılımı genişletildi)",
+             "parametreler": {
+               "merkez_lat": 41.0, "merkez_lon": 29.0, "kenar_km": 10.0,
+               "baslangic": "2025-01-01", "gun_sayisi": 365,
+               "n_seri": 5, "seri_yaricap_km": 3.0, "seri_gun": 120,
+               "seri_mo": ["balkon", "kapisi", "levye", "ile", "zorlanmis", "yalniz", "altin", "alinmis"],
+               "n_ortak": 20, "ortak_mo": ["kapi", "kirilarak", "girildi"],
+               "n_diger": 35, "diger_kelime": 4,
+               "genel_kelimeler": ["gece", "gunduz", "pencere", "cam", "nakit", "telefon", "bilgisayar",
+                                   "televizyon", "saat", "canta", "cuzdan", "anahtar", "bahce", "merdiven",
+                                   "cati", "bodrum", "garaj", "dukkan", "depo", "ofis", "esya", "mobilya",
+                                   "bisiklet", "arac", "plaka", "kamera", "alarm", "komsu", "tanik", "iz"]}},
+  "tohumlar": {"bas": 101, "adet": 30},
+  "arac_argumanlari": "seri_eslestirme: mo_alan='mo', diğerleri varsayılan (esik 0,6; mesafe_km 2; gun 60)",
+  "gercek": "V3 ile aynı yapı; tek fark gerçek serinin yayılımı: merkez etrafında ±3 km ve 120 gün (V3: ±0,25 km, 21 gün). Geniş alanda çalışan bir fail senaryosu (stres varyantı).",
+  "dogru_hukum": {"seri_grubu": "seri adayı — inceleme hipotezi", "ortak_mo_grubu": "seri değil"},
+  "cekirdek_olcutleri": [
+    {"kimlik": "K7.1", "aciklama": "Geri çağırma: gerçek seri çiftlerinin (10) bulunan oranı, tohum ortalaması", "yon": ">=", "esik": 0.80},
+    {"kimlik": "K7.2", "aciklama": "Yanlış bağlantı: bağımsız faillerden (ortak MO grubu) işaretlenen çift sayısı, tohum ortalaması", "yon": "<=", "esik": 1.0}
+  ],
+  "ongoruler": {
+    "K7.1": "BAŞARISIZ beklenir: A4.2'nin varsayılan uzay-zaman süzgeci (2 km / 60 gün) yayılmış serinin çiftlerinin çoğunu eler — kesinlik uğruna ödenen geri çağırma bedeli (ilerleme.md genelleme notu)",
+    "K7.2": "GEÇER beklenir: taban oranı ağırlığı yayılımdan bağımsız"
+  },
+  "sistem_olcutleri": {"not": "A5'te ölçülür", "zorunlu": ["süzgeç eşiklerinin beyanı", "benzerlik ≠ kimlik"], "yasak": ["seri yok (kesin)"]}
+}

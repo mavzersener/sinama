@@ -1,0 +1,17 @@
+{
+  "kimlik": "V2b",
+  "ad": "Kanal ayrıştırma yeteneği (v0 K2.4'ün düzeltilmiş ölçütü)",
+  "surum": "v1",
+  "gerekce": "v0 K2.4 ölçütü ('artışın ≥%80'i yeni kanalda') aracın yeteneğini değil karakol kanalındaki doğal Poisson gürültüsünü ölçtü (v0 keşfi: araç 30/30 tohumda ham veriyle birebir saydı; 6/30 tohumda koşul gürültüyle bozuldu). v0 kilitli olduğu için değiştirilmedi; bu vaka yerine geçen ölçütü ayrı sürümde ön-kayda alır.",
+  "soru": "Kayıtlardaki artış hangi bildirim kanalından geliyor?",
+  "uretec": {"islev": "uretec.v2_bildirim (v0 üreteci, değiştirilmeden)",
+             "parametreler": {"baslangic": "2024-01-01", "ay_sayisi": 24, "kesinti_ayi": 13,
+                              "karakol_lambda": 40, "cevrimici_lambda": 12}},
+  "tohumlar": {"bas": 101, "adet": 30},
+  "cekirdek_olcutleri": [
+    {"kimlik": "K2b.1", "aciklama": "capraz_tablo (kanal × yıl) sayımlarının ham veriden bağımsız olarak sayılanla birebir aynı olduğu tohum oranı", "yon": ">=", "esik": 1.0}
+  ],
+  "ongoruler": {
+    "K2b.1": "GEÇER beklenir. DÜRÜST NOT: bu öngörü v0 keşfinde (aynı araç, farklı tohumlar) görülenle bilgilendirilmiştir; bağımsız bir öngörü değildir."
+  }
+}

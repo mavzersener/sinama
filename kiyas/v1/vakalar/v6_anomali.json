@@ -1,0 +1,23 @@
+{
+  "kimlik": "V6",
+  "ad": "Anomali bölgesi mi, çoklu karşılaştırma mı?",
+  "surum": "v1",
+  "soru": "Olağandışı yüksek suç sayısına sahip bölge var mı?",
+  "uretec": {"islev": "uretec_v1.v6_anomali",
+             "parametreler": {"bolge_sayisi": 50, "lambda": 20, "anomali_lambda": 45},
+             "varyantlar": ["homojen", "anomali"]},
+  "tohumlar": {"bas": 101, "adet": 30},
+  "arac_argumanlari": "bolge_anomali: bolge_alan='bolge', alfa varsayılan (0,01)",
+  "gercek": {"homojen": "50 bölgenin hepsi Poisson λ=20: anomali yok",
+             "anomali": "tohumla rastgele seçilen TEK bölge λ=45; diğerleri λ=20"},
+  "dogru_hukum": {"homojen": "anomali iddiası ÇELİŞKİLİ", "anomali": "yalnız o bölge anomali DESTEKLENDİ"},
+  "cekirdek_olcutleri": [
+    {"kimlik": "K6.1", "aciklama": "Güç: anomalide gerçek bölgenin aracın 'anlamli' listesinde olduğu tohum oranı", "yon": ">=", "esik": 0.90},
+    {"kimlik": "K6.2", "aciklama": "Yanlış alarm (aile): homojende aracın 'anlamli' listesinin boş olmadığı tohum oranı", "yon": "<=", "esik": 0.10}
+  ],
+  "ek_olcumler": ["homojende tohum başına ortalama 'anlamli' bölge sayısı"],
+  "ongoruler": {
+    "K6.2": "BAŞARISIZ beklenir: 'anlamli' listesi düzeltmesiz p ≤ 0,01 ile kuruluyor; q (FDR) hesaplanıyor ama karar onunla verilmiyor; 50 testte en az bir yanlış alarm olasılığı ≈ %40 (kod incelemesi, 29.09.2026)"
+  },
+  "sistem_olcutleri": {"not": "A5'te ölçülür", "zorunlu": ["çoklu karşılaştırma (q)"], "yasak": {"homojen": ["anomali bölgesi var"]}}
+}

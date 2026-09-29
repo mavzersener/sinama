@@ -1,0 +1,15 @@
+{
+  "surum": "v1",
+  "ilke": "Bu dosyalar ilk v1 ölçümünden ÖNCE kilitlendi; sonuç görüldükten sonra değişirlerse koşucu ölçmeyi reddeder. v0 bağımlılıkları dahildir.",
+  "dosyalar": {
+    "kiyas/v1/vakalar/v2b_kanal.json": "96d74783ed8078ea24c6dcd61f582a2fc5e9f121292a5fecc37c4b83b5256f6b",
+    "kiyas/v1/vakalar/v4_lisa.json": "d9765f05e5db5fa8378a158664219a4076dba00c53c481dda94f0a246d1c621e",
+    "kiyas/v1/vakalar/v5_yukselen.json": "b5a4a56b56aa64709a511585e57d368f9f91185a408deeeed3c5096dc620077b",
+    "kiyas/v1/vakalar/v6_anomali.json": "9c13b4488cd46c31dc72b2e3e7a455db78eeb0e0a97ef6ca106bf9d43c055b8a",
+    "kiyas/v1/vakalar/v7_yayilan_seri.json": "2d3759171501f1aea380c1287cc2d67588baee2535f788f05622b55126c38d60",
+    "kiyas/v1/uretec_v1.py": "6cb8c321ad2680dd543c8750ba356c9aea151f66ade80b84a4612e2780a5cdf0",
+    "kiyas/v1/kos_v1.py": "b452a9704f741838aba2bba1b408ac00ec8d5834e914118026df5131f1aa9747",
+    "kiyas/uretec.py": "9040a2ad53d48f154a1d15c96f2bfefc151509b3a437f3911167bf672e81524f",
+    "kiyas/kos.py": "1774027a0da650b068169ae7c7a1523bfaa9d9a6bcbd5e14698827694599b764"
+  }
+}

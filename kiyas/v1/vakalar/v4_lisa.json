@@ -1,0 +1,24 @@
+{
+  "kimlik": "V4",
+  "ad": "Yerel Moran (LISA): gerçek küme mi, sahte küme mi?",
+  "surum": "v1",
+  "soru": "A bölgesinde yerel olay kümeleri (HH/LL) ya da mekânsal aykırı değerler (HL/LH) var mı?",
+  "uretec": {"islev": "uretec.v1_kumelenme (v0 üreteci, değiştirilmeden)",
+             "parametreler": {"merkez_lat": 41.0135, "merkez_lon": 29.0179, "kenar_km": 3.0,
+                              "n": 200, "odak_orani": 0.30, "odak_sigma_km": 0.15,
+                              "tarih": "2025-06-01"},
+             "varyantlar": ["odakli", "csr"]},
+  "tohumlar": {"bas": 101, "adet": 30},
+  "arac_argumanlari": "yerel_kumeleme varsayılanları (hucre_km=0.5, bant otomatik)",
+  "gercek": {"odakli": "tek odakta gerçek küme (%30, σ=150 m)", "csr": "tamamen rastgele (CSR): ne küme ne aykırı değer"},
+  "dogru_hukum": {"odakli": "odakta HH kümesi DESTEKLENDİ", "csr": "yerel küme/aykırı değer ÇELİŞKİLİ"},
+  "cekirdek_olcutleri": [
+    {"kimlik": "K4.1", "aciklama": "LISA gücü: odaklıda odak merkezine 400 m içinde 'HH' hücresi bulunan tohum oranı", "yon": ">=", "esik": 0.90},
+    {"kimlik": "K4.2", "aciklama": "LISA yanlış alarmı (aile): CSR'de anlamlı en az bir hücre (HH, LL, HL ya da LH) bulunan tohum oranı", "yon": "<=", "esik": 0.10}
+  ],
+  "ek_olcumler": ["CSR'de tohum başına ortalama anlamlı hücre sayısı ve türlere dağılımı"],
+  "ongoruler": {
+    "K4.2": "BAŞARISIZ beklenir: hücre başına düzeltmesiz p<0,05 (Gi*'deki A4.1 öncesi kusurun aynısı); elle yazılmış 20 hücrelik küçük girdide bile 2 'anlamlı' LL verdi (29.09.2026)"
+  },
+  "sistem_olcutleri": {"not": "A5'te ölçülür", "zorunlu": ["çoklu karşılaştırma", "rastgele kümelenme rakibi"], "yasak": {"csr": ["küme var", "aykırı bölge"]}}
+}

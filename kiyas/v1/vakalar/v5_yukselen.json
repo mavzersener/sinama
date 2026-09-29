@@ -1,0 +1,26 @@
+{
+  "kimlik": "V5",
+  "ad": "Yükselen sıcak nokta mı, rastgele dalgalanma mı?",
+  "surum": "v1",
+  "soru": "Hangi bölgeler yeni ya da kalıcı sıcak nokta?",
+  "uretec": {"islev": "uretec_v1.v5_yukselen",
+             "parametreler": {"bolge_sayisi": 40, "baslangic": "2025-01-01", "donem_gun": 91,
+                              "donem_sayisi": 4, "lambda": 12,
+                              "artan_carpanlar": [1.0, 1.6, 2.4, 3.4]},
+             "varyantlar": ["homojen", "artan"]},
+  "tohumlar": {"bas": 101, "adet": 30},
+  "arac_argumanlari": "yukselen_sicak_nokta: bolge_alan='bolge', zaman_alan='tarih', donem_sayisi varsayılan (4)",
+  "gercek": {"homojen": "40 bölgenin hepsi her dönemde aynı oranda (Poisson λ=12/dönem): hiçbir bölge sıcak nokta değildir",
+             "artan": "tohumla rastgele seçilen TEK bölgenin oranı dönemlerle artar (×1,0 → 1,6 → 2,4 → 3,4); diğerleri homojen"},
+  "dogru_hukum": {"homojen": "sıcak nokta iddiası ÇELİŞKİLİ", "artan": "yalnız artan bölge yükselen sıcak nokta DESTEKLENDİ"},
+  "cekirdek_olcutleri": [
+    {"kimlik": "K5.1", "aciklama": "Güç: artanda gerçek bölgenin 'yeni sıcak nokta' ya da 'yoğunlaşan' sınıflandığı tohum oranı", "yon": ">=", "esik": 0.90},
+    {"kimlik": "K5.2", "aciklama": "Yanlış alarm (aile): homojende en az bir bölgenin sıcak türü kategori ('yeni sıcak nokta', 'yoğunlaşan', 'kalıcı') aldığı tohum oranı", "yon": "<=", "esik": 0.10}
+  ],
+  "ek_olcumler": ["homojende tohum başına ortalama sıcak türü bölge sayısı ve kategorilere dağılımı",
+                  "artanda gerçek bölge dışında sıcak türü bölge alan tohum oranı"],
+  "ongoruler": {
+    "K5.2": "BAŞARISIZ beklenir: 'sıcak' tanımı bölgeler arası GÖRELİ yüzdeliktir (her dönem tanım gereği ~%10 bölge 'sıcak'); 'kalıcı' kategorisi anlamlılık sınaması içermiyor; Mann-Kendall bölge başına düzeltmesiz p<0,10 (kod incelemesi, 29.09.2026)"
+  },
+  "sistem_olcutleri": {"not": "A5'te ölçülür", "zorunlu": ["göreli eşik uyarısı", "rastgele dalgalanma rakibi"], "yasak": {"homojen": ["kalıcı sıcak nokta", "yeni sıcak nokta"]}}
+}

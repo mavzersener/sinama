@@ -117,6 +117,28 @@ class TestP2(unittest.TestCase):
         s = rg.coklu_ols(X, y, ["x1", "x2"])
         self.assertAlmostEqual(s["r_kare"], 1.0, places=4)
 
+    def test_ols_tam_uyumda_cikarim_uydurulmaz(self):
+        # A4.7: se ≈ 0 iken t = beta/1e-9 uyduruluyordu (y = 2x → t = 2e9, p = 0).
+        X = [[i] for i in range(1, 11)]
+        s = rg.coklu_ols(X, [2 * i for i in range(1, 11)], ["x"])
+        self.assertEqual([k["beta"] for k in s["katsayilar"]], [0.0, 2.0])
+        self.assertTrue(all(k["t"] is None and k["p"] is None for k in s["katsayilar"]))
+        self.assertIsNone(s["F"])
+        self.assertTrue(any("tam uyum" in n for n in s["notlar"]))
+
+    def test_lojistik_ayrismada_wald_p_yok(self):
+        # A4.7: x > 0 ⇔ y = 1 (tam ayrışma) için Wald p = 0,94 "etki yok" diyordu.
+        X = [[x] for x in range(-10, 10)]
+        s = rg.lojistik(X, [1 if x > 0 else 0 for x in range(-10, 10)], ["x"])
+        self.assertFalse(s["yakinsadi"])
+        self.assertTrue(all(k["p"] is None and k["z"] is None for k in s["katsayilar"]))
+        self.assertTrue(any("ayrışma" in n for n in s["notlar"]))
+
+    def test_ols_sabit_bagimli_hata(self):
+        # sabit y'de R² = 1,0 dönüyordu — model hiçbir şey açıklamıyor.
+        s = rg.coklu_ols([[i] for i in range(1, 11)], [5] * 10, ["x"])
+        self.assertIn("hata", s)
+
     def test_ols_tekil_matris(self):
         X = [[i, 2 * i] for i in range(1, 20)]  # x2 = 2*x1 → tekil
         y = [2 + row[0] for row in X]
@@ -166,6 +188,18 @@ class TestGateYeni(unittest.TestCase):
     def test_lojistik_kucuk_n(self):
         karar = veri.analiz_uygun_mu({"n": 40}, "lojistik_regresyon")
         self.assertTrue(any("lojistik" in s for s in karar["sebepler"]))
+
+
+class TestTPpf(unittest.TestCase):
+    """A4.7: güven aralığı için ters t (tablo değerleri)."""
+
+    def test_tablo_degerleri_ve_simetri(self):
+        from sinama.cekirdek import hipotez as h
+        self.assertAlmostEqual(h.t_ppf(0.975, 10), 2.2281, places=4)
+        self.assertAlmostEqual(h.t_ppf(0.975, 1), 12.7062, places=3)
+        self.assertAlmostEqual(h.t_ppf(0.025, 10), -h.t_ppf(0.975, 10), places=9)
+        with self.assertRaises(ValueError):
+            h.t_ppf(1.0, 5)
 
 
 if __name__ == "__main__":

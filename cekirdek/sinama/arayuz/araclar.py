@@ -564,6 +564,63 @@ def _(a):
 
 
 
+def _donem_serisi(kayitlar, tarih_alan, donem):
+    """Kayıtları eksiksiz dönem sayım serisine çevirir (boş dönem = 0).
+
+    Returns: (baslangic_datetime, sayimlar) ya da (None, []) — tarih yoksa.
+    Dönem indeksi: gun = gün farkı, hafta = gün farkı // 7, ay = takvim ayı farkı.
+    """
+    tarihler = [d for d in (veri.tarih_coz(r.get(tarih_alan)) for r in kayitlar) if d]
+    if not tarihler:
+        return None, []
+    bas = min(tarihler)
+    sayim = {}
+    for d in tarihler:
+        i = _donem_indeksi(bas, d, donem)
+        sayim[i] = sayim.get(i, 0) + 1
+    return bas, [sayim.get(i, 0) for i in range(max(sayim) + 1)]
+
+
+def _donem_indeksi(bas, d, donem):
+    """bas'tan d'ye dönem indeksi (gun/hafta/ay)."""
+    if donem == "ay":
+        return (d.year - bas.year) * 12 + (d.month - bas.month)
+    gun = (d.date() - bas.date()).days
+    return gun // 7 if donem == "hafta" else gun
+
+
+@arac("kesinti_analizi",
+      "Kesintili zaman serisi (ITS): kesinti tarihindeki SEVİYE ve EĞİM değişimi, "
+      "güven aralığı ve p ile (segmentli regresyon). Tek grup ITS nedensellik kanıtlamaz",
+      sema({"kesinti_tarihi": {"type": "string",
+                               "description": "kesintinin ilk günü (YYYY-AA-GG)"},
+            "donem": {"type": "string", "enum": ["gun", "hafta", "ay"], "default": "ay"},
+            "tarih_alan": {"type": "string", "default": "tarih"}}, ["kesinti_tarihi"]))
+def _(a):
+    k = kayitlari_getir(a)
+    donem = a.get("donem", "ay")
+    kesinti = veri.tarih_coz(a["kesinti_tarihi"])
+    if kesinti is None:
+        raise KullanimHatasi("kesinti_tarihi çözülemedi",
+                             oneri="YYYY-AA-GG biçiminde bir tarih verin")
+    bas, seri = _donem_serisi(k, a.get("tarih_alan", "tarih"), donem)
+    if bas is None:
+        raise VeriHatasi("tarih içeren kayıt yok",
+                         oneri="tarih_alan'ı ve tarih biçimini denetleyin")
+    t0 = _donem_indeksi(bas, kesinti, donem)
+    if not 0 < t0 < len(seri):
+        raise KullanimHatasi("kesinti_tarihi verinin tarih aralığının içinde olmalı",
+                             oneri="kesintiden önce ve sonra en az birer dönem veri gerekir")
+    sonuc = degerlendirme.kesinti_analizi(seri, t0)
+    if sonuc is None:
+        raise VeriHatasi("kesintinin her iki tarafında en az 2 dönem gerekir",
+                         oneri="daha uzun bir seri ya da daha kısa dönem (hafta/gün) kullanın")
+    sonuc.update({"donem": donem, "donem_sayisi": len(seri), "kesinti_donemi": t0})
+    if len(seri) <= 400:
+        sonuc["seri"] = seri
+    return sonuc
+
+
 @arac("wdd_testi",
       "WDD testi: yer değiştirmeyi hesaba katarak müdahale etkisinin anlamlılığı",
       {"type": "object",

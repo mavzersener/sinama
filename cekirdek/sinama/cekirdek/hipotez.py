@@ -69,6 +69,24 @@ def t_cdf(t, df):
     return 1.0 - 0.5 * ib if t > 0 else 0.5 * ib
 
 
+def t_ppf(p, df):
+    """Ters t CDF: P(T <= x) = p olan x (t_cdf üzerinde ikiye bölme).
+
+    Güven aralığı için (A4.7). Deterministik; 200 adımda |hata| ≪ 1e-9.
+    Args: p (0 < p < 1), df (serbestlik derecesi > 0).
+    """
+    if not 0.0 < p < 1.0 or df <= 0:
+        raise ValueError("t_ppf: 0 < p < 1 ve df > 0 olmalı")
+    alt, ust = -1e4, 1e4
+    for _ in range(200):
+        orta = (alt + ust) / 2.0
+        if t_cdf(orta, df) < p:
+            alt = orta
+        else:
+            ust = orta
+    return (alt + ust) / 2.0
+
+
 def f_cdf(f, d1, d2):
     """F dağılımı CDF."""
     if f <= 0:

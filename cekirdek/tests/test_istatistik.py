@@ -91,6 +91,19 @@ class TestKayanTrend(unittest.TestCase):
         self.assertEqual(istatistik.dogrusal_trend([5, 5, 5])["yorum"],
                          "yatay")
 
+    # A4.7 (BMK v0 K2.3): yön yalnız eğim anlamlıysa söylenir.
+    def test_dogrusal_trend_gurultude_yon_iddiasi_yok(self):
+        seri = [10, 12, 9, 11, 10, 13, 9, 10, 12, 11, 9, 10, 11, 12, 10, 9]
+        t = istatistik.dogrusal_trend(seri)
+        self.assertGreaterEqual(t["p"], 0.05)
+        self.assertEqual(t["yorum"], "anlamlı trend yok")
+
+    def test_dogrusal_trend_anlamli_artis(self):
+        seri = [10 + 0.5 * i + (1 if i % 2 else -1) for i in range(30)]
+        t = istatistik.dogrusal_trend(seri)
+        self.assertLess(t["p"], 0.05)
+        self.assertEqual(t["yorum"], "artan")
+
 
 if __name__ == "__main__":
     unittest.main()

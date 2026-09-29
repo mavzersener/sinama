@@ -91,31 +91,108 @@ def wdd_testi(t_once, t_sonra, k_once, k_sonra,
     return sonuc
 
 
-def kesinti_analizi(seri, kesinti_noktasi):
+def kesinti_analizi(seri, kesinti_noktasi, guven=0.95):
     """
-    Kesintili zaman serisi (basit): kesinti öncesi/sonrası ortalama seviye
-    ve eğim karşılaştırması. seri: sayı listesi.
+    Kesintili zaman serisi (ITS) — segmentli regresyon (A4.7):
+        y_t = β0 + β1·t + β2·D_t + β3·(t − t0)·D_t + ε_t,   D_t = 1 (t ≥ t0)
+    β2 kesintideki SEVİYE değişimi, β3 EĞİM değişimi; her biri SE, p ve güven
+    aralığıyla (OLS, regresyon.coklu_ols). Artık otokorelasyonu için
+    Durbin-Watson; 1,5–2,5 dışında p ve GA güvenilmez (uyarı). Önceki sürüm
+    yalnız öncesi/sonrası ortalama ve eğim veriyordu — belirsizlik yoktu (BMK
+    v0 K2.5 bu aracı açık bulamadı; açmadan önce yükseltildi).
+
+    TEK GRUP ITS NEDENSELLİK KANITLAMAZ: kesintiyle eşzamanlı başka bir
+    değişiklik (ör. yeni bildirim kanalı, kayıt pratiği) aynı seviye
+    sıçramasını üretir. Kontrol serisi olmadan etki "müdahalenin" değil
+    "kesinti zamanındaki bir değişikliğin"dir.
+
+    Args:
+        seri: dönemlik değerler (ör. aylık olay sayısı).
+        kesinti_noktasi: kesintinin ilk dönemi (0 tabanlı indeks).
+        guven: güven düzeyi (varsayılan 0,95).
+
+    Returns:
+        None (her iki tarafta < 2 dönem) ya da betimsel alanlar
+        (once/sonra_ortalama, once/sonra_egim, seviye_farki) + model alanları
+        (seviye_degisimi, egim_degisimi, once_trend: {tahmin, se, p, ga_alt,
+        ga_ust}; karsiolgusal_son, gozlenen_son, durbin_watson, uyarilar, not).
     """
+    from .hipotez import t_ppf
+    from .regresyon import coklu_ols
+
     once = list(seri[:kesinti_noktasi])
     sonra = list(seri[kesinti_noktasi:])
     if len(once) < 2 or len(sonra) < 2:
         return None
+
     def egim(s):
-        """En küçük kareler eğimi (dönem başına değişim; iç yardımcı).
-        """
+        """En küçük kareler eğimi (dönem başına değişim; iç yardımcı)."""
         n = len(s)
         mx = (n - 1) / 2
         my = statistics.fmean(s)
         pay = sum((i - mx) * (v - my) for i, v in enumerate(s))
         payda = sum((i - mx) ** 2 for i in range(n)) or 1e-9
         return pay / payda
-    return {
+
+    sonuc = {
         "once_ortalama": round(statistics.fmean(once), 3),
         "sonra_ortalama": round(statistics.fmean(sonra), 3),
         "once_egim": round(egim(once), 4),
         "sonra_egim": round(egim(sonra), 4),
         "seviye_farki": round(statistics.fmean(sonra) - statistics.fmean(once), 3),
+        "n_once": len(once), "n_sonra": len(sonra),
+        "not": ("tek grup ITS nedensellik kanıtlamaz: kesintiyle eşzamanlı başka bir "
+                "değişiklik (ör. bildirim kanalı) aynı etkiyi üretir; kontrol serisi yoksa "
+                "etki kesinti ZAMANINDAKİ bir değişikliğe aittir"),
     }
+    uyarilar = []
+    n = len(seri)
+    if n < 6:
+        uyarilar.append("segmentli regresyon için en az 6 dönem gerekir; yalnız betimsel sonuç")
+        sonuc.update({"model": None, "uyarilar": uyarilar})
+        return sonuc
+    t0 = kesinti_noktasi
+    X = [[t, 1.0 if t >= t0 else 0.0, float(t - t0) if t >= t0 else 0.0] for t in range(n)]
+    ols = coklu_ols(X, [float(v) for v in seri],
+                    adlar=["zaman", "seviye_degisimi", "egim_degisimi"], vif_hesapla=False)
+    if not ols or "hata" in ols:
+        uyarilar.append("segmentli regresyon kurulamadı: " + (ols or {}).get("hata", "yetersiz veri"))
+        sonuc.update({"model": None, "uyarilar": uyarilar})
+        return sonuc
+    k = {c["degisken"]: c for c in ols["katsayilar"]}
+    tk = t_ppf(1 - (1 - guven) / 2, n - 4)
+
+    def ozet(c):
+        """Katsayı → {tahmin, se, p, ga_alt, ga_ust} (iç yardımcı)."""
+        if c["p"] is None:  # tam uyum: çıkarım tanımsız (regresyon.coklu_ols)
+            return {"tahmin": c["beta"], "se": None, "p": None,
+                    "ga_alt": None, "ga_ust": None}
+        return {"tahmin": c["beta"], "se": c["se"], "p": c["p"],
+                "ga_alt": round(c["beta"] - tk * c["se"], 4),
+                "ga_ust": round(c["beta"] + tk * c["se"], 4)}
+
+    e = ols["artik"]
+    payda = sum(x * x for x in e)
+    dw = sum((e[i] - e[i - 1]) ** 2 for i in range(1, n)) / payda if payda > 1e-12 else None
+    if dw is not None and not 1.5 <= dw <= 2.5:
+        uyarilar.append(f"artık otokorelasyonu (Durbin-Watson {round(dw, 2)}): p ve güven "
+                        "aralıkları güvenilmez")
+    uyarilar += [f"segmentli regresyon: {x}" for x in ols.get("notlar", [])]
+    if len(once) < 8 or len(sonra) < 8:
+        uyarilar.append("her iki tarafta en az 8 dönem önerilir (Wagner vd. 2002); "
+                        "kısa seride tahminler kararsızdır")
+    b0, b1 = k["sabit"]["beta"], k["zaman"]["beta"]
+    sonuc.update({
+        "model": "segmentli OLS", "guven": guven,
+        "seviye_degisimi": ozet(k["seviye_degisimi"]),
+        "egim_degisimi": ozet(k["egim_degisimi"]),
+        "once_trend": ozet(k["zaman"]),
+        "karsiolgusal_son": round(b0 + b1 * (n - 1), 3),
+        "gozlenen_son": seri[-1],
+        "durbin_watson": round(dw, 3) if dw is not None else None,
+        "uyarilar": uyarilar,
+    })
+    return sonuc
 
 
 def sara_kontrol_listesi():

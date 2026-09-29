@@ -8,6 +8,8 @@ import math
 import statistics
 from collections import Counter, defaultdict
 
+from .hipotez import _iki_yonlu_t_p
+
 
 def frekans(kayitlar, alan):
     """Tek alan frekans dağılımı.
@@ -116,13 +118,18 @@ def kayan_ortalama(seri, pencere=7):
     return sonuc
 
 
-def dogrusal_trend(seri):
-    """En küçük kareler doğrusal trend.
-    Args: seri (dönemlik değerler).
-    Returns: {egim (dönem başına değişim), kesim, yorum: artan/azalan/yatay}.
+def dogrusal_trend(seri, alfa=0.05):
+    """En küçük kareler doğrusal trend + eğim için t-testi (A4.7).
+
+    BMK v0 K2.3: yorum anlamlılık sınamadan yön söylüyordu — oranı sabit bir
+    kanalda 30/30 tohumda "artan"/"azalan". Artık yön yalnız eğim anlamlıysa
+    (p < alfa) söylenir.
+    Args: seri (dönemlik değerler); alfa (anlamlılık düzeyi).
+    Returns: {egim (dönem başına değişim), kesim, se, t, p,
+              yorum: artan | azalan (anlamlı) | anlamlı trend yok | yatay | yetersiz veri}.
     """
     n = len(seri)
-    if n < 2:
+    if n < 3:
         return {"egim": 0.0, "kesim": seri[0] if seri else 0.0, "yorum": "yetersiz veri"}
     xs = list(range(n))
     mx, my = statistics.fmean(xs), statistics.fmean(seri)
@@ -130,8 +137,16 @@ def dogrusal_trend(seri):
     payda = sum((x - mx) ** 2 for x in xs) or 1e-9
     b = pay / payda
     a = my - b * mx
-    yorum = "yatay" if abs(b) < 1e-9 else ("artan" if b > 0 else "azalan")
-    return {"egim": round(b, 4), "kesim": round(a, 4), "yorum": yorum}
+    if abs(b) < 1e-9:
+        return {"egim": 0.0, "kesim": round(a, 4), "se": 0.0, "t": 0.0, "p": 1.0,
+                "yorum": "yatay"}
+    sse = sum((y - a - b * x) ** 2 for x, y in zip(xs, seri))
+    se = math.sqrt(sse / (n - 2) / payda)
+    t = b / se if se > 0 else math.copysign(float("inf"), b)
+    p = 0.0 if se == 0 else _iki_yonlu_t_p(t, n - 2)
+    yorum = ("artan" if b > 0 else "azalan") if p < alfa else "anlamlı trend yok"
+    return {"egim": round(b, 4), "kesim": round(a, 4), "se": round(se, 6),
+            "t": round(t, 3) if math.isfinite(t) else None, "p": p, "yorum": yorum}
 
 
 def duyarlilik_analizi(degerler, esik=3.0):

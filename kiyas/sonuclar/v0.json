@@ -90,7 +90,7 @@
         },
         {
           "kimlik": "K2.2",
-          "deger": 1.0,
+          "deger": 0.9667,
           "yon": ">=",
           "esik": 0.9,
           "gecti": true,
@@ -98,10 +98,10 @@
         },
         {
           "kimlik": "K2.3",
-          "deger": 1.0,
+          "deger": 0.0667,
           "yon": "<=",
           "esik": 0.1,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir: trend anlamlılık sınamadan yön söylüyor (elle yazılmış küçük girdide 0,0002 eğime 'artan' dedi, 29.09.2026)"
         },
         {
@@ -114,10 +114,10 @@
         },
         {
           "kimlik": "K2.5",
-          "deger": 0.0,
+          "deger": 1.0,
           "yon": ">=",
           "esik": 1.0,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir: kesinti_analizi çekirdekte var ama araç olarak açık değil (kod incelemesi, 29.09.2026)"
         }
       ],

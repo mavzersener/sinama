@@ -222,6 +222,14 @@ ARAC_UYARILARI = {
     "brifing_uret": ["belirsizlik notu zorunludur; ürün sınırlarını beyan "
                       "etmeden çıkamaz"],
     "risk_arazi": ["RTM risk faktörü türlerini sayar; çıktı olasılık değildir"],
+    # A4.7 — trend anlamlılık sınamalı; ITS açıldı (tek grup nedensellik değildir).
+    "trend": ["yön yalnız eğim anlamlıysa (p<0,05) söylenir; günlük seride haftalık "
+              "döngü/otokorelasyon p'yi iyimser yapar — ay_serisi ya da kesinti_analizi "
+              "ile doğrulayın"],
+    "kesinti_analizi": ["tek grup ITS nedensellik kanıtlamaz: kesintiyle eşzamanlı başka "
+                        "bir değişiklik (ör. bildirim kanalı) aynı etkiyi üretir; kontrol "
+                        "serisi ya da rakip açıklama sınaması gerekir",
+                        "Durbin-Watson 1,5–2,5 dışındaysa p ve güven aralıkları güvenilmez"],
     # A4.6 — yükselen sıcak nokta: anlamlılık tabanlı; sınırlar belgelendi.
     "yukselen_sicak_nokta": ["sıcaklık dönem içi anlamlılıkla (Poisson/NB, FDR) belirlenir; "
                              "aynı dönemde birkaç yüksek bölge varsa orta yükseklik "
@@ -602,7 +610,8 @@ ARAC_POLITIKALARI.update(_politika("analitik", (
     "esitlik_analizi", "oran_karsilastir", "mukerrer_magduriyet", "seri_eslestirme", "bolge_oran",
     "kde_yogunluk", "nni", "yakin_tekrar", "knox_tablosu",
     "kontrol_grafigi", "cusum", "bolge_anomali", "suc_oranlari", "ki_kare_testi",
-    "pearson", "endeks_hesapla", "degerlendirme_did", "wdd_testi", "benford",
+    "pearson", "endeks_hesapla", "degerlendirme_did", "wdd_testi", "kesinti_analizi",
+    "benford",
     "ag_analizi", "risk_skorla", "t_testi", "iki_oran_testi", "fisher_exact",
     "binomial_test", "mann_whitney", "anova", "kruskal_wallis", "spearman",
     "kendall", "phi", "randomizasyon_testi", "guc_analizi", "coklu_regresyon",

@@ -2,6 +2,38 @@
 
 ## [Yayımlanmamış]
 
+### Trend anlamlılığı + kesinti analizi (ITS) aracı (A4.7, BİLİMSEL DOĞRULUK)
+BMK v0: `trend` anlamlılık sınamadan yön söylüyordu — oranı sabit kanalda
+30/30 tohumda "artan"/"azalan" (K2.3); ITS çekirdekte vardı ama araç değildi
+ve yalnız önce/sonra ortalaması veriyordu, belirsizlik yoktu (K2.5).
+- `istatistik.dogrusal_trend`: eğim için t-testi (se, t, p); yön yalnız
+  p < alfa ise, değilse "anlamlı trend yok". Eski `[2,4,6,8]`/`[5,5,5]` altın
+  değerleri korunur.
+- `hipotez.t_ppf`: ters t (ikiye bölme; t(0,975; 10) = 2,2281).
+- `degerlendirme.kesinti_analizi`: segmentli OLS, X = [t, D, (t−t0)·D];
+  `seviye_degisimi`, `egim_degisimi`, `once_trend` için tahmin, se, p ve t tabanlı
+  GA; karşıolgusal son değer; Durbin–Watson (1,5–2,5 dışı uyarı); taraf başına
+  < 8 dönem uyarısı; n < 6'da yalnız betimsel; tek grup ITS'in nedensellik
+  kanıtlamadığı notu. Eski betimsel alanlar korunur.
+- Yeni araç `kesinti_analizi` (analitik politika): kayıtlar → gün/hafta/ay
+  dönem serisi → ITS; `kesinti_tarihi` veri aralığı dışında → KullanimHatasi;
+  `trend` ve `kesinti_analizi` için ARAC_UYARILARI (kayıt ≠ suç, eşzamanlı
+  değişiklik, kontrol serisi).
+- BMK v0: K2.3 1,00 → 0,067; K2.5 0 → 1. **K2.2 1,00 → 0,967** (öngörü "değişmez"
+  idi — yanlış; analitik güç %97,9, beklenen 0,6 kaçırma; keşif
+  `kiyas/kesif/a47_trend.py`). Geçen 10/15 → 12/15. v1 değişmedi.
+Aynı sınıf denetimi (0/0'dan çıkarım uydurma):
+- `regresyon.coklu_ols`: tam uyumda (sse ≤ 1e-20·sst) se/t/p/F None + not —
+  önce t = beta/1e-9 (y = 2x → t = 2·10⁹; gürültüde rastgele p). Sabit y → hata
+  (önce R² = 1,0).
+- `regresyon.lojistik`: yakınsamadığında (tipik: tam ayrışma) Wald z/p None;
+  not ayrışmayı adlandırır — önce ayrışan değişken için p = 0,94 ("etki yok").
+Testler: t_ppf, gürültüde yön iddiası yok, anlamlı artış, ITS seviye sıçraması
+GA'sı, değişimsiz GA sıfırı kapsar, GA genişliği = t kritik·se, tam uyum, sabit
+seri, otokorelasyon uyarısı, araç uçtan uca + aralık dışı tarih, OLS tam uyum,
+sabit y, lojistik ayrışma. 7 mutasyonun 7'si yakalandı (ilk turda GA çarpanı
+mutasyonu KAÇTI → genişlik testi eklendi).
+
 ### Yükselen sıcak nokta yeniden tasarımı (A4.6, BİLİMSEL DOĞRULUK)
 BMK v1: homojen veride %90 sahte sıcak nokta (K5.2), artan bölgeyi %70
 yakalama (K5.1). Keşif: "sıcak" bölgeler arası göreli yüzdelikti (tanım gereği

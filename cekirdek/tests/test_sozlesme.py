@@ -112,6 +112,7 @@ ARG_OZEL = {
     "yukselen_sicak_nokta": {"bolge_alan": "mahalle", "zaman_alan": "tarih",
                              "donem_sayisi": 4},
     "konsantrasyon_dagilimi": {"bolge_alan": "mahalle", "zaman_alan": "tarih"},
+    "kesinti_analizi": {"kesinti_tarihi": "2026-05-20", "donem": "gun"},
     "mekansal_regresyon": {"hedef": "zarar_tl", "degiskenler": ["adet"]},
     "risk_arazi": {"faktor_alan": "tur"},
     "bolge_oran": {"bolge_alan": "mahalle"},

@@ -109,25 +109,33 @@ def coklu_ols(X, y, adlar=None, vif_hesapla=True):
         return {"hata": "tekil tasarım matrisi; bir değişken diğerinin "
                         "doğrusal bileşimi (multicollinearity)"}
     ybar = statistics.fmean(y)
+    sst = sum((v - ybar) ** 2 for v in y)
+    if sst == 0:
+        return {"hata": "bağımlı değişken sabit (varyans 0): R² ve katsayı "
+                        "çıkarımı tanımsız"}
     y_tahmin = [sum(b * v for b, v in zip(beta, row)) for row in Xd]
     artik = [a - b for a, b in zip(y, y_tahmin)]
     sse = sum(e ** 2 for e in artik)
-    sst = sum((v - ybar) ** 2 for v in y)
-    r2 = 1 - sse / (sst or 1e-9)
+    # Tam uyum (A4.7): artıklar kayan nokta gürültüsü düzeyindeyse se ≈ 0 ve
+    # t = beta/se gürültüden uydurulur (ör. y = 2x'te sabit için p rastgele).
+    # Çıkarım tanımsızdır: t, p, F None; katsayılar ve R² yine raporlanır.
+    tam_uyum = sse <= 1e-20 * sst
+    r2 = 1 - sse / sst
     adj = 1 - (1 - r2) * (n - 1) / (n - p or 1e-9)
     ms_e = sse / (n - p)
-    F = ((sst - sse) / k) / (ms_e or 1e-9) if k > 0 else None
+    F = ((sst - sse) / k) / (ms_e or 1e-9) if k > 0 and not tam_uyum else None
     p_F = 1 - f_cdf(F, k, n - p) if F else None
     katsayilar = []
     for i in range(p):
         se = math.sqrt(max(0.0, ms_e * xtx_inv[i][i]))
-        t = beta[i] / (se or 1e-9)
+        t = None if tam_uyum else beta[i] / (se or 1e-9)
         katsayilar.append({
             "degisken": ("sabit" if i == 0 else
                          (adlar[i - 1] if adlar else f"x{i}")),
-            "beta": round(beta[i], 4), "se": round(se, 4),
-            "t": round(t, 3),
-            "p": round(min(1.0, 2 * (1 - t_cdf(abs(t), n - p))), 5)})
+            "beta": round(beta[i], 4), "se": 0.0 if tam_uyum else round(se, 4),
+            "t": None if t is None else round(t, 3),
+            "p": None if t is None else
+                 round(min(1.0, 2 * (1 - t_cdf(abs(t), n - p))), 5)})
     vif = {}
     for j in range(k) if vif_hesapla else []:
         digerleri = [c for c in range(k) if c != j]
@@ -141,6 +149,9 @@ def coklu_ols(X, y, adlar=None, vif_hesapla=True):
         vif[adlar[j] if adlar else f"x{j+1}"] = round(
             1 / max(1e-9, 1 - r2j), 2)
     notlar = []
+    if tam_uyum:
+        notlar.append("tam uyum (artıklar ≈ 0): se/t/p/F tanımsız — veri "
+                      "deterministik ilişki ya da aşırı uyum; çıkarım yapılamaz")
     if any(v > 10 for v in vif.values()):
         notlar.append("VIF>10: ciddi multicollinearity; katsayılar kararsız")
     return {"katsayilar": katsayilar, "r_kare": round(r2, 4),
@@ -208,18 +219,24 @@ def lojistik(X, y, adlar=None, maks_iter=25):
     katsayilar = []
     for i in range(p):
         se = math.sqrt(max(0.0, cov[i][i]))
-        z = beta[i] / (se or 1e-9)
+        # Yakınsamamış kestirimde (tipik: tam ayrışma) beta ve se birlikte
+        # şişer, Wald z → 0 ve p ≈ 1 "etki yok" der (Hauck-Donner) — A4.7'de
+        # tam ayrışan değişken için p = 0,94 ölçüldü. Çıkarım yapılmaz.
+        z = beta[i] / (se or 1e-9) if yakinsadi else None
         katsayilar.append({
             "degisken": ("sabit" if i == 0 else
                          (adlar[i - 1] if adlar else f"x{i}")),
             "beta": round(beta[i], 4), "se": round(se, 4),
-            "z": round(z, 3),
-            "p": round(min(1.0, 2 * (1 - norm_cdf(abs(z)))), 5),
+            "z": None if z is None else round(z, 3),
+            "p": None if z is None else
+                 round(min(1.0, 2 * (1 - norm_cdf(abs(z)))), 5),
             "odds_orani": round(math.exp(max(-20, min(20, beta[i]))), 3)})
     notlar = []
     if not yakinsadi:
-        notlar.append("maksimum iterasyonda yakınsamadı; sonuçları ihtiyatla "
-                      "kullanın (ayrılık/multicollinearity olabilir)")
+        notlar.append("maksimum iterasyonda yakınsamadı (tipik neden: tam/yarı "
+                      "ayrışma — bir değişken sınıfları kusursuz ayırıyor); "
+                      "Wald z/p tanımsız, katsayılar kararsız. Ayrışmayı "
+                      "çapraz tabloyla inceleyin")
     notlar.append("ilişki analizidir; tek başına tekil karar girdisi "
                   "yapılmamalıdır")
     return {"katsayilar": katsayilar,

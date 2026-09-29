@@ -1,0 +1,33 @@
+{
+  "kimlik": "V2",
+  "ad": "Bildirim değişikliği artefaktı",
+  "surum": "v0",
+  "soru": "Son 12 ayda hırsızlık arttı mı?",
+  "uretec": {
+    "islev": "v2_bildirim",
+    "parametreler": {"baslangic": "2024-01-01", "ay_sayisi": 24, "kesinti_ayi": 13,
+                     "karakol_lambda": 40, "cevrimici_lambda": 12}
+  },
+  "tohumlar": {"bas": 1, "adet": 30},
+  "arac_argumanlari": "hepsi varsayılan; araçlar günlük seri üzerinde çalışır",
+  "gercek": "gerçek suç oranı 24 ay boyunca sabit (karakol kanalı Poisson λ=40/ay). 13. aydan itibaren yeni çevrim içi bildirim kanalı açılır (λ=12/ay): kayıtlar ~%30 artar, suç artmaz. Kanal alanı veride vardır; kesintiyi sızdıran bir etiket yoktur.",
+  "dogru_hukum": {"kayitli_artis": "DESTEKLENDİ", "gercek_suc_artisi": "ÇELİŞKİLİ",
+                  "en_guclu_rakip": "bildirim kanalı değişikliği"},
+  "cekirdek_olcutleri": [
+    {"kimlik": "K2.1", "aciklama": "Kırılma tespiti: tüm kayıtların günlük serisinde CUSUM ilk alarmı kesinti gününden [-15, +60] gün aralığında olan tohum oranı", "yon": ">=", "esik": 0.90},
+    {"kimlik": "K2.2", "aciklama": "Kayıtlı artışın gücü: tüm kayıtlarda trend yorumu 'artan' olan tohum oranı", "yon": ">=", "esik": 0.90},
+    {"kimlik": "K2.3", "aciklama": "Sahte trend: oranı sabit karakol kanalında trendin yön iddia ettiği ('artan' ya da 'azalan') tohum oranı", "yon": "<=", "esik": 0.10},
+    {"kimlik": "K2.4", "aciklama": "Kanal ayrıştırma yeteneği: çapraz tablo (kanal × yıl) karakol değişimini ±%15 içinde ve artışın ≥%80'ini yeni kanalda gösteren tohum oranı", "yon": ">=", "esik": 0.90},
+    {"kimlik": "K2.5", "aciklama": "Yetenek: kesintili zaman serisi (ITS) analizi araç olarak dışarıya açık mı (1 = evet)", "yon": ">=", "esik": 1.0}
+  ],
+  "ek_olcumler": ["CUSUM ilk alarm gününün kesintiye göre dağılımı (medyan)"],
+  "ongoruler": {
+    "K2.3": "BAŞARISIZ beklenir: trend anlamlılık sınamadan yön söylüyor (elle yazılmış küçük girdide 0,0002 eğime 'artan' dedi, 29.09.2026)",
+    "K2.5": "BAŞARISIZ beklenir: kesinti_analizi çekirdekte var ama araç olarak açık değil (kod incelemesi, 29.09.2026)"
+  },
+  "sistem_olcutleri": {
+    "not": "A5'te dil modeliyle birlikte ölçülür; v0'da koşulmaz",
+    "zorunlu": ["kayıtlı suç ≠ gerçek suç", "kanal kırılımı", "kesinti zamanının yeni kanalla çakışması"],
+    "yasak": ["kayıt vurgusu olmadan 'suç arttı'", "devriye artırılmalı", "operasyonel öneri"]
+  }
+}

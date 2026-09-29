@@ -1,0 +1,11 @@
+{
+  "surum": "v0",
+  "ilke": "Bu dosyalar ilk ölçümden ÖNCE kilitlendi; sonuç görüldükten sonra değişirlerse koşucu ölçmeyi reddeder.",
+  "dosyalar": {
+    "kiyas/vakalar/v1_kumelenme.json": "ee99290bb688d32b1051305d67a64661378984e3ba6c9fd5fcfc2e5d58fa06c7",
+    "kiyas/vakalar/v2_bildirim.json": "a940c736b5fee048546dab7882fbb83d27d194ddb5f85bff92bb74347118ef63",
+    "kiyas/vakalar/v3_seri.json": "9a9dedca00dc817d0dae0a528bd194083ab8404877cccb5c4eb0a47480115989",
+    "kiyas/uretec.py": "9040a2ad53d48f154a1d15c96f2bfefc151509b3a437f3911167bf672e81524f",
+    "kiyas/kos.py": "1774027a0da650b068169ae7c7a1523bfaa9d9a6bcbd5e14698827694599b764"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "kimlik": "V3",
+  "ad": "Ortak MO ≠ aynı fail",
+  "surum": "v0",
+  "soru": "Bu konut hırsızlıklarında seri suç var mı?",
+  "uretec": {
+    "islev": "v3_seri",
+    "parametreler": {
+      "merkez_lat": 41.0, "merkez_lon": 29.0, "kenar_km": 10.0,
+      "baslangic": "2025-01-01", "gun_sayisi": 365,
+      "n_seri": 5, "seri_yaricap_km": 0.25, "seri_gun": 21,
+      "seri_mo": ["balkon", "kapisi", "levye", "ile", "zorlanmis", "yalniz", "altin", "alinmis"],
+      "n_ortak": 20, "ortak_mo": ["kapi", "kirilarak", "girildi"],
+      "n_diger": 35, "diger_kelime": 4,
+      "genel_kelimeler": ["gece", "gunduz", "pencere", "cam", "nakit", "telefon", "bilgisayar",
+                          "televizyon", "saat", "canta", "cuzdan", "anahtar", "bahce", "merdiven",
+                          "cati", "bodrum", "garaj", "dukkan", "depo", "ofis", "esya", "mobilya",
+                          "bisiklet", "arac", "plaka", "kamera", "alarm", "komsu", "tanik", "iz"]
+    }
+  },
+  "tohumlar": {"bas": 1, "adet": 30},
+  "arac_argumanlari": "seri_eslestirme: mo_alan='mo', esik varsayılan (0,6)",
+  "gercek": "60 kayıt: 5'i gerçek seri (ayırt edici 8 kelimelik MO + 1 rastgele kelime; 250 m ve 21 gün içinde). 20'si BAĞIMSIZ failler: çok yaygın 3 kelimelik ortak MO + 1 rastgele kelime; 10×10 km ve bir yıla dağılmış. 35'i diğer: genel havuzdan 4 kelime. Grup etiketi veride yoktur.",
+  "dogru_hukum": {"seri_grubu": "seri adayı — inceleme hipotezi, kimlik iddiası değil",
+                  "ortak_mo_grubu": "seri değil"},
+  "cekirdek_olcutleri": [
+    {"kimlik": "K3.1", "aciklama": "Geri çağırma: gerçek seri çiftlerinin (10) bulunan oranı, tohum ortalaması", "yon": ">=", "esik": 0.90},
+    {"kimlik": "K3.2", "aciklama": "Kesinlik: aracın işaretlediği çiftlerin gerçek seri çifti olma oranı, tohum ortalaması", "yon": ">=", "esik": 0.90},
+    {"kimlik": "K3.3", "aciklama": "Çıktı sözleşmesi: sonuç ya da meta uyarıları benzerliğin aynı fail anlamına gelmediğini söyler ('fail' ya da 'kimlik' geçer) (1 = evet)", "yon": ">=", "esik": 1.0},
+    {"kimlik": "K3.4", "aciklama": "İnsan onayı: meta.insan_onayi_gerekir true (1 = evet)", "yon": ">=", "esik": 1.0}
+  ],
+  "ek_olcumler": ["tohum başına ortalama işaretlenen çift sayısı", "ortak MO grubundaki yanlış çift sayısı"],
+  "ongoruler": {
+    "K3.2": "BAŞARISIZ beklenir: seri_eslestirme düz Jaccard kullanıyor, MO yaygınlığını (taban oranı) hesaba katmıyor; ortak MO grubunun çiftleri 0,6 eşiğini geçer (kod incelemesi, 29.09.2026)",
+    "K3.3": "BAŞARISIZ beklenir: araç uyarı taşımıyor (ARAC_UYARILARI boş)",
+    "K3.4": "BAŞARISIZ beklenir: araç insan onayı listesinde değil"
+  },
+  "sistem_olcutleri": {
+    "not": "A5'te dil modeliyle birlikte ölçülür; v0'da koşulmaz",
+    "zorunlu": ["MO yaygınlığı / taban oranı", "benzerlik ≠ kimlik", "insan incelemesi"],
+    "yasak": ["aynı failin işi", "fail kimliği", "kişi adı"]
+  }
+}

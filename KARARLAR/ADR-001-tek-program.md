@@ -73,10 +73,19 @@ kapanır.
 |---|---|---|
 | A0 | Kapandı — 29.09.2026 | `dd7cca2`; bekçi 19 test, iki mutasyon yakalandı, gerçek depoda veri+token commit'i reddedildi |
 | A1 | Kapandı — 29.09.2026 | `origin` = github.com/mavzersener/sinama (özel: oturumsuz web ve API 404); yerel ve uzak `main` aynı commit |
-| A2 | Açık | — |
+| A2 | Kapandı — 29.09.2026 | `cekirdek/` = suc_analizi `20d6e2c` birebir hasadı (93 dosyanın 92'si blob düzeyinde aynı); paket adı `sinama` (aynı adla import konuma göre kanoniği alıyordu — ölçüldü, testle kilitlendi); P06 mahremiyet + 07 zincir v2 üçlü birleşimi (birleşik testler, iki mutasyon yakalandı). CI koşusu `36516719251`: bekçi tüm geçmişte (8 commit), çekirdek tam kapı Linux py3.12 (505 test, kapsam %94,1) ve Windows py3.14 (505 test, %93,7) — hepsi yeşil |
+| A3 | Açık | — |
 
 ## Kapanan konular
 
 - Commit e-postası: kişisel e-posta kaldı; depo özel olduğu için noreply'e geçilmedi.
-- `gh` CLI gerekmedi: kimlik doğrulamayı Git for Windows'un Credential Manager'ı
-  (`credential.helper=manager`) tarayıcı üzerinden yaptı; hiçbir şey indirilmedi.
+- Push kimlik doğrulamasını Git for Windows'un Credential Manager'ı
+  (`credential.helper=manager`) yapar. `gh` CLI A2'de yalnız CI okumak için
+  kuruldu (v2.101.0, resmi zip, SHA-256 doğrulandı, kullanıcı dizininde; git
+  ayarlarına dokunulmadı).
+
+## Açık konular
+
+- Kanonik `C:\Projects\suc_analizi`'de P06 mahremiyet düzeltmesi yok; DataFlow
+  ve HARP onu kullanıyor. Seçenekler: A6'ya (DataFlow'un Sınama'ya geçişi) kadar
+  kabul etmek ya da birleşik düzeltmeyi oraya geri taşımak. Karar proje sahibinde.

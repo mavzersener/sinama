@@ -7,7 +7,8 @@ hipotezi, rakip açıklamaları ve "bilinmeyen" seçeneğini sınanabilir biçim
 uygun yöntemleri kendisi seçer ve sonucu kanıtı, belirsizliği ve en güçlü rakip
 açıklamasıyla birlikte sunar.
 
-> **Durum: A2 — çekirdek hasadı.** A0 (iskelet) ve A1 (özel GitHub deposu) kapandı.
+> **Durum: A3 — Bilimsel Muhakeme Kıyası v0.** Çekirdek hasat edildi (`cekirdek/`,
+> Python paketi `sinama`); CI Linux ve Windows'ta yeşil.
 > Karar: [KARARLAR/ADR-001](KARARLAR/ADR-001-tek-program.md) ·
 > Hasat defteri: [HASAT.md](HASAT.md) ·
 > Yapay zekâ ajanları için: [AGENTS.md](AGENTS.md)

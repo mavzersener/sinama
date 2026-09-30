@@ -50,26 +50,35 @@ jobs:
     # BMK kapı DEĞİLDİR (başarısız ölçüt bir bulgudur); burada yalnız ön-kayıt
     # kilidinin sağlamlığı ve yeniden ölçümün kayıtlı sonuçla BİREBİR aynı olduğu
     # denetlenir. Kayıtlı sonuç Windows/py3.14'te üretildi; burada Linux/py3.12
-    # — platformlar arası tekrar üretilebilirlik.
-    name: BMK — kilit ve tekrar üretilebilirlik
+    # — platformlar arası tekrar üretilebilirlik. Sürüm başına ayrı iş (paralel):
+    # v3–v5 Rehberli akışı yüzlerce kez koşar; tek iş 15 dakikayı aşıyordu (v5).
+    name: BMK ${{ matrix.surum }} — kilit ve tekrar üretilebilirlik
     needs: bekci
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - surum: v0
+            kosucu: kiyas/kos.py
+          - surum: v1
+            kosucu: kiyas/v1/kos_v1.py
+          - surum: v2
+            kosucu: kiyas/v2/kos_v2.py
+          - surum: v3
+            kosucu: kiyas/v3/kos_v3.py
+          - surum: v4
+            kosucu: kiyas/v4/kos_v4.py
+          - surum: v5
+            kosucu: kiyas/v5/kos_v5.py
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
         with:
           python-version: "3.12"
-      - name: Kilit + yeniden ölçüm = kayıtlı sonuç (v0)
-        run: python kiyas/kos.py --dogrula
-      - name: Kilit + yeniden ölçüm = kayıtlı sonuç (v1)
-        run: python kiyas/v1/kos_v1.py --dogrula
-      - name: Kilit + yeniden ölçüm = kayıtlı sonuç (v2)
-        run: python kiyas/v2/kos_v2.py --dogrula
-      - name: Kilit + yeniden ölçüm = kayıtlı sonuç (v3)
-        run: python kiyas/v3/kos_v3.py --dogrula
-      - name: Kilit + yeniden ölçüm = kayıtlı sonuç (v4)
-        run: python kiyas/v4/kos_v4.py --dogrula
+      - name: Kilit + yeniden ölçüm = kayıtlı sonuç
+        run: python ${{ matrix.kosucu }} --dogrula
 
   cekirdek:
     name: çekirdek tam kapı (${{ matrix.os }}, py${{ matrix.python }})

@@ -1,0 +1,166 @@
+{
+  "surum": "v5",
+  "kilit": {
+    "kiyas/v5/vakalar/v11_yayilim.json": "61c45add7de3668b8592d640714a134f3cadfc9eef819550c70e563e1ab87b54",
+    "kiyas/v5/uretec_v5.py": "92bf214edaaa6efb924363a37651911d60e98c7cc192af753950b579a2f3d444",
+    "kiyas/v5/kos_v5.py": "9e021d86d5f54c3ab4fbd0e72f3fe75a19b69efa7ede6c39749f2c782641f829",
+    "kiyas/v4/kos_v4.py": "f185eea9dfefdaf58838f1c4389a6d3a642a58a76a9c8e6ae97aafde8645a7b1",
+    "kiyas/v4/uretec_v4.py": "2b6cf2113550afed08a72179b915eeec6128bd6503229af56c2013b98d2f4ee7",
+    "kiyas/v3/kos_v3.py": "8fce57881e1d4d17075c2ffe30f4b4041d3057aaf9ceaf35f1510e341c699a2c",
+    "kiyas/v3/uretec_v3.py": "bce709f30a86580e73720f2107106b2be63590504afbb23c3f5cc9b3d39e0233",
+    "kiyas/v2/uretec_v2.py": "d124f16ed19356faec23c5b7460e77ae75ab4c6c91a12c1d6c4941b7d66860d4",
+    "kiyas/uretec.py": "9040a2ad53d48f154a1d15c96f2bfefc151509b3a437f3911167bf672e81524f",
+    "kiyas/kos.py": "1774027a0da650b068169ae7c7a1523bfaa9d9a6bcbd5e14698827694599b764"
+  },
+  "ortam": {
+    "python": "3.14.0",
+    "sistem": "Windows"
+  },
+  "vakalar": [
+    {
+      "kimlik": "V11",
+      "ad": "Yayılım çarpanı: aşırı yayılımda koruma, Poisson veride güç (hüküm sağlamlığı v1.2)",
+      "tohum_adedi": {
+        "kismi_artefakt": 60,
+        "karma": 60,
+        "gercek_artis_kucuk_kanal": 200,
+        "saf_artefakt_nb": 60,
+        "kismi_artefakt_nb": 60,
+        "karma_nb": 60,
+        "gercek_artis_kucuk_kanal_nb": 60
+      },
+      "olcutler": [
+        {
+          "kimlik": "K11.1",
+          "deger": 1.0,
+          "yon": ">=",
+          "esik": 0.9,
+          "gecti": true,
+          "ongoru": "GEÇER beklenir (v4 K10.2 1,00; keşif 60/60)"
+        },
+        {
+          "kimlik": "K11.2",
+          "deger": 0.95,
+          "yon": ">=",
+          "esik": 0.9,
+          "gecti": true,
+          "ongoru": "GEÇER beklenir (v4 K10.4 0,967; keşif 60/60)"
+        },
+        {
+          "kimlik": "K11.3",
+          "deger": 0.92,
+          "yon": ">=",
+          "esik": 0.88,
+          "gecti": true,
+          "ongoru": "BAŞARISIZ beklenir (hesap ≈ 0,83–0,90): v1.1'in φ'si (en büyük oran, ≥ 1) Poisson veride yukarı yanlı — keşif 50/60, v4 27/30"
+        },
+        {
+          "kimlik": "K11.4",
+          "deger": 1.0,
+          "yon": ">=",
+          "esik": 0.9,
+          "gecti": true,
+          "ongoru": "GEÇER beklenir (keşif: DESTEKLENDİ 0/60)"
+        },
+        {
+          "kimlik": "K11.5",
+          "deger": 1.0,
+          "yon": ">=",
+          "esik": 0.9,
+          "gecti": true,
+          "ongoru": "GEÇER beklenir (keşif: DESTEKLENDİ 0/60)"
+        },
+        {
+          "kimlik": "K11.6",
+          "deger": 0.95,
+          "yon": ">=",
+          "esik": 0.9,
+          "gecti": true,
+          "ongoru": "GEÇER beklenir (hesap ≈ 0,95; keşif 3/60 aşırı iddia)"
+        },
+        {
+          "kimlik": "K11.7",
+          "deger": 0.0,
+          "yon": ">=",
+          "esik": 1.0,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir: v1.1 olcum'unda 'yayilim' var, 'yayilim_p' yok (0)"
+        }
+      ],
+      "ek_olcumler": {
+        "kategori_dagilimi": {
+          "kismi_artefakt": {
+            "BELİRSİZ": 47,
+            "KIRILGAN": 13
+          },
+          "karma": {
+            "DESTEKLENDİ": 3,
+            "KIRILGAN": 57
+          },
+          "gercek_artis_kucuk_kanal": {
+            "BELİRSİZ": 1,
+            "DESTEKLENDİ": 184,
+            "KIRILGAN": 15
+          },
+          "saf_artefakt_nb": {
+            "BELİRSİZ": 26,
+            "KIRILGAN": 33,
+            "ÇELİŞKİLİ": 1
+          },
+          "kismi_artefakt_nb": {
+            "BELİRSİZ": 14,
+            "KIRILGAN": 46
+          },
+          "karma_nb": {
+            "BELİRSİZ": 2,
+            "DESTEKLENDİ": 3,
+            "KIRILGAN": 55
+          },
+          "gercek_artis_kucuk_kanal_nb": {
+            "BELİRSİZ": 12,
+            "DESTEKLENDİ": 13,
+            "KIRILGAN": 35
+          }
+        },
+        "r_bildirim_durumu": {
+          "kismi_artefakt": {
+            "destekleniyor": 47,
+            "çözülmedi": 13
+          },
+          "karma": {
+            "dışlandı": 3,
+            "çözülmedi": 57
+          },
+          "gercek_artis_kucuk_kanal": {
+            "dışlandı": 184,
+            "uygulanamaz": 1,
+            "çözülmedi": 15
+          },
+          "saf_artefakt_nb": {
+            "destekleniyor": 16,
+            "uygulanamaz": 11,
+            "çözülmedi": 33
+          },
+          "kismi_artefakt_nb": {
+            "destekleniyor": 9,
+            "uygulanamaz": 5,
+            "çözülmedi": 46
+          },
+          "karma_nb": {
+            "destekleniyor": 1,
+            "dışlandı": 3,
+            "uygulanamaz": 1,
+            "çözülmedi": 55
+          },
+          "gercek_artis_kucuk_kanal_nb": {
+            "dışlandı": 20,
+            "uygulanamaz": 12,
+            "çözülmedi": 28
+          }
+        },
+        "nb_guc_destek_orani": 0.2167,
+        "hata_ya_da_yok": {}
+      }
+    }
+  ]
+}

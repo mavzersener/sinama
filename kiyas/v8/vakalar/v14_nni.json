@@ -1,0 +1,58 @@
+{
+  "kimlik": "V14",
+  "ad": "NNI: rastgele desende yön iddiası yok, yaygın kümelenmede güç, yerel odakta dürüst sınır",
+  "surum": "v8",
+  "dayanak": "BMK v0 bulgusu 6 (K1.1): NNI'nın varsayılanı kenar düzeltmesiz ve dağınık yönüne yanlı; yerel kümeye duyarsız. v0 yalnız kümelenme yönünü ölçtü; tasarım keşfi (kiyas/kesif/a415_nni_cusum.py, tohum 900–999) rastgele desende 'anlamlı düzgün dağılım' iddiasının n=200'de %21, n=50'de %40 olduğunu gösterdi. Küçük örneklem kümelenme şiddeti (σ = 250 m) keşifte yanın gücü etkilediği aralıktan seçildi (σ 200–350 m taraması).",
+  "arac": "nni",
+  "cikti_sozlesmesi": {
+    "girdi": "satirlar (lat, lon); diğer argümanlar VARSAYILAN (sade kullanıcının göreceği hâl)",
+    "okunan_alanlar": "sonuc.nni, sonuc.p; meta.uyarilar",
+    "yon_iddiasi": "p < 0,05 (nni < 1 kümelenme, nni > 1 düzgün dağılım)",
+    "hata": "araç hata verirse o tohumda iddia YOK, kümelenme YOK, uyarı YOK sayılır"
+  },
+  "uretec": {
+    "islev": "uretec_v8.v14_noktalar",
+    "ortak_parametreler": {"merkez_lat": 41.0135, "merkez_lon": 29.0179, "kenar_km": 3.0, "n": 200},
+    "aciklama": "3×3 km kutu; csr: tekdüze; kume: tekdüze ebeveynler çevresinde normal (σ km) çocuklar (Thomas süreci; kutu dışına düşen çocuk yeniden çekilir); odak: tek odak (σ km) + tekdüze arka plan"
+  },
+  "senaryolar": {
+    "csr": {"aciklama": "200 nokta tamamen rastgele", "tohumlar": {"bas": 10101, "adet": 100},
+            "degisen": {"desen": "csr"}},
+    "csr_kucuk": {"aciklama": "50 nokta tamamen rastgele", "tohumlar": {"bas": 10101, "adet": 100},
+                  "degisen": {"desen": "csr", "n": 50}},
+    "kume": {"aciklama": "yaygın kümelenme: 10 ebeveyn × 20 çocuk, σ = 150 m, kutu içinde", "tohumlar": {"bas": 10101, "adet": 100},
+             "degisen": {"desen": "kume", "ebeveyn": 10, "sigma_km": 0.15}},
+    "kume_kucuk": {"aciklama": "orta şiddette yaygın kümelenme, 50 nokta: 5 ebeveyn × 10 çocuk, σ = 250 m, kutu içinde", "tohumlar": {"bas": 10101, "adet": 100},
+                   "degisen": {"desen": "kume", "ebeveyn": 5, "sigma_km": 0.25, "n": 50}},
+    "odak": {"aciklama": "yerel odak: %30 tek odakta (σ = 150 m), %70 tekdüze (v0 V1 odaklı)", "tohumlar": {"bas": 10101, "adet": 100},
+             "degisen": {"desen": "odak", "odak_orani": 0.30, "sigma_km": 0.15}}
+  },
+  "tohum_ayrimi": "v7 10001–10100; v8 10101–10200. Tasarım keşfi 900–9999 (README kural 6).",
+  "dogru_hukum": {
+    "csr": "yön iddiası YOK (ne kümelenme ne düzgün dağılım); NNI ≈ 1",
+    "csr_kucuk": "yön iddiası YOK",
+    "kume": "anlamlı kümelenme",
+    "kume_kucuk": "anlamlı kümelenme",
+    "odak": "NNI küresel bir ölçüdür; yerel odağı seyreltebilir — çıktı bunu söylemeli ve yerel soru için sicak_nokta_gi'yi göstermeli"
+  },
+  "cekirdek_olcutleri": [
+    {"kimlik": "K14.1", "senaryo": "csr", "aciklama": "Yön iddiası (p < 0,05, iki yön) oranı", "yon": "<=", "esik": 0.10},
+    {"kimlik": "K14.2", "senaryo": "csr", "aciklama": "Ortalama NNI'nın 1'den mutlak sapması (yan)", "yon": "<=", "esik": 0.03},
+    {"kimlik": "K14.3", "senaryo": "csr_kucuk", "aciklama": "Yön iddiası (p < 0,05, iki yön) oranı", "yon": "<=", "esik": 0.10},
+    {"kimlik": "K14.4", "senaryo": "kume", "aciklama": "Anlamlı kümelenme (nni < 1, p < 0,05) oranı", "yon": ">=", "esik": 0.90},
+    {"kimlik": "K14.5", "senaryo": "kume_kucuk", "aciklama": "Anlamlı kümelenme (nni < 1, p < 0,05) oranı", "yon": ">=", "esik": 0.80},
+    {"kimlik": "K14.6", "senaryo": "odak", "aciklama": "Çıktının meta uyarılarında yerel odak duyarsızlığı uyarısı (metin 'yerel' içerir) bulunan tohum oranı", "yon": ">=", "esik": 1.0}
+  ],
+  "uygulama_plani": "nni varsayılanı: Donnelly kenar düzeltmesi AÇIK; alan ve çevre verilmezse noktaların sınır kutusu tekdüze aralığın yansız tahminiyle ((n+1)/(n−1)) genişletilir; çıktıya yerel duyarsızlık uyarısı (yerel soru için sicak_nokta_gi). Keşifte (900–999, aynı gövde çekirdek dışında): csr iddia 0,02, ort 1,002; csr_kucuk 0,03; kume 1,00; kume_kucuk 0,92.",
+  "uygulama_ongorusu": {"K14.1": "0,00–0,06", "K14.2": "≤ 0,01", "K14.3": "0,00–0,07", "K14.4": "1,00",
+                        "K14.5": "0,85–0,97", "K14.6": "1",
+                        "v0": "K1.1 0,233 → 0,40–0,60 (yine KALIR: NNI küresel ölçü, yerel odağı seyreltir); K1.2 ≤ 0,03 (geçer)"},
+  "ongoruler": {
+    "K14.1": "BAŞARISIZ beklenir (başlangıç): kenar düzeltmesiz varsayılan dağınık yönüne yanlı; keşifte 0,21",
+    "K14.2": "BAŞARISIZ beklenir (başlangıç): keşifte ortalama NNI 1,043",
+    "K14.3": "BAŞARISIZ beklenir (başlangıç): küçük n'de kenar etkisi büyür; keşifte 0,40",
+    "K14.4": "GEÇER beklenir (başlangıç): güçlü yaygın kümelenme; keşifte 1,00 — uygulamada KORUNMALI",
+    "K14.5": "BAŞARISIZ beklenir (başlangıç, sınırda): dağınık yönüne yan orta kümelenmeyi maskeliyor; keşifte 0,78",
+    "K14.6": "BAŞARISIZ beklenir (başlangıç): araç yerel duyarsızlık uyarısı taşımıyor (kod incelemesi)"
+  }
+}

@@ -22,7 +22,7 @@ Programın bilimsel gücünü **ölçmek** için gerçeği önceden bilinen sent
    görünür. İlk ölçüm `sonuclar/v0_ilk_olcum.json`'da dondurulmuştur (önce/sonra için).
 6. **Tohum ayrımı.** Her sürümün ölçüm tohumları ayrıdır (v0 1–30, v1 101–130,
    v2 201–230, v3 301–330, v4 401–430, v5 501–700, v6 701–880; 900'ün altı tükendi →
-   v7'den itibaren 10000+). Bir ön-kayıttan sonra yapılan YÖNTEM TASARIMI keşfi yalnız
+   v7'den itibaren 10000+: v7 10001–10100, v8 10101–10200). Bir ön-kayıttan sonra yapılan YÖNTEM TASARIMI keşfi yalnız
    900–9999 tohumlarıyla yapılır; ölçüm tohumları tasarımda kullanılmaz — yöntem ölçüm
    verisine uydurulursa önce/sonra farkı iyimser yanlı olur.
 
@@ -57,6 +57,12 @@ Programın bilimsel gücünü **ölçmek** için gerçeği önceden bilinen sent
 - **v7** (`v7/`): V13 ETKİ — müdahale değerlendirmesi: gerçek etki, tarih etkisi (genel
   düşüş), ortalamaya dönüş, yer değiştirme, kontrolsüz tavan, etkisiz (Poisson ve aşırı
   yayılımlı). Tohum 10001–10100.
+- **v8** (`v8/`): v0'ın açık iki aracı, varsayılan argümanlarla. V14 NNI — rastgele
+  desende yön iddiası (iki yön; v0 yalnız kümelenme yönünü ölçmüştü) ve yan, güçlü ve
+  orta şiddette yaygın kümelenmede güç, yerel odakta "küresel ölçü" uyarısı. V15 CUSUM —
+  değişimsiz seride (Poisson, aylar arası aşırı yayılımlı, seyrek) seri boyunca yanlış
+  alarm, %30 ve %50 kalıcı artışta zamanında ilk alarm, aşırı yayılımlı artışta önce
+  alarm olmaması. Tohum 10101–10200.
 
 ## Düzeyler
 

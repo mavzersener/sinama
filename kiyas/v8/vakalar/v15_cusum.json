@@ -1,0 +1,61 @@
+{
+  "kimlik": "V15",
+  "ad": "CUSUM: değişim yokken seri boyunca yanlış alarm denetimi, kalıcı artışta zamanında alarm",
+  "surum": "v8",
+  "dayanak": "BMK v0 bulgusu 5 (K2.1): CUSUM varsayılanları bu ölçeğe ayarlı değil. v0 ölçütü (ilk alarm kesintiye göre [−15, +60] gün) yanlış alarm oranını ayrıca ölçmüyordu; tasarım keşfi (kiyas/kesif/a415_nni_cusum.py, tohum 900–999) DEĞİŞİMSİZ 24 aylık seride aracın %84 (aşırı yayılımlıda %100) en az bir alarm verdiğini gösterdi.",
+  "arac": "cusum",
+  "cikti_sozlesmesi": {
+    "girdi": "satirlar (tarih); diğer argümanlar VARSAYILAN",
+    "okunan_alanlar": "sonuc: alarm listesi; ilk alarmın 'gun' alanı (serinin ilk kayıt gününden itibaren gün)",
+    "hata": "araç hata verirse o tohumda alarm YOK sayılır"
+  },
+  "uretec": {
+    "islev": "uretec_v8.v15_seri",
+    "ortak_parametreler": {"baslangic": "2024-01-01", "ay_sayisi": 24, "kesinti_ayi": 13, "lambda": 40,
+                           "carpan_sonra": 1.0},
+    "aciklama": "günlük kayıtlar; ay başına Poisson(λ), kesinti ayından (2025-01) sonra λ × carpan_sonra; yayilim_k: ay başına gama(k) karışımı (aylar arası heterojenlik)"
+  },
+  "senaryolar": {
+    "sabit": {"aciklama": "24 ay değişim yok (λ = 40/ay)", "tohumlar": {"bas": 10101, "adet": 100}, "degisen": {}},
+    "sabit_nb": {"aciklama": "değişim yok; aylar arası aşırı yayılım (k = 8)", "tohumlar": {"bas": 10101, "adet": 100},
+                 "degisen": {"yayilim_k": 8}},
+    "sabit_dusuk": {"aciklama": "değişim yok; seyrek seri (λ = 12/ay)", "tohumlar": {"bas": 10101, "adet": 100},
+                    "degisen": {"lambda": 12}},
+    "artis30": {"aciklama": "13. aydan itibaren kalıcı %30 artış (v0 V2'nin toplamıyla aynı)", "tohumlar": {"bas": 10101, "adet": 100},
+                "degisen": {"carpan_sonra": 1.3}},
+    "artis50": {"aciklama": "13. aydan itibaren kalıcı %50 artış", "tohumlar": {"bas": 10101, "adet": 100},
+                "degisen": {"carpan_sonra": 1.5}},
+    "artis30_nb": {"aciklama": "kalıcı %30 artış; aylar arası aşırı yayılım (k = 8)", "tohumlar": {"bas": 10101, "adet": 100},
+                   "degisen": {"carpan_sonra": 1.3, "yayilim_k": 8}}
+  },
+  "tohum_ayrimi": "v7 10001–10100; v8 10101–10200. Tasarım keşfi 900–9999 (README kural 6).",
+  "dogru_hukum": {
+    "sabit": "alarm YOK (değişim yok)",
+    "sabit_nb": "alarm YOK (heterojenlik kalıcı artış değildir)",
+    "sabit_dusuk": "alarm YOK",
+    "artis30": "kesintiden sonra alarm; kesintiden önce alarm YOK",
+    "artis50": "kesintiden sonra ve daha hızlı alarm",
+    "artis30_nb": "kesintiden önce alarm YOK (heterojenlikte güç düşük olabilir; önce yanlış alarm olmamalı)"
+  },
+  "cekirdek_olcutleri": [
+    {"kimlik": "K15.1", "senaryo": "sabit", "aciklama": "En az bir alarm veren tohum oranı (seri düzeyinde yanlış alarm)", "yon": "<=", "esik": 0.10},
+    {"kimlik": "K15.2", "senaryo": "sabit_nb", "aciklama": "En az bir alarm veren tohum oranı", "yon": "<=", "esik": 0.10},
+    {"kimlik": "K15.3", "senaryo": "sabit_dusuk", "aciklama": "En az bir alarm veren tohum oranı", "yon": "<=", "esik": 0.10},
+    {"kimlik": "K15.4", "senaryo": "artis30", "aciklama": "İlk alarmı kesintiye göre [−15, +180] gün aralığında olan tohum oranı", "yon": ">=", "esik": 0.80},
+    {"kimlik": "K15.5", "senaryo": "artis50", "aciklama": "İlk alarmı kesintiye göre [−15, +90] gün aralığında olan tohum oranı", "yon": ">=", "esik": 0.80},
+    {"kimlik": "K15.6", "senaryo": "artis30_nb", "aciklama": "Kesintiden 15 günden daha önce alarm VERMEYEN tohum oranı (alarm yok dahil)", "yon": ">=", "esik": 0.90}
+  ],
+  "uygulama_plani": "cusum varsayılanı: kendinden başlayan CUSUM — her dönem ÖNCEKİ dönemlerin ortalaması ve sapmasıyla standartlaştırılır (t → normal dönüşümü; ısınma: 8 hafta / 6 ay), k = 0,5; eşik seri düzeyinde kalibre (değişim yokken seri boyunca en az bir alarm ≈ %5; bağımsız N(0,1) adımlarla Monte Carlo, sabit tohum); dönem otomatik: aylık sayımlarda ardışık-fark yayılım testi (tek basamağa dayanıklı, Poisson Monte Carlo) p < 0,05 ise ay, değilse hafta. Alarm 'gun' alanı dönemin son günü. Keşifte (900–999, aynı gövde çekirdek dışında): sabit 0,03; sabit_nb 0,07; sabit_dusuk 0,07; artis30 [−15,+180] 0,77; artis50 [−15,+90] 0,93; artis30_nb önce 0,00.",
+  "uygulama_ongorusu": {"K15.1": "0,00–0,07", "K15.2": "0,02–0,12 (sınırda)", "K15.3": "0,02–0,12 (sınırda)",
+                        "K15.4": "0,68–0,85 (sınırda; KALABİLİR — 24 aylık seride %30 artışın bilgi sınırı)",
+                        "K15.5": "0,85–0,98", "K15.6": "0,95–1,00",
+                        "v0": "K2.1 0,467 → 0,35–0,60 (yine KALIR: [−15, +60] penceresi bu gürültüde bilgi sınırının ötesinde)"},
+  "ongoruler": {
+    "K15.1": "BAŞARISIZ beklenir (başlangıç): tüm seri ortalaması ve günlük k = 0,5σ, h = 5σ kalibre değil; keşifte 0,84",
+    "K15.2": "BAŞARISIZ beklenir (başlangıç): keşifte 1,00",
+    "K15.3": "BAŞARISIZ beklenir (başlangıç): keşifte 0,98",
+    "K15.4": "BAŞARISIZ beklenir (başlangıç): keşifte 0,66 (önce alarm 0,16)",
+    "K15.5": "BAŞARISIZ beklenir (başlangıç): keşifte 0,71",
+    "K15.6": "BAŞARISIZ beklenir (başlangıç): keşifte 0,33"
+  }
+}

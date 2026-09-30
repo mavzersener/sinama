@@ -1,0 +1,15 @@
+{
+  "surum": "v8",
+  "ilke": "Bu dosyalar ilk v8 ölçümünden ve NNI/CUSUM uygulamasından ÖNCE kilitlendi; değişirlerse koşucu ölçmeyi reddeder. v0/v3 bağımlılıkları dahildir.",
+  "dosyalar": {
+    "kiyas/v8/vakalar/v14_nni.json": "sha256:db1155b5:cb5d6b12:1634fed3:03a7228e:03e9f37b:5f64bba4:bcc53487:720783c4",
+    "kiyas/v8/vakalar/v15_cusum.json": "sha256:926318bf:fc2fce51:d2f75a9f:0f16189f:2d1394bc:2e151123:03061578:d624e780",
+    "kiyas/v8/uretec_v8.py": "sha256:767d611e:15ee0992:3b071f09:d529822c:c11e1444:4cf43f16:526b002c:f5d3c306",
+    "kiyas/v8/kos_v8.py": "sha256:495e025e:a095dde5:4d6fc3a2:a05c030b:df14cd73:28ac4e9a:61d286af:1f6a63ee",
+    "kiyas/v3/kos_v3.py": "sha256:8fce5788:1e1d4d17:075c2ffe:30f4b404:1d3057aa:f9ceaf35:f1510e34:1c699a2c",
+    "kiyas/v3/uretec_v3.py": "sha256:bce709f3:0a86580e:73720f21:07106b2b:e6359050:4afbb23c:3f5cc9b3:d39e0233",
+    "kiyas/v2/uretec_v2.py": "sha256:d124f16e:d19356fa:ec23c5b7:460e77ae:75ab4c6c:91a12c1d:6c4941b7:d66860d4",
+    "kiyas/uretec.py": "sha256:9040a2ad:53d48f15:4a1d15c9:6f2bfefc:151509b3:a437f391:1167bf67:2e81524f",
+    "kiyas/kos.py": "sha256:1774027a:0da650b0:68169ae7:c7a1523b:faa9d9a6:bcbd5e14:69882769:4599b764"
+  }
+}

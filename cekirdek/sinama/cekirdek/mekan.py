@@ -231,7 +231,7 @@ def koruma_alani(noktalar, merkez, yaricap_km):
             if haversine_km(p[0], p[1], merkez[0], merkez[1]) <= yaricap_km]
 
 
-def nni_test(noktalar, alan_km2=None, kenar_duzeltme=False, cevre_km=None):
+def nni_test(noktalar, alan_km2=None, kenar_duzeltme=True, cevre_km=None):
     """
     NNI + z-istatistiği (Faz 3.3): kümelenmeyi test edilebilir hale getirir.
     SE = 0.26136 / sqrt(n^2 / A); z = (d_göz - d_bek) / SE.
@@ -245,6 +245,12 @@ def nni_test(noktalar, alan_km2=None, kenar_duzeltme=False, cevre_km=None):
       d_bek' = 0.5/sqrt(n/A) + (0.0514 + 0.041/sqrt(n)) * (P/n)
       Var    = 0.07*A/n^2 + 0.037*P*sqrt(A/n^5)
     cevre_km verilmezse sınır kutusu çevresi kullanılır.
+
+    A4.15: kenar düzeltmesi VARSAYILAN (düzeltmesiz test rastgele desende %21,
+    n=50'de %40 sahte "düzgün dağılım" iddia ediyordu — BMK v8). Alan/çevre
+    noktaların sınır kutusundan tahmin edilirken kutu kenarları (n+1)/(n-1) ile
+    büyütülür: n tekdüze noktanın aralığı gerçek aralığı beklenen (n-1)/(n+1)
+    oranında küçümser (yansız aralık tahmini).
     Dönüş: {'nni', 'z', 'p', 'yorum', 'kenar_duzeltme', 'beklenen'}
     """
     n = len(noktalar)
@@ -252,8 +258,9 @@ def nni_test(noktalar, alan_km2=None, kenar_duzeltme=False, cevre_km=None):
         return None
     min_lat, min_lon, max_lat, max_lon = sinir_kutusu(noktalar)
     ort_lat = math.radians((min_lat + max_lat) / 2)
-    boy = (max_lat - min_lat) * 110.574
-    en = (max_lon - min_lon) * 111.320 * math.cos(ort_lat)
+    yansiz = (n + 1) / (n - 1)   # tekdüze aralığın yansız tahmini
+    boy = (max_lat - min_lat) * 110.574 * yansiz
+    en = (max_lon - min_lon) * 111.320 * math.cos(ort_lat) * yansiz
     if alan_km2 is None:
         alan_km2 = max(en * boy, 1e-9)
     if cevre_km is None:

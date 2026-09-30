@@ -335,16 +335,17 @@ def _(a):
 
 
 
-@arac("nni", "NNI + z-testi ile kümelenme anlamlılığı (kenar_duzeltme=true "
-      "ile Donnelly kenar düzeltmesi, v6.3)",
-      sema({"kenar_duzeltme": {"type": "boolean"},
-            "cevre_km": {"type": "number"}}))
+@arac("nni", "NNI + z-testi ile küresel kümelenme anlamlılığı (Donnelly kenar "
+      "düzeltmesi varsayılan; alan verilmezse sınır kutusunun yansız tahmini)",
+      sema({"kenar_duzeltme": {"type": "boolean", "default": True},
+            "alan_km2": {"type": "number", "description": "çalışma alanı (km²)"},
+            "cevre_km": {"type": "number", "description": "çalışma alanının çevresi (km)"}}))
 def _(a):
     k = kayitlari_getir(a)
     pts = [q for q in (veri.koordinat_al(r) for r in k) if q]
     quadratic_guard(pts, "nni")
-    sonuc = mekan.nni_test(pts,
-                           kenar_duzeltme=bool(a.get("kenar_duzeltme")),
+    sonuc = mekan.nni_test(pts, alan_km2=a.get("alan_km2"),
+                           kenar_duzeltme=bool(a.get("kenar_duzeltme", True)),
                            cevre_km=a.get("cevre_km")) or {}
     sonuc["kapsam"] = kapsam_uret(k, len(pts), "geçersiz/eksik koordinat")
     return sonuc
@@ -451,10 +452,14 @@ def _(a):
 
 
 
-@arac("cusum", "Günlük seride kalıcı artış (CUSUM) alarmları", S_KAYIT)
+@arac("cusum", "Kalıcı artış alarmı: kendinden başlayan CUSUM (dönem hafta/ay "
+      "otomatik); eşik seri düzeyinde kalibre (normal varsayımıyla %5 yanlış alarm; "
+      "Poisson haftalık sayımda ölçülen ~%9–14, BMK v8)", sema({"donem": {"type": "string", "enum": ["hafta", "ay"],
+                                 "description": "verilmezse otomatik (aylar arası "
+                                                "heterojenlik varsa ay)"}}))
 def _(a):
-    _, seri = zaman.gunluk_seri(kayitlari_getir(a))
-    return ileri.cusum(seri)
+    gunler = [r["tarih"].date() for r in kayitlari_getir(a) if r.get("tarih") is not None]
+    return ileri.kirilma_cusum(gunler, donem=a.get("donem"))[0]
 
 
 

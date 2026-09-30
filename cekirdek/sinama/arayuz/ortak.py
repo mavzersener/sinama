@@ -201,8 +201,18 @@ ARAC_UYARILARI = {
                      "duyarlılık testi önerilir",
                      "equirectangular yaklaşım şehir ölçeği içindir; geniş "
                      "alan/yüksek enlemde yerel projeksiyon gerekir"],
-    "nni": ["sınır kutusu alan tahmini sonucu etkiler; equirectangular "
-            "yaklaşım şehir ölçeği içindir"],
+    "nni": ["NNI küresel bir ölçüdür: yerel bir odak arka plandaki olaylarca "
+            "seyreltilir — yerel yoğunlaşma sorusu için sicak_nokta_gi kullanın",
+            "alan verilmezse noktaların sınır kutusu (yansız genişletilmiş) çalışma "
+            "alanı sayılır; gerçek alan farklıysa alan_km2 ve cevre_km verin; "
+            "equirectangular yaklaşım şehir ölçeği içindir"],
+    "cusum": ["eşik seri düzeyinde kalibredir (bağımsız normal adımlarla: değişim "
+              "yokken seri boyunca en az bir alarm %5); haftalık Poisson sayımlarda "
+              "ölçülen oran daha yüksek (BMK v8: %14; tasarım tohumlarında ~%9)",
+              "alarm kalıcı artış İŞARETİDİR, kanıt değil; nedeni (bildirim, mevsim, "
+              "gerçek artış) ayrıca sınanmalıdır",
+              "alarm günü dönemin (hafta/ay) son günüdür; ilk dönemler (8 hafta / "
+              "6 ay) temel tahmini için izlenmez"],
     "risk_skorla": ["çıktı karar desteğidir, karar değildir; insan onayı "
                     "olmadan eyleme dönüştürülemez"],
     "suc_oranlari": ["ham oranları GA'sız karşılaştırmayın; küçük bölgeler "

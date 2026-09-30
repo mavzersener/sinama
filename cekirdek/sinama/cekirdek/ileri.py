@@ -7,17 +7,20 @@ Benford yasası, k-means kümeleme, Holt-Winters tahmin.
 Tamamı saf Python.
 """
 
+import calendar
 import math
 import random
 import statistics
 from collections import Counter, defaultdict
-from datetime import timedelta
+from datetime import date, timedelta
 from .mekan import haversine_km, sinir_kutusu
-from .hipotez import _betainc
+from .hipotez import _betainc, t_cdf
 from .iliski import _gammaincc
 
 
-# --- 1) Kontrol grafiği + CUSUM (zaman serisinde sıçrama tespiti) ---
+# --- 1) Kontrol grafiği + kalibre CUSUM (zaman serisinde kalıcı artış) ---
+# A4.15: ham `cusum` (tüm seri ortalaması, h = 5σ) kaldırıldı — kalibre değildi
+# (BMK v8: değişimsiz seride %89 alarm); yerine `kirilma_cusum`.
 
 def kontrol_grafigi(seri, sigma_k=3.0):
     """
@@ -37,24 +40,148 @@ def kontrol_grafigi(seri, sigma_k=3.0):
             "ust": round(ust, 3), "asim_gunleri": asim}
 
 
-def cusum(seri, hedef=None, h=None, k=0.5):
+_NORMAL = statistics.NormalDist()
+_ESIK_ONBELLEK = {}
+KIRILMA_ISINMA = {"hafta": 8, "ay": 6}
+
+
+def _cusum_esigi(adim, k, alfa, benzetim=4000, tohum=20260930):
+    """Bağımsız N(0,1) adımlarda en büyük CUSUM'un (1 - alfa) yüzdeliği:
+    değişim yokken seri boyunca en az bir alarm olasılığı ≈ alfa olacak eşik
+    (deterministik Monte Carlo, önbellekli)."""
+    anahtar = (adim, k, alfa, benzetim, tohum)
+    if anahtar not in _ESIK_ONBELLEK:
+        r = random.Random(tohum)
+        enbuyukler = []
+        for _ in range(benzetim):
+            s = m = 0.0
+            for _ in range(adim):
+                s = max(0.0, s + r.gauss(0.0, 1.0) - k)
+                m = max(m, s)
+            enbuyukler.append(m)
+        enbuyukler.sort()
+        _ESIK_ONBELLEK[anahtar] = enbuyukler[math.ceil((1 - alfa) * benzetim) - 1]
+    return _ESIK_ONBELLEK[anahtar]
+
+
+def _donem_sayimlari(gunler, donem):
+    """Günlerden (date) dönem sayımları ve her dönemin son günü; hafta ilk
+    günden başlayan 7 günlük bloklar, ay takvim ayları."""
+    ilk, son = min(gunler), max(gunler)
+    if donem == "hafta":
+        adet = (son - ilk).days // 7 + 1
+        sayim = [0] * adet
+        for g in gunler:
+            sayim[(g - ilk).days // 7] += 1
+        return sayim, [ilk + timedelta(days=7 * i + 6) for i in range(adet)]
+    aylar = []
+    y, m = ilk.year, ilk.month
+    while (y, m) <= (son.year, son.month):
+        aylar.append((y, m))
+        y, m = (y + 1, 1) if m == 12 else (y, m + 1)
+    sira = {a: i for i, a in enumerate(aylar)}
+    sayim = [0] * len(aylar)
+    for g in gunler:
+        sayim[sira[(g.year, g.month)]] += 1
+    return sayim, [date(y, m, calendar.monthrange(y, m)[1]) for y, m in aylar]
+
+
+def ay_yayilim_p(aylik, benzetim=2000, tohum=20260930):
+    """Aylık sayımlarda ardışık-fark yayılım testi (tek bir basamağa dayanıklı):
+    V = Σ(x_m − x_{m−1})² / (2(M−1)x̄); p, bağımsız Poisson(x̄) altında
+    deterministik Monte Carlo. Aylar arası heterojenlik (aşırı yayılım) varsa
+    küçük p. Yetersiz veride None."""
+    m = len(aylik)
+    ort = statistics.fmean(aylik) if aylik else 0.0
+    if m < 3 or ort <= 0:
+        return None
+
+    def v(x):
+        """Ardışık fark istatistiği."""
+        return sum((x[i] - x[i - 1]) ** 2 for i in range(1, len(x))) / (2 * (len(x) - 1) * ort)
+
+    gozlenen = v(aylik)
+    r = random.Random(tohum)
+    esik = math.exp(-ort) if ort < 30 else None
+    buyuk = 0
+    for _ in range(benzetim):
+        x = []
+        for _ in range(m):
+            if esik is not None:      # Knuth (küçük λ)
+                k, p = 0, 1.0
+                while True:
+                    p *= r.random()
+                    if p <= esik:
+                        break
+                    k += 1
+            else:                     # büyük λ: yuvarlanmış normal yaklaşımı
+                k = max(0, round(r.gauss(ort, math.sqrt(ort))))
+            x.append(k)
+        buyuk += v(x) >= gozlenen
+    return (buyuk + 1) / (benzetim + 1)
+
+
+def _kendinden_z(sayim, isinma):
+    """Kendinden başlayan standartlaştırma (Hawkins): t. dönem, ÖNCEKİ t dönemin
+    ortalaması ve örneklem sapmasıyla; kestirim hatası varyansı σ²(1 + 1/t) olduğundan
+    oran t(t−1) dağılır, olasılık dönüşümüyle N(0,1)'e çevrilir. Sapma sıfırsa 0."""
+    z = []
+    for t in range(isinma, len(sayim)):
+        once = sayim[:t]
+        ort, sd = statistics.fmean(once), statistics.stdev(once)
+        if sd <= 0:
+            z.append(0.0)
+            continue
+        tt = (sayim[t] - ort) / (sd * math.sqrt(1 + 1 / t))
+        z.append(_NORMAL.inv_cdf(min(max(t_cdf(tt, t - 1), 1e-12), 1 - 1e-12)))
+    return z
+
+
+def kirilma_cusum(gunler, donem=None, k=0.5, alfa=0.05):
     """
-    CUSUM: kümülatif sapma tabanlı küçük ama kalıcı artış tespiti.
-    h (karar aralığı) verilmezse 5*sigma kullanılır.
-    Dönüş: alarm gün indeksleri listesi.
+    Kalıcı artış alarmı — kendinden başlayan, seri düzeyinde kalibre CUSUM (A4.15).
+
+    - Dönem: verilmezse otomatik — aylık sayımlarda ardışık-fark yayılım testi
+      (ay_yayilim_p) p < alfa ise "ay" (aylar arası heterojenlik haftalık
+      sapmaları ilişkili kılar), değilse "hafta".
+    - Kendinden başlama (Hawkins): her dönem ÖNCEKİ dönemlerin ortalaması ve
+      sapmasıyla standartlaştırılır, t → normal dönüşümüyle N(0,1)'e çevrilir;
+      temel dönem varsayımı ve değişim sonrası veriyle kirlenmiş ortalama yoktur.
+      Isınma: 8 hafta / 6 ay.
+    - Eşik: bağımsız N(0,1) adımlarla Monte Carlo — değişim yokken seri
+      BOYUNCA en az bir alarm olasılığı ≈ alfa (seri uzunluğuna göre).
+
+    Args:
+        gunler: olay günleri (date).
+        donem: "hafta" | "ay" | None (otomatik).
+        k: referans değeri (σ biriminde; 0,5 → 1σ kaymaya ayarlı).
+        alfa: seri düzeyinde yanlış alarm olasılığı.
+
+    Returns:
+        (alarmlar, donem) — alarm: {gun (ilk günden itibaren, dönemin son günü),
+        tarih, donem, cusum, esik}; alarm sonrası toplam sıfırlanır.
     """
-    if len(seri) < 5:
-        return []
-    mu = hedef if hedef is not None else statistics.fmean(seri)
-    sd = statistics.pstdev(seri) or 1e-9
-    h = h if h is not None else 5 * sd
+    if not gunler:
+        return [], None
+    if donem is None:
+        p = ay_yayilim_p(_donem_sayimlari(gunler, "ay")[0])
+        donem = "ay" if p is not None and p < alfa else "hafta"
+    sayim, bitis = _donem_sayimlari(gunler, donem)
+    isinma = KIRILMA_ISINMA[donem]
+    if len(sayim) <= isinma + 1:
+        return [], donem
+    z = _kendinden_z(sayim, isinma)
+    h = _cusum_esigi(len(z), k, alfa)
+    ilk = min(gunler)
     s, alarmlar = 0.0, []
-    for i, v in enumerate(seri):
-        s = max(0.0, s + (v - mu) - k * sd)
+    for i, deger in enumerate(z):
+        s = max(0.0, s + deger - k)
         if s > h:
-            alarmlar.append({"gun": i, "cusum": round(s, 3)})
+            b = bitis[isinma + i]
+            alarmlar.append({"gun": (b - ilk).days, "tarih": b.isoformat(), "donem": donem,
+                             "cusum": round(s, 3), "esik": round(h, 3)})
             s = 0.0
-    return alarmlar
+    return alarmlar, donem
 
 
 # --- 2) Poisson anomali (bölge bazında olağandışılık) ---

@@ -2,6 +2,32 @@
 
 ## [Yayımlanmamış]
 
+### NNI dürüst varsayılan + kalibre kalıcı artış alarmı (A4.15)
+BMK v8 ön-kaydı (59586b0) başlangıcı 1/12 → 10/12; v0 K1.1 0,233 → 0,567, K2.1
+0,467 → 0,400 (ikisi de yine KALIR; açıklama v8 ilerleme notunda).
+- `mekan.nni_test`: Donnelly kenar düzeltmesi VARSAYILAN; alan/çevre noktaların
+  sınır kutusundan tahmin edilirken kenarlar (n+1)/(n−1) ile büyütülür (tekdüze
+  aralığın yansız tahmini). Rastgele desende sahte "düzgün dağılım" %26 → %5
+  (n=50: %34 → %3). Araç: `alan_km2` argümanı; uyarı "NNI küresel ölçü — yerel
+  soru için sicak_nokta_gi".
+- `ileri.kirilma_cusum` (araç `cusum`): kendinden başlayan CUSUM (önceki
+  dönemlerin ortalaması/sapmasıyla standartlaştırma, t → normal), seri düzeyinde
+  Monte Carlo eşiği, dönem otomatik (`ay_yayilim_p`: aylık ardışık-fark yayılım
+  testi, tek basamağa dayanıklı). Değişimsiz seride alarm %89 → %14 (NB %100 →
+  %7). Çıktı sözleşmesi aynı (alarm listesi, `gun`), alanlar: tarih, donem,
+  cusum, esik; `donem` argümanı.
+- Ham `ileri.cusum` KALDIRILDI (tüm seri ortalaması, h = 5σ — kalibre değildi);
+  demo2 yeni işlevi kullanır.
+- **Açık (ölçüldü):** K15.1 KALDI — Poisson haftalık sayımda gerçek yanlış alarm
+  ~%8–14 (nominal %5); araç uyarısı ölçülen oranı söyler. v9 adayı: çarpıklık
+  dönüşümü ya da Poisson önyükleme eşiği.
+Testler: `test_kirilma_nni.py` (değişimsiz seri, kalıcı artış, heterojenlikte
+aya geçiş, yayılım testi, eşik kalibrasyonu, kısa/sabit seri, araç sözleşmesi;
+NNI yansızlık, yansız kutu yalnız alan tahmininde, araç varsayılanı + uyarı);
+`test_faz_e` Donnelly testleri yeni varsayılana göre; kendinden standartlaştırma elle
+hesapla ve ısınma davranışıyla sabitlendi. 16/17 mutasyon (1 eşdeğer: Monte Carlo
+p'sinde ≥ yerine > — ardışık-fark istatistiğinde bağ olasılığı ~0).
+
 ### Bilim katmanı: ayrıntılı araçlar + ön-kayıt geçerliliği (A4.14)
 ADR-002 §7'nin ayrıntılı araçları (dil modeli ve Atölye için); Rehberli akış artık
 bu adımların bileşimidir (`calisma.rehberli` = baslat → kanit_bagla → hukum_uret).

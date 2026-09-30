@@ -29,26 +29,26 @@
       "olcutler": [
         {
           "kimlik": "K14.1",
-          "deger": 0.26,
+          "deger": 0.05,
           "yon": "<=",
           "esik": 0.1,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir (başlangıç): kenar düzeltmesiz varsayılan dağınık yönüne yanlı; keşifte 0,21"
         },
         {
           "kimlik": "K14.2",
-          "deger": 0.0452,
+          "deger": 0.004,
           "yon": "<=",
           "esik": 0.03,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir (başlangıç): keşifte ortalama NNI 1,043"
         },
         {
           "kimlik": "K14.3",
-          "deger": 0.34,
+          "deger": 0.03,
           "yon": "<=",
           "esik": 0.1,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir (başlangıç): küçük n'de kenar etkisi büyür; keşifte 0,40"
         },
         {
@@ -61,42 +61,42 @@
         },
         {
           "kimlik": "K14.5",
-          "deger": 0.74,
+          "deger": 0.93,
           "yon": ">=",
           "esik": 0.8,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir (başlangıç, sınırda): dağınık yönüne yan orta kümelenmeyi maskeliyor; keşifte 0,78"
         },
         {
           "kimlik": "K14.6",
-          "deger": 0.0,
+          "deger": 1.0,
           "yon": ">=",
           "esik": 1.0,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir (başlangıç): araç yerel duyarsızlık uyarısı taşımıyor (kod incelemesi)"
         }
       ],
       "ek_olcumler": {
         "ortalama_nni": {
-          "csr": 1.0452,
-          "csr_kucuk": 1.1237,
-          "kume": 0.6298,
-          "kume_kucuk": 0.7865,
-          "odak": 0.9656
+          "csr": 1.004,
+          "csr_kucuk": 1.014,
+          "kume": 0.6049,
+          "kume_kucuk": 0.7093,
+          "odak": 0.9275
         },
         "duzgun_iddiasi": {
-          "csr": 0.26,
-          "csr_kucuk": 0.34,
+          "csr": 0.03,
+          "csr_kucuk": 0.03,
           "kume": 0.0,
           "kume_kucuk": 0.0,
-          "odak": 0.02
+          "odak": 0.0
         },
         "kumelenme_iddiasi": {
-          "csr": 0.0,
+          "csr": 0.02,
           "csr_kucuk": 0.0,
           "kume": 1.0,
-          "kume_kucuk": 0.74,
-          "odak": 0.13
+          "kume_kucuk": 0.93,
+          "odak": 0.48
         },
         "hata": {}
       }
@@ -115,7 +115,7 @@
       "olcutler": [
         {
           "kimlik": "K15.1",
-          "deger": 0.89,
+          "deger": 0.14,
           "yon": "<=",
           "esik": 0.1,
           "gecti": false,
@@ -123,23 +123,23 @@
         },
         {
           "kimlik": "K15.2",
-          "deger": 1.0,
+          "deger": 0.07,
           "yon": "<=",
           "esik": 0.1,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir (başlangıç): keşifte 1,00"
         },
         {
           "kimlik": "K15.3",
-          "deger": 0.96,
+          "deger": 0.08,
           "yon": "<=",
           "esik": 0.1,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir (başlangıç): keşifte 0,98"
         },
         {
           "kimlik": "K15.4",
-          "deger": 0.59,
+          "deger": 0.74,
           "yon": ">=",
           "esik": 0.8,
           "gecti": false,
@@ -147,45 +147,45 @@
         },
         {
           "kimlik": "K15.5",
-          "deger": 0.67,
+          "deger": 0.88,
           "yon": ">=",
           "esik": 0.8,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir (başlangıç): keşifte 0,71"
         },
         {
           "kimlik": "K15.6",
-          "deger": 0.43,
+          "deger": 0.99,
           "yon": ">=",
           "esik": 0.9,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir (başlangıç): keşifte 0,33"
         }
       ],
       "ek_olcumler": {
         "alarm_yok": {
-          "sabit": 0.11,
-          "sabit_nb": 0.0,
-          "sabit_dusuk": 0.04,
-          "artis30": 0.02,
+          "sabit": 0.86,
+          "sabit_nb": 0.93,
+          "sabit_dusuk": 0.92,
+          "artis30": 0.13,
           "artis50": 0.0,
-          "artis30_nb": 0.0
+          "artis30_nb": 0.63
         },
         "once_alarm": {
-          "sabit": 0.66,
-          "sabit_nb": 0.96,
-          "sabit_dusuk": 0.77,
-          "artis30": 0.18,
-          "artis50": 0.05,
-          "artis30_nb": 0.57
+          "sabit": 0.04,
+          "sabit_nb": 0.01,
+          "sabit_dusuk": 0.05,
+          "artis30": 0.04,
+          "artis50": 0.04,
+          "artis30_nb": 0.01
         },
         "ilk_alarm_gecikme_medyan_gun": {
-          "sabit": -178,
-          "sabit_nb": -282.0,
-          "sabit_dusuk": -214.0,
-          "artis30": 70.5,
-          "artis50": 52.5,
-          "artis30_nb": -114.0
+          "sabit": 130.5,
+          "sabit_nb": 150,
+          "sabit_dusuk": -50.5,
+          "artis30": 68,
+          "artis50": 46.0,
+          "artis30_nb": 180
         },
         "hata": {}
       }

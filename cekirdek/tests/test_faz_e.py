@@ -112,16 +112,16 @@ class TestE3_Donnelly(unittest.TestCase):
                     for i in range(100)]
 
     def test_beklenen_artar(self):
-        duz = mekan.nni_test(self.pts)
-        don = mekan.nni_test(self.pts, kenar_duzeltme=True)
+        duz = mekan.nni_test(self.pts, kenar_duzeltme=False)
+        don = mekan.nni_test(self.pts)   # A4.15: kenar düzeltmesi varsayılan
         self.assertGreater(don["beklenen"], duz["beklenen"])
         self.assertTrue(don["kenar_duzeltme"])
         self.assertFalse(duz["kenar_duzeltme"])
 
     def test_z_yonu_kumeleye_karsi_muhafazakar(self):
         # düzgün ızgarada Donnelly z'yi küçültmeli (kenar önyargısı giderilir)
-        duz = mekan.nni_test(self.pts)
-        don = mekan.nni_test(self.pts, kenar_duzeltme=True)
+        duz = mekan.nni_test(self.pts, kenar_duzeltme=False)
+        don = mekan.nni_test(self.pts)   # A4.15: kenar düzeltmesi varsayılan
         self.assertLess(abs(don["z"]), abs(duz["z"]) + 1e-9)
 
     def test_geriye_uyumluluk(self):

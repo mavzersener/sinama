@@ -19,7 +19,7 @@
       "olcutler": [
         {
           "kimlik": "K1.1",
-          "deger": 0.2333,
+          "deger": 0.5667,
           "yon": ">=",
           "esik": 0.9,
           "gecti": false,
@@ -70,8 +70,8 @@
         "csr_ortalama_sicak_hucre": 0,
         "csr_ortalama_test_edilen_hucre": 35.9,
         "ortalama_nni": {
-          "odakli": 0.9557,
-          "csr": 1.0458
+          "odakli": 0.918,
+          "csr": 1.0046
         }
       }
     },
@@ -82,7 +82,7 @@
       "olcutler": [
         {
           "kimlik": "K2.1",
-          "deger": 0.4667,
+          "deger": 0.4,
           "yon": ">=",
           "esik": 0.9,
           "gecti": false,
@@ -122,8 +122,8 @@
         }
       ],
       "ek_olcumler": {
-        "cusum_ilk_alarm_gecikme_medyan_gun": 42.5,
-        "cusum_alarm_vermeyen_tohum": 0
+        "cusum_ilk_alarm_gecikme_medyan_gun": 69,
+        "cusum_alarm_vermeyen_tohum": 1
       }
     },
     {

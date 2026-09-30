@@ -79,7 +79,8 @@ print("5) İLERİ ANALİZLER")
 _, gunluk = zaman.gunluk_seri(kayitlar)
 print("kontrol grafiği:", {k: v for k, v in ileri.kontrol_grafigi(gunluk).items() if k != "asim_gunleri"},
       "| aşım günü:", len(ileri.kontrol_grafigi(gunluk)["asim_gunleri"]))
-print("CUSUM alarmları:", ileri.cusum(gunluk)[:3])
+print("kalıcı artış alarmları (kalibre CUSUM):",
+      ileri.kirilma_cusum([k["tarih"].date() for k in kayitlar])[0][:3])
 mahalle_sayim = {}
 for k in kayitlar:
     mahalle_sayim[k["mahalle"]] = mahalle_sayim.get(k["mahalle"], 0) + 1

@@ -28,7 +28,7 @@
         },
         {
           "kimlik": "K9.2",
-          "deger": 0.9667,
+          "deger": 1.0,
           "yon": ">=",
           "esik": 0.9,
           "gecti": true,
@@ -119,7 +119,7 @@
         "kategori_dagilimi": {
           "artefakt": {
             "BELİRSİZ": 29,
-            "DESTEKLENDİ": 1
+            "KIRILGAN": 1
           },
           "gercek_artis": {
             "DESTEKLENDİ": 30
@@ -142,8 +142,7 @@
           }
         },
         "artefakt_en_guclu_rakip": {
-          "None": 1,
-          "R-BILDIRIM": 29
+          "R-BILDIRIM": 30
         },
         "hata_ya_da_yok": {}
       }

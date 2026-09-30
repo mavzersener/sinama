@@ -2,6 +2,35 @@
 
 ## [Yayımlanmamış]
 
+### Hüküm sağlamlığı v1.1: rakip dışlamada etki büyüklüğü (A4.10)
+BMK v3 tohum 314 ve BMK v4 (ön-kayıt 4f23e69, yeni tohumlar 401–430) başlangıcı
+3/7: R-BILDIRIM, sürekli kanalın trend testi ANLAMLI çıkınca dışlanıyordu —
+sınamanın I. tip hatası hükme taşınıyor, kısmi açıklamada (sürekli kanalda
+küçük gerçek artış, asıl artış yeni kanaldan) rakip yine dışlanıyordu
+(kısmi artefaktta 7/30, karmada 30/30 aşırı iddia).
+- `degerlendirme.oran_degisimi_ayristirma`: iki bileşenli sayımda oran
+  artışını ayırır; fark = ΔA − ΔB (gün başına), quasi-Poisson varyans (φ ≥ 1),
+  z ve pay_a (artışın A'daki payı; toplam artış ≤ 0 ise None; se sıfırsa z None).
+- `sinamalar` (`sinama-v1.1`): R-BILDIRIM = "artışın çoğu sürekli kanallarda
+  mı" — ayrım noktası yeni kanal kayıtlarının %5'lik tarihi (tek kaçak kayıt
+  bozmaz); z > 1,645 dışlandı, < −1,645 destekleniyor, arası çözülmedi;
+  yayılım tam takvim aylarından. Yerel sınama gerekçeli adım olarak zincire
+  yazılır (`bildirim_ayristirma`). Rakip kaydı `olcum` taşır
+  (surekli_artis_payi, z, yayilim, ayrim_tarihi); hüküm `sinama_surumu` taşır.
+- BMK v4 3/7 → 7/7 (K10.2 0,767 → 1,00; K10.4 0 → 0,967; K10.7 0 → 1).
+  **Bedel:** K10.5 (küçük yeni kanallı gerçek artış) 0,967 → 0,90.
+  **Ön-kayıttan sapma:** ön-kayıttaki tasarım tanımı saf Poisson'du; φ
+  sonradan eklendi ve pencere/grup oranlarının EN BÜYÜĞÜ olarak tahmin
+  ediliyor — gürültülü tahminlerin maksimumu Poisson veride bile yukarı
+  yanlı; K10.5 bedelinin ve v3 tohum 314'ün (BELİRSİZ yerine KIRILGAN)
+  nedeni. v3: K9.2 0,967 → 1,00; K9.1 0,967'de kaldı (öngörü 1,00 — YANLIŞ).
+  v0/v1/v2 birebir aynı.
+Testler: ayrıştırma işlevi (değerler, φ ölçeklemesi, sınırlar), saf/kısmi
+artefakt destekler, karma çözülmedi (pozitif ve hafif negatif z), küçük kanal
+dışlanır, tek kaçak kayıt, aşırı yayılım z'yi daraltır, yerel adım zincirde,
+hükümde olcum. 8/8 mutasyon (ilk turda "destekleniyor" eşiği kaçtı → hafif
+negatif z testi).
+
 ### Bilim katmanı v1: hipotez seti, rakip açıklamalar, kategorik hüküm (A4.9, ADR-002)
 Program araç çıktısı üretiyor ama bilimsel hüküm üretmiyordu. BMK v3 (ön-kayıt
 b65c8a9, katman yazılmadan kilit) başlangıçta 0/12.

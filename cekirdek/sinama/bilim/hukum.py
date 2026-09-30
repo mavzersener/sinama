@@ -10,7 +10,8 @@ KIRILGAN, BELİRSİZ, ÇELİŞKİLİ, ÇEKİMSER. Olasılık, yüzde ya da güve
 Kanıt paketi:
     {soru_turu, amac, kilitli, zincir_saglam,
      birincil: {durum: tutuldu|karşıt|belirsiz|sınanamadı, gerekce},
-     rakipler: [{kod, durum, etki, gerekce, sonraki_kanit}],
+     rakipler: [{kod, durum, etki, gerekce, sonraki_kanit, olcum?}],
+     sinama_surumu?: sınama mantığının sürümü (hükme aynen yansır)
      saglamlik: [uyarı metinleri]}
 """
 import hashlib
@@ -109,7 +110,8 @@ def hukum_ver(paket):
         "kategori": kategori,
         "birincil_ongoru": b,
         "en_guclu_rakip": en_guclu,
-        "rakipler": [{"kod": r["kod"], "durum": r["durum"], "gerekce": r.get("gerekce")}
+        "rakipler": [{"kod": r["kod"], "durum": r["durum"], "gerekce": r.get("gerekce"),
+                      **({"olcum": r["olcum"]} if r.get("olcum") is not None else {})}
                      for r in rakipler],
         "cozulmemis_rakipler": [r["kod"] for r in cozulmemis],
         "sonraki_en_iyi_kanit": sonraki,
@@ -120,5 +122,6 @@ def hukum_ver(paket):
         "kisi_baglantisi": paket["soru_turu"] in TAVANLI_TURLER,
         "durum": "taslak",
         "kural_surumu": KURAL_SURUMU,
+        "sinama_surumu": paket.get("sinama_surumu"),
         "paket_hash": paket_hash(paket),
     }

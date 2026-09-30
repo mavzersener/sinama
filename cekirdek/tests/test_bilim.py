@@ -205,15 +205,57 @@ class TestSinamalarArtis(unittest.TestCase):
             trend={"yorum": "artan"}, t_testi={"p": 0.001, "ortalama": 15}), None)
         self.assertEqual(durumlar(r)["R-BILDIRIM"], "çözülmedi")
 
-    def test_yeni_kanal_ve_duz_surekli_kanal_bildirimi_destekler(self):
-        yurut = SahteYurut(
-            trend=lambda arg: {"yorum": "artan"} if "satirlar" not in arg or len(arg["satirlar"]) > 720
-            else {"yorum": "anlamlı trend yok"},
-            t_testi={"p": 0.001, "ortalama": 15})
-        _, r, _ = sinamalar.artis({}, self.ARTEFAKT, yurut, "kanal")
-        self.assertEqual(durumlar(r)["R-BILDIRIM"], "destekleniyor")
-        alt = [c for c in yurut.cagrilar if c[1] == "R-BILDIRIM"][0][2]["satirlar"]
-        self.assertEqual({s["kanal"] for s in alt}, {"karakol"})
+    def _bildirim(self, veri):
+        """R-BILDIRIM kaydı + yerel adım kayıtları (birincil tutulmuş varsayılır)."""
+        yurut = SahteYurut(trend={"yorum": "artan"}, t_testi={"p": 0.001, "ortalama": 15})
+        adimlar = []
+        _, r, _ = sinamalar.artis({}, veri, yurut, "kanal",
+                                  lambda ad, ozet, h, a: adimlar.append((ad, h, ozet)))
+        return next(x for x in r if x["kod"] == "R-BILDIRIM"), adimlar, yurut
+
+    def test_saf_artefakt_ayristirma_destekler(self):
+        r, adimlar, yurut = self._bildirim(self.ARTEFAKT)
+        self.assertEqual(r["durum"], "destekleniyor")
+        self.assertLess(r["olcum"]["z"], -1.645)
+        self.assertAlmostEqual(r["olcum"]["surekli_artis_payi"], 0.0, delta=0.05)
+        self.assertEqual([a[0] for a in adimlar], ["bildirim_ayristirma"])
+        self.assertEqual([c[0] for c in yurut.cagrilar], ["trend", "t_testi"])  # ikinci trend yok
+
+    def test_kismi_artefakt_anlamli_kucuk_artisa_ragmen_destekler(self):
+        # v1'in kusuru: sürekli kanaldaki küçük GERÇEK artış anlamlıysa rakip dışlanıyordu
+        r, _, _ = self._bildirim(aylik({"karakol": [30] * 12 + [33] * 12,
+                                        "cevrimici": [0] * 12 + [15] * 12}))
+        self.assertEqual(r["durum"], "destekleniyor")
+        self.assertLess(r["olcum"]["surekli_artis_payi"], 0.3)
+
+    def test_karma_cozulmedi_kucuk_kanal_dislanir(self):
+        karma, _, _ = self._bildirim(aylik({"karakol": [30] * 12 + [45] * 12,
+                                            "cevrimici": [0] * 12 + [15] * 12}))
+        self.assertEqual(karma["durum"], "çözülmedi")
+        self.assertAlmostEqual(karma["olcum"]["surekli_artis_payi"], 0.5, delta=0.05)
+        # hafif negatif z (−1,645 < z < 0) de "çözülmedi"dir; yalnız anlamlı negatif destekler
+        eksi, _, _ = self._bildirim(aylik({"karakol": [30] * 12 + [43] * 12,
+                                           "cevrimici": [0] * 12 + [15] * 12}))
+        self.assertTrue(-1.645 < eksi["olcum"]["z"] < 0, eksi["olcum"])
+        self.assertEqual(eksi["durum"], "çözülmedi")
+        kucuk, _, _ = self._bildirim(aylik({"karakol": [30] * 12 + [45] * 12,
+                                            "cevrimici": [0] * 12 + [3] * 12}))
+        self.assertEqual(kucuk["durum"], "dışlandı")
+        self.assertGreater(kucuk["olcum"]["z"], 1.645)
+
+    def test_tek_erken_kacak_kayit_ayrim_noktasini_bozmaz(self):
+        veri = aylik({"karakol": [30] * 24, "cevrimici": [1] + [0] * 11 + [15] * 12})
+        r, _, _ = self._bildirim(veri)
+        self.assertEqual(r["durum"], "destekleniyor")
+        self.assertTrue(r["olcum"]["ayrim_tarihi"].startswith("2025-01"), r["olcum"])
+
+    def test_asiri_yayilim_z_yi_daraltir(self):
+        dalgali = [10, 50] * 6
+        veri = aylik({"karakol": dalgali + [x + 15 for x in dalgali], "cevrimici": [0] * 12 + [3] * 12})
+        r, adimlar, _ = self._bildirim(veri)
+        self.assertGreater(r["olcum"]["yayilim"], 5)
+        self.assertEqual(r["durum"], "çözülmedi")        # Poisson varsayımıyla dışlanırdı
+        self.assertGreater(adimlar[0][2]["dispersiyon"], 5)
 
     def test_kanal_bileseni_degismediyse_ek_sinama_yok(self):
         veri = aylik({"karakol": [30] * 24, "cevrimici": [10] * 24})
@@ -244,6 +286,20 @@ class TestSinamalarArtis(unittest.TestCase):
         veri = aylik({"karakol": [30] * 24, "cevrimici": [1] + [0] * 11 + [15] * 12})
         tarihli = sinamalar._tarihli(veri, "kanal")
         self.assertEqual(sinamalar._surekli_kanallar(tarihli), ["karakol"])
+
+
+class TestOranDegisimiAyristirma(unittest.TestCase):
+    def test_degerler_ve_sinirlar(self):
+        from sinama.cekirdek import degerlendirme as dg
+        r = dg.oran_degisimi_ayristirma(100, 100, 0, 100, 100, 100)
+        self.assertEqual((r["degisim_a"], r["degisim_b"], r["pay_a"]), (0.0, 1.0, 0.0))
+        self.assertAlmostEqual(r["z"], -1 / (300 / 100 ** 2) ** 0.5, places=3)
+        r2 = dg.oran_degisimi_ayristirma(100, 100, 0, 100, 100, 100, dispersiyon=4)
+        self.assertAlmostEqual(r2["z"], r["z"] / 2, places=2)
+        self.assertEqual(dg.oran_degisimi_ayristirma(1, 1, 0, 0, 10, 10, dispersiyon=0.2)["dispersiyon"], 1.0)
+        self.assertIsNone(dg.oran_degisimi_ayristirma(0, 0, 0, 0, 10, 10)["z"])
+        self.assertIsNone(dg.oran_degisimi_ayristirma(50, 40, 0, 5, 10, 10)["pay_a"])   # toplam düştü
+        self.assertIsNone(dg.oran_degisimi_ayristirma(1, 1, 1, 1, 0, 10))
 
 
 class TestSinamalarDiger(unittest.TestCase):
@@ -296,6 +352,9 @@ class TestRehberliUctan(unittest.TestCase):
         h = p["sonuc"]["hukum"]
         self.assertEqual((h["kategori"], h["en_guclu_rakip"], h["birincil_ongoru"]),
                          ("BELİRSİZ", "R-BILDIRIM", "tutuldu"))
+        bildirim = next(r for r in h["rakipler"] if r["kod"] == "R-BILDIRIM")
+        self.assertIn("surekli_artis_payi", bildirim["olcum"])
+        self.assertEqual(h["sinama_surumu"], "sinama-v1.1")
         self.assertTrue(p["meta"]["insan_onayi_gerekir"])
         self.assertIn("taslak", " ".join(p["meta"]["uyarilar"]).lower())
         d = dongu.yukle(p["sonuc"]["oturum_id"], self.gecici)
@@ -303,6 +362,7 @@ class TestRehberliUctan(unittest.TestCase):
         self.assertLess(adimlar.index("protokol_kilitle"), adimlar.index("veri_bagla"))
         self.assertLess(adimlar.index("hipotez_seti"), adimlar.index("protokol_kilitle"))
         self.assertEqual(adimlar[-1], "hukum")
+        self.assertIn("bildirim_ayristirma", adimlar)       # yerel sınama da zincirde
         b = d.manifesto["bilimsel"]
         self.assertEqual(hukum.hukum_ver(b["paket"]), b["hukum"])     # bağımsız yeniden hesap
         zincir = sunucu.arac_calistir("kanit_dogrula", {"oturum_id": p["sonuc"]["oturum_id"]})

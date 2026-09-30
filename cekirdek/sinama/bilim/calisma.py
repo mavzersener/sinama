@@ -93,8 +93,14 @@ def rehberli(kaynak, kayitlar, soru_turu, amac, log_dir, yurut_ham, kapi_karari,
             sinama_izi.append({"arac": ad, "hipotez": hipotez, "amac": amac_metni})
             return sonuc
 
+        def kaydet(ad, ozet, hipotez, amac_metni):
+            """Araç dışı yerel sınamayı gerekçeli ANALİZ adımı olarak kaydeder."""
+            d.analiz_kaydet(ad, ozet, {"hipotez": hipotez, "yorum": amac_metni})
+            sinama_izi.append({"arac": ad, "hipotez": hipotez, "amac": amac_metni})
+
         if soru_turu == "ARTIS":
-            birincil, rakipler, saglamlik = sinamalar.artis(kaynak, kayitlar, yurut, kanal_alan)
+            birincil, rakipler, saglamlik = sinamalar.artis(kaynak, kayitlar, yurut, kanal_alan,
+                                                            kaydet)
         elif soru_turu == "YOGUNLASMA":
             birincil, rakipler, saglamlik = sinamalar.yogunlasma(kaynak, kayitlar, yurut)
         else:
@@ -108,7 +114,8 @@ def rehberli(kaynak, kayitlar, soru_turu, amac, log_dir, yurut_ham, kapi_karari,
 
     dongu.kaydet(d, log_dir)
     zincir = kanit.dogrula(log_dir, d.manifesto["oturum_id"])
-    paket = {"soru_turu": soru_turu, "amac": amac, "kilitli": bool(d.manifesto.get("kilit")),
+    paket = {"soru_turu": soru_turu, "amac": amac, "sinama_surumu": sinamalar.SINAMA_SURUMU,
+             "kilitli": bool(d.manifesto.get("kilit")),
              "zincir_saglam": bool(zincir.get("saglam")), "birincil": birincil,
              "rakipler": rakipler, "saglamlik": saglamlik}
     h = hukum.hukum_ver(paket)

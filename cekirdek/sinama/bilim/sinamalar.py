@@ -11,23 +11,31 @@ Dil modeli yoktur. Durumlar:
 yurut(ad, arg, hipotez, amac_metni) → araç sonucu; kapı reddi ya da kullanım
 hatası fırlatır (birincilde 'sınanamadı' olur).
 """
+import statistics
 from collections import Counter
 
-from ..cekirdek import veri
+from ..cekirdek import degerlendirme, veri
 from ..cekirdek.hatalar import SucAnaliziHatasi
 from . import rak
 
+SINAMA_SURUMU = "sinama-v1.1"
 ALFA = 0.05
+Z_TEK = statistics.NormalDist().inv_cdf(1 - ALFA)   # tek yönlü, ≈ 1,645
+YENI_KANAL_YUZDELIK = 0.05   # ayrım noktası: yeni kanal kayıtlarının %5'lik tarihi
+MIN_DONEM_GUN = 30
 SUREKLI_PAY = 1 / 16      # kanalın çeyrek başına beklenen payının dörtte biri
 VERI_ESIK = 0.05          # geçersiz tarih/koordinat oranı üst sınırı
 YIGILMA_ESIK = 0.05       # tek koordinattaki kayıt payı üst sınırı
 MO_BOS_ESIK = 0.20
 
 
-def _rakip(kod, durum, gerekce):
+def _rakip(kod, durum, gerekce, olcum=None):
     k = rak.KATALOG[kod]
-    return {"kod": kod, "durum": durum, "etki": k["etki"], "gerekce": gerekce,
-            "sonraki_kanit": k["sonraki_kanit"]}
+    r = {"kod": kod, "durum": durum, "etki": k["etki"], "gerekce": gerekce,
+         "sonraki_kanit": k["sonraki_kanit"]}
+    if olcum is not None:
+        r["olcum"] = olcum
+    return r
 
 
 def _dene(yurut, ad, arg, hipotez, amac):
@@ -76,8 +84,69 @@ def _aylik_sayim(tarihli):
     return aylar
 
 
-def artis(kaynak, kayitlar, yurut, kanal_alan=None):
-    """ARTIŞ: trend (birincil), R-RASTLANTI, R-BILDIRIM, R-MEVSIM, R-VERI."""
+def _yayilim(tarihli, gruplar, bas, bit):
+    """Pencere içindeki TAM takvim aylarının sayımlarından quasi-Poisson yayılım
+    çarpanı: grupların var/ortalama oranlarının ortalaması, en az 1 (≥ 3 ay)."""
+    oranlar = []
+    for grup in gruplar:
+        say = Counter((dt.year, dt.month) for dt, k in tarihli
+                      if k in grup and bas <= dt <= bit)
+        aylar = []
+        y, a = bas.year, bas.month
+        while (y, a) <= (bit.year, bit.month):
+            ay_bas = bas.replace(year=y, month=a, day=1, hour=0, minute=0, second=0, microsecond=0)
+            sonraki = ay_bas.replace(year=y + (a // 12), month=a % 12 + 1)
+            if ay_bas >= bas and sonraki <= bit:
+                aylar.append(say.get((y, a), 0))
+            y, a = (y + 1, 1) if a == 12 else (y, a + 1)
+        if len(aylar) >= 3 and statistics.fmean(aylar) > 0:
+            oranlar.append(statistics.variance(aylar) / statistics.fmean(aylar))
+    return max(1.0, statistics.fmean(oranlar)) if oranlar else 1.0
+
+
+def _bildirim_ayristirma(tarihli, surekli, yeni, kaydet):
+    """R-BILDIRIM v1.1: artışın çoğu sürekli kanallarda mı (etki büyüklüğü)."""
+    yeni_tarihler = sorted(dt for dt, k in tarihli if k in yeni)
+    t_k = yeni_tarihler[int(YENI_KANAL_YUZDELIK * len(yeni_tarihler))]
+    t0 = min(dt for dt, _ in tarihli)
+    t1 = max(dt for dt, _ in tarihli)
+    g_once = (t_k.date() - t0.date()).days
+    g_sonra = (t1.date() - t_k.date()).days + 1
+    if g_once < MIN_DONEM_GUN or g_sonra < MIN_DONEM_GUN:
+        return _rakip("R-BILDIRIM", "çözülmedi",
+                      f"yeni kanal öncesi/sonrası dönem {MIN_DONEM_GUN} günden kısa")
+    say = Counter((k in surekli, dt >= t_k) for dt, k in tarihli)
+    phi = max(_yayilim(tarihli, [set(surekli)], t0, t_k),
+              _yayilim(tarihli, [set(surekli), set(yeni)], t_k, t1))
+    r = degerlendirme.oran_degisimi_ayristirma(
+        say[(True, False)], say[(True, True)], say[(False, False)], say[(False, True)],
+        g_once, g_sonra, phi)
+    olcum = {"surekli_artis_payi": r["pay_a"], "z": r["z"], "yayilim": r["dispersiyon"],
+             "ayrim_tarihi": t_k.date().isoformat()}
+    if kaydet is not None:
+        kaydet("bildirim_ayristirma", {k: v for k, v in r.items() if isinstance(v, (int, float))},
+               "R-BILDIRIM", "artışın çoğu sürekli kanallarda mı (Δsürekli − Δyeni, quasi-Poisson)")
+    pay = "tanımsız" if r["pay_a"] is None else r["pay_a"]
+    if r["z"] is None:
+        return _rakip("R-BILDIRIM", "çözülmedi", "ayrıştırma tanımsız (varyans sıfır)", olcum)
+    if r["z"] > Z_TEK:
+        return _rakip("R-BILDIRIM", "dışlandı",
+                      f"artışın çoğu dönem boyunca süren kanallarda (pay {pay}, z {r['z']})", olcum)
+    if r["z"] < -Z_TEK:
+        return _rakip("R-BILDIRIM", "destekleniyor",
+                      f"artışın çoğu dönem içinde beliren kanallardan: {', '.join(map(str, yeni))} "
+                      f"(sürekli kanal payı {pay}, z {r['z']})", olcum)
+    return _rakip("R-BILDIRIM", "çözülmedi",
+                  f"artışın ne çoğunun sürekli kanallarda ne yeni kanallarda olduğu gösterilebildi "
+                  f"(pay {pay}, z {r['z']})", olcum)
+
+
+def artis(kaynak, kayitlar, yurut, kanal_alan=None, kaydet=None):
+    """ARTIŞ: trend (birincil), R-RASTLANTI, R-BILDIRIM, R-MEVSIM, R-VERI.
+
+    kaydet(ad, ozet, hipotez, amac_metni): araç dışı yerel sınamayı (R-BILDIRIM
+    ayrıştırması) gerekçeli adım olarak kanıt zincirine yazar; None ise yazılmaz.
+    """
     tarihli = _tarihli(kayitlar, kanal_alan)
     n = len(kayitlar)
     saglamlik = []
@@ -112,22 +181,10 @@ def artis(kaynak, kayitlar, yurut, kanal_alan=None):
         elif surekli == tum_kanallar:
             rakipler.append(_rakip("R-BILDIRIM", "dışlandı",
                                    "kanal bileşimi değişmedi (kanal içi kayıt değişikliği bu "
-                                   "sınamayla görülmez)"))
+                                   "sınamayla görülmez)", {"surekli_artis_payi": 1.0}))
         else:
-            alt = [r for r in kayitlar if r.get(kanal_alan) in surekli]
-            surekli_trend, h2 = _dene(yurut, "trend", {"satirlar": alt}, "R-BILDIRIM",
-                             f"sürekli kanallarda ({', '.join(map(str, surekli))}) artış var mı")
-            if h2 or surekli_trend is None:
-                rakipler.append(_rakip("R-BILDIRIM", "çözülmedi", h2 or "sonuç yok"))
-            elif surekli_trend.get("yorum") == "artan":
-                rakipler.append(_rakip("R-BILDIRIM", "dışlandı",
-                                       f"sürekli kanallarda da anlamlı artış (p {surekli_trend.get('p')})"))
-            else:
-                yeni = [k for k in tum_kanallar if k not in surekli]
-                rakipler.append(_rakip("R-BILDIRIM", "destekleniyor",
-                                       f"sürekli kanallarda anlamlı artış yok "
-                                       f"({surekli_trend.get('yorum')}); artış dönem içinde beliren "
-                                       f"kanallardan: {', '.join(map(str, yeni))}"))
+            yeni = [k for k in tum_kanallar if k not in surekli]
+            rakipler.append(_bildirim_ayristirma(tarihli, surekli, yeni, kaydet))
 
     # R-MEVSIM — aynı takvim aylarının yıllar arası eşli karşılaştırması
     if not tuttu:

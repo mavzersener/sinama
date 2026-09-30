@@ -195,6 +195,45 @@ def kesinti_analizi(seri, kesinti_noktasi, guven=0.95):
     return sonuc
 
 
+def oran_degisimi_ayristirma(a_once, a_sonra, b_once, b_sonra, sure_once, sure_sonra,
+                             dispersiyon=1.0):
+    """İki bileşenli sayımda oran artışının ayrıştırılması (A4.10).
+
+    Toplam = A + B iken önce→sonra oran değişimini bileşenlere ayırır ve
+    "artışın çoğu A'dan mı" sorusunu sınar: fark = ΔA − ΔB (gün başına oran).
+    fark > 0 ⟺ A'nın artışı, toplam artışın yarısından fazlası. Varyans
+    Poisson × yayılım çarpanı (quasi-Poisson, φ ≥ 1).
+
+    Neden: bir rakip açıklamayı ("artış yeni kanaldan") yalnız A'da ANLAMLI bir
+    artış olmasıyla dışlamak, (1) o sınamanın I. tip hatasını hükme taşır ve
+    (2) A'daki küçük ama gerçek artışta rakibi, artışın çoğunu açıkladığı hâlde
+    dışlar (BMK v4 K10.2/K10.4). Etki büyüklüğü (pay_a) ile sınanır.
+
+    Args:
+        a_once, a_sonra, b_once, b_sonra: bileşen sayımları (önce/sonra).
+        sure_once, sure_sonra: dönem uzunlukları (gün).
+        dispersiyon: yayılım çarpanı (≥ 1; Poisson için 1).
+
+    Returns:
+        None (dönem uzunluğu sıfır) ya da {degisim_a, degisim_b (gün başına),
+        fark, se, z (se sıfırsa None), pay_a (toplam artış ≤ 0 ise None),
+        dispersiyon}.
+    """
+    if sure_once <= 0 or sure_sonra <= 0:
+        return None
+    phi = max(1.0, dispersiyon)
+    da = a_sonra / sure_sonra - a_once / sure_once
+    db = b_sonra / sure_sonra - b_once / sure_once
+    var = phi * ((a_sonra + b_sonra) / sure_sonra ** 2 + (a_once + b_once) / sure_once ** 2)
+    se = math.sqrt(var)
+    fark = da - db
+    toplam = da + db
+    return {"degisim_a": round(da, 5), "degisim_b": round(db, 5), "fark": round(fark, 5),
+            "se": round(se, 5), "z": round(fark / se, 3) if se > 0 else None,
+            "pay_a": round(da / toplam, 3) if toplam > 0 else None,
+            "dispersiyon": round(phi, 3)}
+
+
 def sara_kontrol_listesi():
     """Problem yönelimli polislik SARA döngüsü hatırlatıcısı (Ch 13)."""
     return {

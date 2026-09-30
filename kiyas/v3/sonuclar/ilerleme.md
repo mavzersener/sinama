@@ -4,21 +4,21 @@ Aynı ön-kayıtlı kıyas (v3, `b65c8a9` 10:44:12, eşikler değişmedi), deği
 Her sütun bir çekirdek değişikliğinden sonra yapılan tam ölçümdür; sayılar o commit'teki
 `v3.json`'dadır. Kalın: önceki sütuna göre değişen.
 
-| Ölçüt | Senaryo | Eşik | Başlangıç (A4.8 çekirdeği, araç yok) | A4.9 bilim katmanı v1 |
-|---|---|---|---|---|
-| K9.1 suç artışı desteklenmez | artefakt | ≥ 0,90 | 0 | **0,967** |
-| K9.2 en güçlü rakip R-BILDIRIM (birincil tutulunca) | artefakt | ≥ 0,90 | 0 | **0,967** |
-| K9.3 DESTEKLENDİ | gerçek artış | ≥ 0,80 | 0 | **1,000** |
-| K9.4 keşifsel tavan | gerçek artış (keşifsel) | ≥ 0,80 | 0 | **1,000** |
-| K9.5 destek (DESTEKLENDİ/KIRILGAN) | odaklı | ≥ 0,80 | 0 | **0,933** |
-| K9.6 desteksiz | rastgele | ≥ 0,90 | 0 | **1,000** |
-| K9.7 SERİ tavanı | seri | ≥ 0,90 | 0 | **1,000** |
-| K9.8 insan onayı | seri | = 1 | 0 | **1** |
-| K9.9 desteksiz | seri yok | ≥ 0,90 | 0 | **1,000** |
-| K9.10 H_bilinmeyen | hepsi | = 1 | 0 | **1** |
-| K9.11 sayısal olasılık yok | hepsi | = 1 | 0 | **1** |
-| K9.12 belirlenimcilik | artefakt | = 1 | 0 | **1** |
-| **Geçen** | | | **0/12** | **12/12** |
+| Ölçüt | Senaryo | Eşik | Başlangıç (A4.8 çekirdeği, araç yok) | A4.9 bilim katmanı v1 | A4.10 sınama v1.1 |
+|---|---|---|---|---|---|
+| K9.1 suç artışı desteklenmez | artefakt | ≥ 0,90 | 0 | **0,967** | 0,967 |
+| K9.2 en güçlü rakip R-BILDIRIM (birincil tutulunca) | artefakt | ≥ 0,90 | 0 | **0,967** | **1,000** |
+| K9.3 DESTEKLENDİ | gerçek artış | ≥ 0,80 | 0 | **1,000** | 1,000 |
+| K9.4 keşifsel tavan | gerçek artış (keşifsel) | ≥ 0,80 | 0 | **1,000** | 1,000 |
+| K9.5 destek (DESTEKLENDİ/KIRILGAN) | odaklı | ≥ 0,80 | 0 | **0,933** | 0,933 |
+| K9.6 desteksiz | rastgele | ≥ 0,90 | 0 | **1,000** | 1,000 |
+| K9.7 SERİ tavanı | seri | ≥ 0,90 | 0 | **1,000** | 1,000 |
+| K9.8 insan onayı | seri | = 1 | 0 | **1** | 1 |
+| K9.9 desteksiz | seri yok | ≥ 0,90 | 0 | **1,000** | 1,000 |
+| K9.10 H_bilinmeyen | hepsi | = 1 | 0 | **1** | 1 |
+| K9.11 sayısal olasılık yok | hepsi | = 1 | 0 | **1** | 1 |
+| K9.12 belirlenimcilik | artefakt | = 1 | 0 | **1** | 1 |
+| **Geçen** | | | **0/12** | **12/12** | 12/12 |
 
 ## Notlar
 
@@ -49,3 +49,10 @@ Her sütun bir çekirdek değişikliğinden sonra yapılan tam ölçümdür; say
   Rehberli akışın oturum kapısı da aynı hatayla yazılmıştı (koordinatsız veride
   oturum ANALİZ'e geçti) — birim testi yakaladı; kapı artık aracın tek otoritesinden
   (`dispatch_gate`).
+- **A4.10 — sınama v1.1.** v3 gerileme bekçisidir; iyileşme v4'te (yeni tohumlar)
+  iddia edilir. K9.2 0,967 → 1,00. **Öngörü hatası:** "K9.1 → 1,00" dedim, 0,967'de
+  kaldı. Tohum 314 DESTEKLENDİ'den KIRILGAN'a geçti (aşırı iddia kalktı) ama K9.1
+  yalnız BELİRSİZ/ÇELİŞKİLİ'yi doğru sayar. Neden: karakol o tohumda tesadüfen +%13
+  (453 → 513); ayrıştırmada pay 0,32, z −1,39 (φ = 2,2) → çözülmedi. Poisson
+  varsayımıyla z −2,07 → destekleniyor olurdu: φ tahmininin yukarı yanlılığı
+  (bkz. v4 ilerleme, keşif).

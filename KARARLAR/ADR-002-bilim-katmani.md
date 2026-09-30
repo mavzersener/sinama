@@ -5,6 +5,9 @@
 - **Uygulama:** A4.9 — BMK v3 0/12 → 12/12 (ön-kayıt `b65c8a9`); §7'nin ayrıntılı
   araçları (`calisma_baslat`, `hipotez_ekle`, `sinama_plani`, `kanit_bagla`,
   `hukum`) henüz yok — v1'de yalnız Rehberli giriş noktası (`rehberli_calisma`)
+- **Değişiklik (A4.10, sınama v1.1):** bir rakip, ayırt edici sınamanın yalnız
+  anlamlılığıyla değil **etki büyüklüğüyle** dışlanır (R-BILDIRIM: artışın çoğu
+  sürekli kanallarda mı). Rakip kaydı ölçümü (`olcum`) hükme taşır. BMK v4 3/7 → 7/7
 
 ## Bağlam
 

@@ -30,31 +30,31 @@
         },
         {
           "kimlik": "K10.2",
-          "deger": 0.7667,
+          "deger": 1.0,
           "yon": ">=",
           "esik": 0.9,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir (hesap ≈ 0,70–0,80): karakoldaki +4/ay adımda trend testinin gücü ~%26 → o tohumlarda R-BILDIRIM dışlanır → DESTEKLENDİ"
         },
         {
           "kimlik": "K10.3",
-          "deger": 0.7667,
+          "deger": 1.0,
           "yon": ">=",
           "esik": 0.9,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir (hesap ≈ 0,70–0,80): aynı neden"
         },
         {
           "kimlik": "K10.4",
-          "deger": 0.0,
+          "deger": 0.9667,
           "yon": ">=",
           "esik": 0.9,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir (hesap ≈ 0,03–0,10): karakoldaki +12/ay adım ~%97 anlamlı → R-BILDIRIM dışlanır → DESTEKLENDİ"
         },
         {
           "kimlik": "K10.5",
-          "deger": 0.9667,
+          "deger": 0.9,
           "yon": ">=",
           "esik": 0.8,
           "gecti": true,
@@ -70,10 +70,10 @@
         },
         {
           "kimlik": "K10.7",
-          "deger": 0.0,
+          "deger": 1.0,
           "yon": ">=",
           "esik": 1.0,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir: v1 rakip kaydında sayısal etki büyüklüğü yok (0)"
         }
       ],
@@ -83,15 +83,16 @@
             "BELİRSİZ": 30
           },
           "kismi_artefakt": {
-            "BELİRSİZ": 23,
-            "DESTEKLENDİ": 7
+            "BELİRSİZ": 21,
+            "KIRILGAN": 9
           },
           "karma": {
-            "DESTEKLENDİ": 30
+            "DESTEKLENDİ": 1,
+            "KIRILGAN": 29
           },
           "gercek_artis_kucuk_kanal": {
-            "BELİRSİZ": 1,
-            "DESTEKLENDİ": 29
+            "DESTEKLENDİ": 27,
+            "KIRILGAN": 3
           },
           "gercek_artis": {
             "DESTEKLENDİ": 30
@@ -103,15 +104,16 @@
             "uygulanamaz": 4
           },
           "kismi_artefakt": {
-            "destekleniyor": 23,
-            "dışlandı": 7
+            "destekleniyor": 21,
+            "çözülmedi": 9
           },
           "karma": {
-            "dışlandı": 30
+            "dışlandı": 1,
+            "çözülmedi": 29
           },
           "gercek_artis_kucuk_kanal": {
-            "destekleniyor": 1,
-            "dışlandı": 29
+            "dışlandı": 27,
+            "çözülmedi": 3
           },
           "gercek_artis": {
             "dışlandı": 30

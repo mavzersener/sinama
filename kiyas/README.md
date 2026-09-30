@@ -47,6 +47,9 @@ Programın bilimsel gücünü **ölçmek** için gerçeği önceden bilinen sent
   dışlamanın aşırı iddiası: saf / kısmi / karma bildirim değişikliği, küçük yeni kanallı
   ve kanalsız gerçek artış; rakip kaydında etki büyüklüğü. v3 tohumları hata ayıklamada
   incelendiği için v1.1 iyileşmesi yeni tohumlarla (401–430) burada sınanır.
+- **v5** (`v5/`): V11 yayılım çarpanı — v4'ün ölçemediği aşırı yayılımlı (negatif
+  binom) veride aşırı iddia koruması ve Poisson veride güç (200 tohum); rakip kaydında
+  yayılım testinin p'si. Tohum 501–700.
 
 ## Düzeyler
 
@@ -79,4 +82,8 @@ PYTHONUTF8=1 python kiyas/v3/kos_v3.py --dogrula
 
 ```bash
 PYTHONUTF8=1 python kiyas/v4/kos_v4.py --dogrula
+```
+
+```bash
+PYTHONUTF8=1 python kiyas/v5/kos_v5.py --dogrula
 ```

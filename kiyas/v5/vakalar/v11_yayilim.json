@@ -1,0 +1,75 @@
+{
+  "kimlik": "V11",
+  "ad": "Yayılım çarpanı: aşırı yayılımda koruma, Poisson veride güç (hüküm sağlamlığı v1.2)",
+  "surum": "v5",
+  "dayanak": "BMK v4 (4f23e69) Poisson-only olduğu için v1.1'in yayılım çarpanının (φ) kazancını ölçemedi; keşif (kiyas/kesif/a410_yayilim.py, 901–960, ön-kayıt dışı): NB karmada φ'siz %22 aşırı iddia, φ'li %5; Poisson küçük kanalda gücü φ=1 0,92, v1.1 φ 0,83. v1.2 adayı: φ'yi yalnız havuzlanmış Fisher yayılım testi Poisson'u reddederse kullanmak (A4.6 ilkesi).",
+  "arac": "rehberli_calisma",
+  "cikti_sozlesmesi": {
+    "girdi": "v3/v4 ile aynı (ARTIS, dogrulayici, onaylayan, kanal_alan)",
+    "okunan_alanlar": "v3'ün alanları + sonuc.hukum.rakipler[] içinde kod = R-BILDIRIM kaydının 'olcum' sözlüğünde 'yayilim_p' (sayı): yayılım testinin p değeri — φ kararının şeffaflığı",
+    "hata": "araç yoksa/hata/sözleşme dışı → hüküm YOK; YOK hiçbir ölçütte doğru değil"
+  },
+  "uretec": {
+    "islev": "uretec_v5.v11_kanallar",
+    "ortak_parametreler": {"baslangic": "2024-01-01", "ay_sayisi": 24, "kesinti_ayi": 13,
+                           "karakol_lambda": 40, "cevrimici_lambda": 12, "cevrimici": "kesinti"},
+    "aciklama": "asiri_yayilim_k yoksa v4 v10_kanallar'ın kendisi (Poisson). Varsa her ay-kanal oranı gama(k, 1/k) karışımıyla (ortalama 1) çarpılır → negatif binom, aylık φ = 1 + λ/k (k = 8: karakol ≈ 6, çevrimiçi ≈ 2,5)."
+  },
+  "senaryolar": {
+    "kismi_artefakt": {"soru_turu": "ARTIS", "amac": "dogrulayici", "argumanlar": {"kanal_alan": "kanal"},
+                       "tohumlar": {"bas": 501, "adet": 60}, "degisen": {"karakol_carpani": 1.1}},
+    "karma": {"soru_turu": "ARTIS", "amac": "dogrulayici", "argumanlar": {"kanal_alan": "kanal"},
+              "tohumlar": {"bas": 501, "adet": 60}, "degisen": {"karakol_carpani": 1.3}},
+    "gercek_artis_kucuk_kanal": {"soru_turu": "ARTIS", "amac": "dogrulayici", "argumanlar": {"kanal_alan": "kanal"},
+                                 "tohumlar": {"bas": 501, "adet": 200},
+                                 "degisen": {"karakol_carpani": 1.3, "cevrimici_lambda": 2}},
+    "saf_artefakt_nb": {"soru_turu": "ARTIS", "amac": "dogrulayici", "argumanlar": {"kanal_alan": "kanal"},
+                        "tohumlar": {"bas": 501, "adet": 60},
+                        "degisen": {"karakol_carpani": 1.0, "asiri_yayilim_k": 8}},
+    "kismi_artefakt_nb": {"soru_turu": "ARTIS", "amac": "dogrulayici", "argumanlar": {"kanal_alan": "kanal"},
+                          "tohumlar": {"bas": 501, "adet": 60},
+                          "degisen": {"karakol_carpani": 1.1, "asiri_yayilim_k": 8}},
+    "karma_nb": {"soru_turu": "ARTIS", "amac": "dogrulayici", "argumanlar": {"kanal_alan": "kanal"},
+                 "tohumlar": {"bas": 501, "adet": 60},
+                 "degisen": {"karakol_carpani": 1.3, "asiri_yayilim_k": 8}},
+    "gercek_artis_kucuk_kanal_nb": {"soru_turu": "ARTIS", "amac": "dogrulayici", "argumanlar": {"kanal_alan": "kanal"},
+                                    "tohumlar": {"bas": 501, "adet": 60},
+                                    "degisen": {"karakol_carpani": 1.3, "cevrimici_lambda": 2, "asiri_yayilim_k": 8},
+                                    "not": "yalnız ek ölçüm (ölçüt değil)"}
+  },
+  "tohum_ayrimi": "v0 1–30, v1 101–130, v2 201–230, v3 301–330, v4 401–430, v5 501–700; tasarım keşfi yalnız 900+.",
+  "dogru_hukum": {
+    "kismi_artefakt": "DESTEKLENMEZ (artışın ~%75'i yeni kanaldan)",
+    "karma": "DESTEKLENDİ DEĞİL (artışın yarısı kanal değişikliğinden)",
+    "gercek_artis_kucuk_kanal": "DESTEKLENDİ (artışın ~%86'sı gerçek)",
+    "saf_artefakt_nb": "DESTEKLENMEZ",
+    "kismi_artefakt_nb": "DESTEKLENMEZ",
+    "karma_nb": "DESTEKLENDİ DEĞİL",
+    "gercek_artis_kucuk_kanal_nb": "DESTEKLENDİ doğru ama aşırı yayılımda veri az bilgi taşır; KIRILGAN/BELİRSİZ hata değil, güç sınırıdır"
+  },
+  "cekirdek_olcutleri": [
+    {"kimlik": "K11.1", "senaryo": "kismi_artefakt", "aciklama": "Hüküm var ve DESTEKLENDİ değil oranı", "yon": ">=", "esik": 0.90},
+    {"kimlik": "K11.2", "senaryo": "karma", "aciklama": "Hüküm var ve DESTEKLENDİ değil oranı", "yon": ">=", "esik": 0.90},
+    {"kimlik": "K11.3", "senaryo": "gercek_artis_kucuk_kanal", "aciklama": "DESTEKLENDİ oranı (200 tohum)", "yon": ">=", "esik": 0.88},
+    {"kimlik": "K11.4", "senaryo": "saf_artefakt_nb", "aciklama": "Hüküm var ve DESTEKLENDİ değil oranı", "yon": ">=", "esik": 0.90},
+    {"kimlik": "K11.5", "senaryo": "kismi_artefakt_nb", "aciklama": "Hüküm var ve DESTEKLENDİ değil oranı", "yon": ">=", "esik": 0.90},
+    {"kimlik": "K11.6", "senaryo": "karma_nb", "aciklama": "Hüküm var ve DESTEKLENDİ değil oranı", "yon": ">=", "esik": 0.90},
+    {"kimlik": "K11.7", "senaryo": "yeni kanallı ölçüt senaryoları (K11.1–K11.6)", "aciklama": "Birincil öngörüsü tutulan koşularda R-BILDIRIM kaydı sayısal yayılım testi p'si (olcum.yayilim_p) taşıyor oranı (tutulan koşu yoksa 0)", "yon": ">=", "esik": 1.0}
+  ],
+  "esik_gerekceleri": {
+    "0,90 (aşırı iddia yok)": "aile yanlış alarm standardı",
+    "0,88 ve 200 tohum (Poisson güç)": "keşifte (901–960) Poisson varsayımlı sınamanın (φ = 1) gücü 0,92, v1.1'inki 0,83; v1.2'nin iddiası Poisson veride φ = 1 gücünü küçük bir toleransla korumaktır. 200 tohumda standart hata ≈ 0,02: 0,92 ile 0,83 ayrışır. Eşik keşif tohumlarından türetildi, ölçüm tohumları (501–700) görülmedi",
+    "1,0 (yayılım kararı raporu)": "sözleşme: φ'nin neden kullanıldığı ya da kullanılmadığı görünür olmalı"
+  },
+  "ongoruler": {
+    "K11.1": "GEÇER beklenir (v4 K10.2 1,00; keşif 60/60)",
+    "K11.2": "GEÇER beklenir (v4 K10.4 0,967; keşif 60/60)",
+    "K11.3": "BAŞARISIZ beklenir (hesap ≈ 0,83–0,90): v1.1'in φ'si (en büyük oran, ≥ 1) Poisson veride yukarı yanlı — keşif 50/60, v4 27/30",
+    "K11.4": "GEÇER beklenir (keşif: DESTEKLENDİ 0/60)",
+    "K11.5": "GEÇER beklenir (keşif: DESTEKLENDİ 0/60)",
+    "K11.6": "GEÇER beklenir (hesap ≈ 0,95; keşif 3/60 aşırı iddia)",
+    "K11.7": "BAŞARISIZ beklenir: v1.1 olcum'unda 'yayilim' var, 'yayilim_p' yok (0)"
+  },
+  "uygulama_ongorusu": "Ölçüt DEĞİL, zaman damgası için. v1.2 (havuzlanmış Fisher yayılım testi: T = ΣΣ(x−μ)²/μ grup-pencere tam ayları, sd = Σ(n−1); p = Q(sd/2, T/2) < 0,05 ise φ = T/sd, değilse φ = 1): K11.1 ≈ 1,0; K11.2 ≈ 0,95–1,0; K11.3 ≈ 0,89–0,93 (φ = 1 gücü eksi yanlış red ~%5'i); K11.4 ≈ 1,0; K11.5 ≈ 1,0; K11.6 ≈ 0,93–0,97 (NB'de test k = 8 yayılımı ~her zaman yakalar; havuzlanmış φ keşifte en büyük φ ile aynı sonucu verdi); K11.7 = 1. Ek (ölçüt değil): gercek_artis_kucuk_kanal_nb DESTEKLENDİ ≈ 0,3 — üç varyantta da (keşif 19–21/60).",
+  "ek_olcumler": ["senaryo başına kategori dağılımı", "senaryo başına R-BILDIRIM durum dağılımı", "gercek_artis_kucuk_kanal_nb DESTEKLENDİ oranı", "hata/YOK sayısı"]
+}

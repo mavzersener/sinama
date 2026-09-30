@@ -1,0 +1,194 @@
+{
+  "surum": "v8",
+  "kilit": {
+    "kiyas/v8/vakalar/v14_nni.json": "sha256:db1155b5:cb5d6b12:1634fed3:03a7228e:03e9f37b:5f64bba4:bcc53487:720783c4",
+    "kiyas/v8/vakalar/v15_cusum.json": "sha256:926318bf:fc2fce51:d2f75a9f:0f16189f:2d1394bc:2e151123:03061578:d624e780",
+    "kiyas/v8/uretec_v8.py": "sha256:767d611e:15ee0992:3b071f09:d529822c:c11e1444:4cf43f16:526b002c:f5d3c306",
+    "kiyas/v8/kos_v8.py": "sha256:495e025e:a095dde5:4d6fc3a2:a05c030b:df14cd73:28ac4e9a:61d286af:1f6a63ee",
+    "kiyas/v3/kos_v3.py": "sha256:8fce5788:1e1d4d17:075c2ffe:30f4b404:1d3057aa:f9ceaf35:f1510e34:1c699a2c",
+    "kiyas/v3/uretec_v3.py": "sha256:bce709f3:0a86580e:73720f21:07106b2b:e6359050:4afbb23c:3f5cc9b3:d39e0233",
+    "kiyas/v2/uretec_v2.py": "sha256:d124f16e:d19356fa:ec23c5b7:460e77ae:75ab4c6c:91a12c1d:6c4941b7:d66860d4",
+    "kiyas/uretec.py": "sha256:9040a2ad:53d48f15:4a1d15c9:6f2bfefc:151509b3:a437f391:1167bf67:2e81524f",
+    "kiyas/kos.py": "sha256:1774027a:0da650b0:68169ae7:c7a1523b:faa9d9a6:bcbd5e14:69882769:4599b764"
+  },
+  "ortam": {
+    "python": "3.14.0",
+    "sistem": "Windows"
+  },
+  "vakalar": [
+    {
+      "kimlik": "V14",
+      "ad": "NNI: rastgele desende yön iddiası yok, yaygın kümelenmede güç, yerel odakta dürüst sınır",
+      "tohum_adedi": {
+        "csr": 100,
+        "csr_kucuk": 100,
+        "kume": 100,
+        "kume_kucuk": 100,
+        "odak": 100
+      },
+      "olcutler": [
+        {
+          "kimlik": "K14.1",
+          "deger": 0.26,
+          "yon": "<=",
+          "esik": 0.1,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir (başlangıç): kenar düzeltmesiz varsayılan dağınık yönüne yanlı; keşifte 0,21"
+        },
+        {
+          "kimlik": "K14.2",
+          "deger": 0.0452,
+          "yon": "<=",
+          "esik": 0.03,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir (başlangıç): keşifte ortalama NNI 1,043"
+        },
+        {
+          "kimlik": "K14.3",
+          "deger": 0.34,
+          "yon": "<=",
+          "esik": 0.1,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir (başlangıç): küçük n'de kenar etkisi büyür; keşifte 0,40"
+        },
+        {
+          "kimlik": "K14.4",
+          "deger": 1.0,
+          "yon": ">=",
+          "esik": 0.9,
+          "gecti": true,
+          "ongoru": "GEÇER beklenir (başlangıç): güçlü yaygın kümelenme; keşifte 1,00 — uygulamada KORUNMALI"
+        },
+        {
+          "kimlik": "K14.5",
+          "deger": 0.74,
+          "yon": ">=",
+          "esik": 0.8,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir (başlangıç, sınırda): dağınık yönüne yan orta kümelenmeyi maskeliyor; keşifte 0,78"
+        },
+        {
+          "kimlik": "K14.6",
+          "deger": 0.0,
+          "yon": ">=",
+          "esik": 1.0,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir (başlangıç): araç yerel duyarsızlık uyarısı taşımıyor (kod incelemesi)"
+        }
+      ],
+      "ek_olcumler": {
+        "ortalama_nni": {
+          "csr": 1.0452,
+          "csr_kucuk": 1.1237,
+          "kume": 0.6298,
+          "kume_kucuk": 0.7865,
+          "odak": 0.9656
+        },
+        "duzgun_iddiasi": {
+          "csr": 0.26,
+          "csr_kucuk": 0.34,
+          "kume": 0.0,
+          "kume_kucuk": 0.0,
+          "odak": 0.02
+        },
+        "kumelenme_iddiasi": {
+          "csr": 0.0,
+          "csr_kucuk": 0.0,
+          "kume": 1.0,
+          "kume_kucuk": 0.74,
+          "odak": 0.13
+        },
+        "hata": {}
+      }
+    },
+    {
+      "kimlik": "V15",
+      "ad": "CUSUM: değişim yokken seri boyunca yanlış alarm denetimi, kalıcı artışta zamanında alarm",
+      "tohum_adedi": {
+        "sabit": 100,
+        "sabit_nb": 100,
+        "sabit_dusuk": 100,
+        "artis30": 100,
+        "artis50": 100,
+        "artis30_nb": 100
+      },
+      "olcutler": [
+        {
+          "kimlik": "K15.1",
+          "deger": 0.89,
+          "yon": "<=",
+          "esik": 0.1,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir (başlangıç): tüm seri ortalaması ve günlük k = 0,5σ, h = 5σ kalibre değil; keşifte 0,84"
+        },
+        {
+          "kimlik": "K15.2",
+          "deger": 1.0,
+          "yon": "<=",
+          "esik": 0.1,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir (başlangıç): keşifte 1,00"
+        },
+        {
+          "kimlik": "K15.3",
+          "deger": 0.96,
+          "yon": "<=",
+          "esik": 0.1,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir (başlangıç): keşifte 0,98"
+        },
+        {
+          "kimlik": "K15.4",
+          "deger": 0.59,
+          "yon": ">=",
+          "esik": 0.8,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir (başlangıç): keşifte 0,66 (önce alarm 0,16)"
+        },
+        {
+          "kimlik": "K15.5",
+          "deger": 0.67,
+          "yon": ">=",
+          "esik": 0.8,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir (başlangıç): keşifte 0,71"
+        },
+        {
+          "kimlik": "K15.6",
+          "deger": 0.43,
+          "yon": ">=",
+          "esik": 0.9,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir (başlangıç): keşifte 0,33"
+        }
+      ],
+      "ek_olcumler": {
+        "alarm_yok": {
+          "sabit": 0.11,
+          "sabit_nb": 0.0,
+          "sabit_dusuk": 0.04,
+          "artis30": 0.02,
+          "artis50": 0.0,
+          "artis30_nb": 0.0
+        },
+        "once_alarm": {
+          "sabit": 0.66,
+          "sabit_nb": 0.96,
+          "sabit_dusuk": 0.77,
+          "artis30": 0.18,
+          "artis50": 0.05,
+          "artis30_nb": 0.57
+        },
+        "ilk_alarm_gecikme_medyan_gun": {
+          "sabit": -178,
+          "sabit_nb": -282.0,
+          "sabit_dusuk": -214.0,
+          "artis30": 70.5,
+          "artis50": 52.5,
+          "artis30_nb": -114.0
+        },
+        "hata": {}
+      }
+    }
+  ]
+}

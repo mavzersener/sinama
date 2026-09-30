@@ -37,6 +37,12 @@ Programın bilimsel gücünü **ölçmek** için gerçeği önceden bilinen sent
   geri çağırma, güçlü katmanda kesinlik, aday listesi kesinliği, seri yokken aile
   yanlış alarmı, çıktı sözleşmesi (`katman` + `kanit` hatları). Ölçüm öncesi tasarım
   hipotezi vaka dosyasında zaman damgalıdır.
+- **v3** (`v3/`): V9 kategorik hüküm (ADR-002) — Rehberli akış (`rehberli_calisma`)
+  gerçeği bilinen yedi senaryoda: bildirim artefaktı, gerçek artış (doğrulayıcı ve
+  keşifsel), odaklı/rastgele, seri/seri yok. Ölçütler: doğru kategori, en güçlü rakip,
+  keşifsel ve SERİ tavanları, insan onayı, H_bilinmeyen, sayısal olasılık yokluğu,
+  belirlenimcilik. Bilim katmanı UYGULANMADAN önce kilitlendi; çıktı sözleşmesi vaka
+  dosyasındadır.
 
 ## Düzeyler
 
@@ -61,4 +67,8 @@ PYTHONUTF8=1 python kiyas/v1/kos_v1.py --dogrula
 
 ```bash
 PYTHONUTF8=1 python kiyas/v2/kos_v2.py --dogrula
+```
+
+```bash
+PYTHONUTF8=1 python kiyas/v3/kos_v3.py --dogrula
 ```

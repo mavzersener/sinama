@@ -1,0 +1,12 @@
+{
+  "surum": "v3",
+  "ilke": "Bu dosyalar ilk v3 ölçümünden ve bilim katmanının uygulanmasından ÖNCE kilitlendi; değişirlerse koşucu ölçmeyi reddeder. v0/v2 bağımlılıkları dahildir.",
+  "dosyalar": {
+    "kiyas/v3/vakalar/v9_hukum.json": "f1bea705c30a3af6642e5b92c55980903d93b4c11f82c669a28979548075d7f7",
+    "kiyas/v3/uretec_v3.py": "bce709f30a86580e73720f2107106b2be63590504afbb23c3f5cc9b3d39e0233",
+    "kiyas/v3/kos_v3.py": "8fce57881e1d4d17075c2ffe30f4b4041d3057aaf9ceaf35f1510e341c699a2c",
+    "kiyas/v2/uretec_v2.py": "d124f16ed19356faec23c5b7460e77ae75ab4c6c91a12c1d6c4941b7d66860d4",
+    "kiyas/uretec.py": "9040a2ad53d48f154a1d15c96f2bfefc151509b3a437f3911167bf672e81524f",
+    "kiyas/kos.py": "1774027a0da650b068169ae7c7a1523bfaa9d9a6bcbd5e14698827694599b764"
+  }
+}

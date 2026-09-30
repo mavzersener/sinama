@@ -1,0 +1,85 @@
+{
+  "kimlik": "V8",
+  "ad": "Seri bağlantısı: katmanlı aday ve kanıt hatları",
+  "surum": "v2",
+  "soru": "Bu konut hırsızlıklarında seri suç var mı?",
+  "uretec": {
+    "islev": "uretec_v2.v8_seri (sıkı/yayılmış/seri yok: v0 uretec.v3_seri DEĞİŞTİRİLMEDEN; tutarsız: yeni, aynı yapı)",
+    "ortak_parametreler": {
+      "merkez_lat": 41.0, "merkez_lon": 29.0, "kenar_km": 10.0,
+      "baslangic": "2025-01-01", "gun_sayisi": 365,
+      "n_seri": 5, "seri_yaricap_km": 0.25, "seri_gun": 21,
+      "seri_mo": ["balkon", "kapisi", "levye", "ile", "zorlanmis", "yalniz", "altin", "alinmis"],
+      "n_ortak": 20, "ortak_mo": ["kapi", "kirilarak", "girildi"],
+      "n_diger": 35, "diger_kelime": 4,
+      "genel_kelimeler": ["gece", "gunduz", "pencere", "cam", "nakit", "telefon", "bilgisayar",
+                          "televizyon", "saat", "canta", "cuzdan", "anahtar", "bahce", "merdiven",
+                          "cati", "bodrum", "garaj", "dukkan", "depo", "ofis", "esya", "mobilya",
+                          "bisiklet", "arac", "plaka", "kamera", "alarm", "komsu", "tanik", "iz"]
+    },
+    "varyantlar": {
+      "siki": {"aciklama": "V3'ün aynısı (yeni tohumlar): 250 m / 21 gün, her olayda 8 ayırt edici davranışın hepsi",
+               "degisen": {}},
+      "yayilmis": {"aciklama": "V7'nin aynısı: seri ±3 km ve 120 güne yayılmış",
+                   "degisen": {"seri_yaricap_km": 3.0, "seri_gun": 120}},
+      "tutarsiz": {"aciklama": "Davranış tutarsızlığı: her olayda 8 ayırt edici davranışın rastgele 5'i (+1 genel kelime); uzay-zaman sıkı. Gerçek serilerde bağlantılı çiftlerin Jaccard'ı tipik olarak 0,3–0,5'tir (Bennell & Jones 2005; Tonkin vd. 2008) — tüm davranışları her olayda tekrarlayan fail V3'ün iyimser varsayımıdır",
+                   "degisen": {"seri_mo_alt_kume": 5}},
+      "seri_yok": {"aciklama": "Seri yok: 20 ortak MO + 40 diğer (60 kayıt); her aday yanlıştır",
+                   "degisen": {"n_seri": 0, "n_diger": 40}}
+    }
+  },
+  "tohumlar": {"bas": 201, "adet": 30},
+  "tohum_ayrimi": "v0 1–30, v1 101–130, v2 201–230. Bu ön-kayıttan sonraki YÖNTEM TASARIMI keşfi yalnız 900 ve üstü tohumlarla yapılır; 201–230 yalnız ölçüm içindir (tasarım ölçüm verisine uydurulmasın).",
+  "arac_argumanlari": "seri_eslestirme: mo_alan='mo', diğerleri varsayılan (sade kullanıcının göreceği)",
+  "cikti_sozlesmesi": "sonuc bir çift listesidir (A4.2 biçimi korunur). Her çift: id1, id2; v2'nin istediği ek alanlar: 'katman' ∈ {'güçlü', 'zayıf'} ve 'kanit' sözlüğü ('mo', 'uzay', 'zaman' anahtarlarıyla; değerler serbest).",
+  "tanimlar": {
+    "C": "aracın döndürdüğü tüm çiftler (her katman)",
+    "G": "katman == 'güçlü' olan çiftler. 'katman' alanı YOKSA her çift güçlü sayılır: derecelendirilmemiş aday analiste tam ağırlıkla sunulur (A4.2 davranışı)",
+    "dogru_ciftler": "aynı gerçek serideki kayıt çiftleri: C(5,2) = 10 (seri yok varyantında boş)",
+    "geri_cagirma": "tohum başına |C ∩ doğru| / 10; 30 tohumun ortalaması",
+    "kesinlik": "HAVUZLANMIŞ: Σ|X ∩ doğru| / Σ|X| (30 tohum); Σ|X| = 0 ise 0. Neden: az adaylı varyantlarda tohum başına oran tanımsız kalır ve boş tohumları 0 saymak ölçütü bozar",
+    "sozlesme_uyumu": "4 varyant × 30 tohumdaki tüm çiftler havuzlanır: sözleşmeye uyan çift / tüm çift; hiç çift yoksa 0"
+  },
+  "gercek": "60 kayıt. Seri (5 kayıt, tek fail) yalnız sıkı/yayılmış/tutarsız varyantlarda; 20 BAĞIMSIZ fail çok yaygın 3 kelimelik ortak MO + 1 rastgele genel kelime (10×10 km, bir yıl); geri kalanı genel havuzdan 4 kelime. Grup etiketi veride yoktur.",
+  "dogru_hukum": {"seri_grubu": "seri adayı — inceleme hipotezi, kimlik iddiası değil",
+                  "ortak_mo_grubu": "seri değil",
+                  "seri_yok": "bu veride seri adayı yok ('seri yok' kesin hükmü değil)"},
+  "cekirdek_olcutleri": [
+    {"kimlik": "K8.1", "varyant": "siki", "aciklama": "Geri çağırma (C)", "yon": ">=", "esik": 0.90},
+    {"kimlik": "K8.2", "varyant": "siki", "aciklama": "Güçlü katman kesinliği (G, havuzlanmış)", "yon": ">=", "esik": 0.90},
+    {"kimlik": "K8.3", "varyant": "siki", "aciklama": "Aday listesi kesinliği (C, havuzlanmış)", "yon": ">=", "esik": 0.50},
+    {"kimlik": "K8.4", "varyant": "yayilmis", "aciklama": "Geri çağırma (C)", "yon": ">=", "esik": 0.80},
+    {"kimlik": "K8.5", "varyant": "yayilmis", "aciklama": "Aday listesi kesinliği (C, havuzlanmış)", "yon": ">=", "esik": 0.50},
+    {"kimlik": "K8.6", "varyant": "yayilmis", "aciklama": "Güçlü katmanda bağımsız faillerden (ortak MO grubu) yanlış çift, tohum ortalaması", "yon": "<=", "esik": 1.0},
+    {"kimlik": "K8.7", "varyant": "tutarsiz", "aciklama": "Geri çağırma (C)", "yon": ">=", "esik": 0.80},
+    {"kimlik": "K8.8", "varyant": "tutarsiz", "aciklama": "Aday listesi kesinliği (C, havuzlanmış)", "yon": ">=", "esik": 0.50},
+    {"kimlik": "K8.9", "varyant": "seri_yok", "aciklama": "Aile yanlış alarmı: güçlü aday (G ≠ ∅) çıkan tohum oranı", "yon": "<=", "esik": 0.10},
+    {"kimlik": "K8.10", "varyant": "hepsi", "aciklama": "Çıktı sözleşmesi uyumu (katman + kanıt hatları)", "yon": ">=", "esik": 1.0}
+  ],
+  "esik_gerekceleri": {
+    "0,90 (sıkı)": "v0 K3.1/K3.2 standardı; sıkı varyant gerilemeyi yakalar",
+    "0,80 (yayılmış, tutarsız)": "v1 K7.1 standardı; zor senaryoda geri çağırma",
+    "0,50 (aday listesi kesinliği)": "DEĞER YARGISI: aday listesi insan incelemesi içindir; yarısından çoğu yanlışsa liste sinyalden çok gürültüdür ve doğrulama yanlılığını besler. Geri çağırmayı zayıf katmanı şişirerek 'satın almayı' engeller",
+    "1,0 (bağımsızlardan güçlü yanlış çift)": "v1 K7.2 standardı",
+    "0,10 (seri yok, aile)": "v0/v1 aile yanlış alarmı standardı (K1.6, K4.2, K5.2, K6.2)"
+  },
+  "ongoruler": {
+    "K8.1": "GEÇER beklenir: sıkı varyant V3'ün aynısı; v0 K3.1 = 1,00",
+    "K8.2": "GEÇER beklenir: katman alanı yok → G = C; v0 K3.2 = 0,97 (tohum başına ~10,3 çiftin ~10'u doğru)",
+    "K8.3": "GEÇER beklenir: G = C, K8.2 ile aynı değer",
+    "K8.4": "BAŞARISIZ beklenir: v1 K7.1 = 0,25 — 2 km / 60 gün süzgeci yayılmış serinin çiftlerini eler",
+    "K8.5": "GEÇER beklenir: süzgeç kesinliği korur; v1'de tohum başına 2,7 çiftin ~2,53'ü doğru (≈ 0,94)",
+    "K8.6": "GEÇER beklenir: v1 K7.2 = 0,17",
+    "K8.7": "BAŞARISIZ beklenir (hesap ≈ 0,03–0,15): 5/8 davranışlı iki olay hipergeometrik olarak ortalama 3,1 ayırt edici kelime paylaşır; Ružička ≈ 0,35 (K = 3), ≈ 0,53 (K = 4) — 0,6 eşiğini çoğunlukla yalnız K = 5 (1/56) ve K = 4 + aynı genel kelime geçer",
+    "K8.8": "GEÇER beklenir — ZAYIF öngörü (hesap ≈ 0,6–0,75): az doğru aday (~0,3–1,5/tohum) karşısında ortak MO grubunun özdeş tanımlı ve pencere içi çiftleri (~0,2/tohum). Tek başına anlamsızdır; K8.7 ile birlikte okunur",
+    "K8.9": "BAŞARISIZ beklenir — ZAYIF öngörü (hesap ≈ 0,16–0,25; 30 tohumda ≤ 0,10 çıkma olasılığı ~%25): ortak MO grubunda rastgele kelimesi de aynı olan çiftler (~6,3/tohum) özdeş tanımlıdır, Ružička = 1; bunların ~%3'ü 2 km / 60 gün içindedir",
+    "K8.10": "BAŞARISIZ beklenir: çiftlerde 'katman' ve 'kanit' alanı yok (0)"
+  },
+  "tasarim_hipotezi": "Ölçümden SONRA ayrı adımda sınanır; burada yalnız zaman damgası için yazılır. (1) Oran benzerliği (Ružička) özdeş ama yaygın tanımlara en yüksek puanı verir (ortak MO + tek kelime = 1,0) — MO kanıtının gücü paylaşılan içeriğin AYIRT EDİCİLİĞİNE de bağlı olmalıdır (paylaşılan bilgi, Σ idf; özdeş yaygın tanım ≈ 5,6 nats, 2 ayırt edici davranış ≈ 6 nats, 8'i ≈ 20 nats). (2) Tek başına MO ayırt ediciliği tutarsız seriyi ortak MO'dan temiz ayıramaz (≈ 5,6'ya karşı ≈ 6 nats); uzay-zaman yakınlığı ikinci kanıt hattı olarak birleşmelidir. (3) Uzay-zaman ikili süzgeç değil kanıt hattıdır: pencere dışı ama MO'su ayırt edici çift atılmaz, 'zayıf' katmanda gerekçesiyle sunulur.",
+  "ek_olcumler": ["varyant başına tohum ortalaması |C| ve |G|", "doğru çiftlerin katmanlara dağılımı", "seri yok varyantında tohum başına |C|"],
+  "sistem_olcutleri": {
+    "not": "A5'te dil modeliyle birlikte ölçülür",
+    "zorunlu": ["katman ve gerekçesi (hangi kanıt hattı destekliyor/karşı)", "süzgeç eşiklerinin beyanı", "benzerlik ≠ kimlik", "insan incelemesi"],
+    "yasak": ["seri yok (kesin)", "aynı failin işi", "zayıf adayı güçlü gibi sunmak"]
+  }
+}

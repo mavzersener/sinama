@@ -1,0 +1,11 @@
+{
+  "surum": "v2",
+  "ilke": "Bu dosyalar ilk v2 ölçümünden ÖNCE kilitlendi; sonuç görüldükten sonra değişirlerse koşucu ölçmeyi reddeder. v0 bağımlılıkları dahildir.",
+  "dosyalar": {
+    "kiyas/v2/vakalar/v8_seri_katman.json": "3ff69bc6a1831c4d3afe4533f0a949b3e7b5679aaaa74d93d435bfbeab42ffce",
+    "kiyas/v2/uretec_v2.py": "d124f16ed19356faec23c5b7460e77ae75ab4c6c91a12c1d6c4941b7d66860d4",
+    "kiyas/v2/kos_v2.py": "223caf9bf7005ff37d67e1cb3b4d7866ae087c7759a05eb92f978c8de3753129",
+    "kiyas/uretec.py": "9040a2ad53d48f154a1d15c96f2bfefc151509b3a437f3911167bf672e81524f",
+    "kiyas/kos.py": "1774027a0da650b068169ae7c7a1523bfaa9d9a6bcbd5e14698827694599b764"
+  }
+}

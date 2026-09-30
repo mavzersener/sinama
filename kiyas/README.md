@@ -20,6 +20,10 @@ Programın bilimsel gücünü **ölçmek** için gerçeği önceden bilinen sent
    kıyasındaki sonucudur; çekirdek davranışını değiştiren commit onu AYNI commit'te
    günceller (CI `--dogrula` bunu zorlar) — her bilimsel davranış değişikliği diff'te
    görünür. İlk ölçüm `sonuclar/v0_ilk_olcum.json`'da dondurulmuştur (önce/sonra için).
+6. **Tohum ayrımı.** Her sürümün ölçüm tohumları ayrıdır (v0 1–30, v1 101–130,
+   v2 201–230). Bir ön-kayıttan sonra yapılan YÖNTEM TASARIMI keşfi yalnız 900 ve
+   üstü tohumlarla yapılır; ölçüm tohumları tasarımda kullanılmaz — yöntem ölçüm
+   verisine uydurulursa önce/sonra farkı iyimser yanlı olur.
 
 ## Sürümler
 
@@ -28,6 +32,11 @@ Programın bilimsel gücünü **ölçmek** için gerçeği önceden bilinen sent
 - **v1** (`v1/`): V2b kanal sayımı, V4 LISA, V5 yükselen sıcak nokta, V6 bölge
   anomalisi, V7 yayılmış seri. v0'a dokunmadan eklendi; kendi kilidi v0
   bağımlılıklarını da kapsar. Bulgular: `v1/sonuclar/v1_bulgular.md`.
+- **v2** (`v2/`): V8 seri bağlantısı — dört varyant (sıkı = V3, yayılmış = V7,
+  davranışı tutarsız seri, seri yok) ve katman farkındalıklı ölçütler: tüm adaylarda
+  geri çağırma, güçlü katmanda kesinlik, aday listesi kesinliği, seri yokken aile
+  yanlış alarmı, çıktı sözleşmesi (`katman` + `kanit` hatları). Ölçüm öncesi tasarım
+  hipotezi vaka dosyasında zaman damgalıdır.
 
 ## Düzeyler
 
@@ -48,4 +57,8 @@ PYTHONUTF8=1 python kiyas/kos.py --dogrula
 
 ```bash
 PYTHONUTF8=1 python kiyas/v1/kos_v1.py --dogrula
+```
+
+```bash
+PYTHONUTF8=1 python kiyas/v2/kos_v2.py --dogrula
 ```

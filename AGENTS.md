@@ -38,10 +38,11 @@ sahibinin onayıyla yapılır; D: yedeğine commit sonrası otomatik gider.
 8. **Dışa dönük eylem** (push, GitHub ayarı, paylaşım) yalnız proje sahibinin açık
    onayıyla yapılır.
 9. **Bilimsel iyileştirme ölçülür.** "Daha doğru/daha güçlü" iddiası BMK'da
-   (`kiyas/`) önce/sonra ölçümüyle desteklenmeden kabul edilmez. `kiyas/kilit.json`
-   kapsamındaki dosyalara (vakalar, üreteç, koşucu) dokunma: kilit bozulur ve
-   koşucu ölçmeyi reddeder. Değişiklik gerekiyorsa yeni sürüm açılır, gerekçe yazılır.
-   Ön-kayıt dışı keşif `kiyas/kesif/` altında ve açıkça öyle etiketlenir.
+   (`kiyas/`) önce/sonra ölçümüyle desteklenmeden kabul edilmez. Herhangi bir
+   `kiyas/**/kilit.json` kapsamındaki dosyalara (vakalar, üreteç, koşucu) dokunma: kilit
+   bozulur ve koşucu ölçmeyi reddeder. Değişiklik gerekiyorsa yeni sürüm açılır, gerekçe
+   yazılır. Ön-kayıt dışı keşif `kiyas/kesif/` altında ve açıkça öyle etiketlenir;
+   yöntem tasarımı keşfi ölçüm tohumlarıyla değil 900+ tohumlarıyla yapılır.
 
 ## Yapma listesi (yaşanmış hatalardan)
 

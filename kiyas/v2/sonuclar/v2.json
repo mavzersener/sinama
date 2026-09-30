@@ -1,0 +1,149 @@
+{
+  "surum": "v2",
+  "kilit": {
+    "kiyas/v2/vakalar/v8_seri_katman.json": "3ff69bc6a1831c4d3afe4533f0a949b3e7b5679aaaa74d93d435bfbeab42ffce",
+    "kiyas/v2/uretec_v2.py": "d124f16ed19356faec23c5b7460e77ae75ab4c6c91a12c1d6c4941b7d66860d4",
+    "kiyas/v2/kos_v2.py": "223caf9bf7005ff37d67e1cb3b4d7866ae087c7759a05eb92f978c8de3753129",
+    "kiyas/uretec.py": "9040a2ad53d48f154a1d15c96f2bfefc151509b3a437f3911167bf672e81524f",
+    "kiyas/kos.py": "1774027a0da650b068169ae7c7a1523bfaa9d9a6bcbd5e14698827694599b764"
+  },
+  "ortam": {
+    "python": "3.14.0",
+    "sistem": "Windows"
+  },
+  "vakalar": [
+    {
+      "kimlik": "V8",
+      "ad": "Seri bağlantısı: katmanlı aday ve kanıt hatları",
+      "tohum_adedi": 30,
+      "olcutler": [
+        {
+          "kimlik": "K8.1",
+          "deger": 1.0,
+          "yon": ">=",
+          "esik": 0.9,
+          "gecti": true,
+          "ongoru": "GEÇER beklenir: sıkı varyant V3'ün aynısı; v0 K3.1 = 1,00"
+        },
+        {
+          "kimlik": "K8.2",
+          "deger": 0.9804,
+          "yon": ">=",
+          "esik": 0.9,
+          "gecti": true,
+          "ongoru": "GEÇER beklenir: katman alanı yok → G = C; v0 K3.2 = 0,97 (tohum başına ~10,3 çiftin ~10'u doğru)"
+        },
+        {
+          "kimlik": "K8.3",
+          "deger": 0.9804,
+          "yon": ">=",
+          "esik": 0.5,
+          "gecti": true,
+          "ongoru": "GEÇER beklenir: G = C, K8.2 ile aynı değer"
+        },
+        {
+          "kimlik": "K8.4",
+          "deger": 0.2033,
+          "yon": ">=",
+          "esik": 0.8,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir: v1 K7.1 = 0,25 — 2 km / 60 gün süzgeci yayılmış serinin çiftlerini eler"
+        },
+        {
+          "kimlik": "K8.5",
+          "deger": 0.9104,
+          "yon": ">=",
+          "esik": 0.5,
+          "gecti": true,
+          "ongoru": "GEÇER beklenir: süzgeç kesinliği korur; v1'de tohum başına 2,7 çiftin ~2,53'ü doğru (≈ 0,94)"
+        },
+        {
+          "kimlik": "K8.6",
+          "deger": 0.1667,
+          "yon": "<=",
+          "esik": 1.0,
+          "gecti": true,
+          "ongoru": "GEÇER beklenir: v1 K7.2 = 0,17"
+        },
+        {
+          "kimlik": "K8.7",
+          "deger": 0.03,
+          "yon": ">=",
+          "esik": 0.8,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir (hesap ≈ 0,03–0,15): 5/8 davranışlı iki olay hipergeometrik olarak ortalama 3,1 ayırt edici kelime paylaşır; Ružička ≈ 0,35 (K = 3), ≈ 0,53 (K = 4) — 0,6 eşiğini çoğunlukla yalnız K = 5 (1/56) ve K = 4 + aynı genel kelime geçer"
+        },
+        {
+          "kimlik": "K8.8",
+          "deger": 0.5625,
+          "yon": ">=",
+          "esik": 0.5,
+          "gecti": true,
+          "ongoru": "GEÇER beklenir — ZAYIF öngörü (hesap ≈ 0,6–0,75): az doğru aday (~0,3–1,5/tohum) karşısında ortak MO grubunun özdeş tanımlı ve pencere içi çiftleri (~0,2/tohum). Tek başına anlamsızdır; K8.7 ile birlikte okunur"
+        },
+        {
+          "kimlik": "K8.9",
+          "deger": 0.2,
+          "yon": "<=",
+          "esik": 0.1,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir — ZAYIF öngörü (hesap ≈ 0,16–0,25; 30 tohumda ≤ 0,10 çıkma olasılığı ~%25): ortak MO grubunda rastgele kelimesi de aynı olan çiftler (~6,3/tohum) özdeş tanımlıdır, Ružička = 1; bunların ~%3'ü 2 km / 60 gün içindedir"
+        },
+        {
+          "kimlik": "K8.10",
+          "deger": 0.0,
+          "yon": ">=",
+          "esik": 1.0,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir: çiftlerde 'katman' ve 'kanit' alanı yok (0)"
+        }
+      ],
+      "ek_olcumler": {
+        "siki": {
+          "geri_cagirma": 1.0,
+          "kesinlik_c": 0.9804,
+          "kesinlik_g": 0.9804,
+          "g_ortak_yanlis": 0.1667,
+          "g_dolu_tohum": 1.0,
+          "ort_c": 10.2,
+          "ort_g": 10.2,
+          "dogru_g_katmaninda": 300,
+          "dogru_zayif_katmanda": 0
+        },
+        "yayilmis": {
+          "geri_cagirma": 0.2033,
+          "kesinlik_c": 0.9104,
+          "kesinlik_g": 0.9104,
+          "g_ortak_yanlis": 0.1667,
+          "g_dolu_tohum": 1.0,
+          "ort_c": 2.2333,
+          "ort_g": 2.2333,
+          "dogru_g_katmaninda": 61,
+          "dogru_zayif_katmanda": 0
+        },
+        "tutarsiz": {
+          "geri_cagirma": 0.03,
+          "kesinlik_c": 0.5625,
+          "kesinlik_g": 0.5625,
+          "g_ortak_yanlis": 0.2333,
+          "g_dolu_tohum": 0.4333,
+          "ort_c": 0.5333,
+          "ort_g": 0.5333,
+          "dogru_g_katmaninda": 9,
+          "dogru_zayif_katmanda": 0
+        },
+        "seri_yok": {
+          "geri_cagirma": 0.0,
+          "kesinlik_c": 0.0,
+          "kesinlik_g": 0.0,
+          "g_ortak_yanlis": 0.1333,
+          "g_dolu_tohum": 0.2,
+          "ort_c": 0.2333,
+          "ort_g": 0.2333,
+          "dogru_g_katmaninda": 0,
+          "dogru_zayif_katmanda": 0
+        }
+      }
+    }
+  ]
+}

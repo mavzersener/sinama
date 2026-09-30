@@ -11,6 +11,12 @@
 - **Değişiklik (A4.12, sınama v1.3):** ayrıştırmanın varyansı bileşene özgü yayılım
   çarpanıyla (her bileşen kendi Fisher testiyle kapılı). v1.2 (havuzlanmış tek φ)
   reddedildi (`d3ef040`). BMK v6 6/8 → 8/8
+- **Değişiklik (A4.13, ETKİ soru türü — §2'de v1.1'e bırakılmıştı):** müdahale
+  değerlendirmesi. Birincil: kontrol varsa müdahale/kontrol oran oranlarının log farkı
+  (bölgeye özgü, Fisher testiyle kapılı yayılım; ham WDD sayım farkı hacim farkında
+  ölçeğe bağımlı olduğu için değil), yoksa kesintili zaman serisi. RAK'a R-ESZAMANLI,
+  R-ORTALAMAYA-DONUS, R-YER-DEGISTIRME. Kontrolsüz: R-ESZAMANLI çözülemez → en çok
+  KIRILGAN (ek tavan kuralı gerekmez). Ön-kayıt BMK v7 (`2a84f04`)
 
 ## Bağlam
 

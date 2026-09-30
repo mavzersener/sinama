@@ -2,6 +2,25 @@
 
 ## [Yayımlanmamış]
 
+### Bilim katmanı: ETKİ soru türü — müdahale değerlendirmesi (A4.13)
+ADR-002'de v1.1'e bırakılmıştı. BMK v7 ön-kaydı (2a84f04) başlangıcı 0/9.
+- `degerlendirme.oran_orani_farki`: iki bölgenin oran oranlarının log farkı
+  (pencere uzunlukları sadeleşir), bölgeye özgü quasi-Poisson varyans, %95 GA;
+  `oran_farki_log`: tek bölgede iki dönemin oran oranı.
+- `rak`: R-ESZAMANLI (tarih etkisi), R-ORTALAMAYA-DONUS (seçim etkisi),
+  R-YER-DEGISTIRME (tampona kayma); R-RASTLANTI ve R-VERI ETKİ'ye de uygulanır.
+- `sablon`: ETKI (birincil: müdahale bölgesinde kontrole göre azalma);
+  `kapi_araci` alanı (oturum kapısı hangi aracın kapısıyla verilir).
+- `sinamalar.etki`: kesintinin iki yanında eşit pencereler (≥ 90 gün);
+  kontrol varsa oran oranı (z ≤ −1,96 tutuldu), yoksa ITS (seviye GA'sının üst
+  ucu < 0); öncesi son 90 gün / temel dönem (kontrol varsa ona göre) → ortalamaya
+  dönüş; tampon/kontrol oran oranı → yer değiştirme; her yerel sınama zincirde.
+- `rehberli_calisma`: soru_turu ETKI; bolge_alan, mudahale, kontrol, tampon,
+  kesinti_tarihi.
+Testler: oran oranı değerleri, gerçek etki DESTEKLENDİ + zincir adımları,
+yer değiştirme ve ortalamaya dönüş rakipleri, genel düşüş, kontrolsüz tavan,
+küçük düşüşte ITS belirsiz, kısa dönem ÇEKİMSER, kullanım hataları; 6/6 mutasyon.
+
 ### Sınama v1.3: bileşene özgü yayılım çarpanı (A4.12)
 v1.1'in φ'si (grup/pencere var/ortalama oranlarının EN BÜYÜĞÜ, ≥ 1) yeni kanal
 çok yayılımlıyken büyük φ'yi sürekli kanalın terimlerine de uyguluyordu (BMK v6

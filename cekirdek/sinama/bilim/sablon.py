@@ -24,6 +24,16 @@ SABLONLAR = {
         "yanlislama": "v1'de tanımsız: sıcak nokta bulunmaması yalnız 'desteklenmedi'dir",
         "gerekli_alanlar": ("lat", "lon"),
     },
+    "ETKI": {
+        "birincil": "müdahale, müdahale bölgesinde olayları azalttı (kontrol bölgesine "
+                    "göre; kontrol yoksa kesintili zaman serisi)",
+        "ongoru": {"arac": "oran_orani_farki", "olcut": "z",
+                   "kosul": "≤ −1,96 (log oran oranı; kontrolsüz: kesinti_analizi "
+                            "seviye GA'sının üst ucu < 0)"},
+        "yanlislama": "müdahale bölgesinde kontrole göre anlamlı ARTIŞ",
+        "gerekli_alanlar": ("tarih", "bolge"),
+        "kapi_araci": "trend",
+    },
     "SERI": {
         "birincil": "bu olayların bir kısmı ortak bir kaynaktan (seri) gelen bir desen "
                     "gösterir — desen, kimlik ya da aynı fail iddiası değildir",

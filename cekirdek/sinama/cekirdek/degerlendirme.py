@@ -239,6 +239,50 @@ def oran_degisimi_ayristirma(a_once, a_sonra, b_once, b_sonra, sure_once, sure_s
             "dispersiyon": round(phi, 3), "dispersiyon_b": round(phi_b, 3)}
 
 
+def oran_orani_farki(a_once, a_sonra, b_once, b_sonra, dispersiyon_a=1.0, dispersiyon_b=1.0):
+    """Oran oranlarının log farkı (A4.13, ETKİ): ln(a_s/a_ö) − ln(b_s/b_ö).
+
+    İki bölge aynı öncesi/sonrası pencerelerini paylaştığından pencere
+    uzunlukları sadeleşir (ham WDD sayım farkı ise bölge hacimleri farklıysa
+    ölçeğe bağımlıdır). Varyans bileşene özgü quasi-Poisson:
+    φ_a(1/a_ö + 1/a_s) + φ_b(1/b_ö + 1/b_s).
+
+    Args:
+        a_once, a_sonra: A bölgesinin (ör. müdahale) sayımları.
+        b_once, b_sonra: B bölgesinin (ör. kontrol) sayımları.
+        dispersiyon_a, dispersiyon_b: yayılım çarpanları (≥ 1).
+
+    Returns:
+        None (bir sayım 0 → log tanımsız) ya da {log_fark, oran (oran oranı),
+        se, z, ga_alt, ga_ust (oran ölçeğinde %95), dispersiyon_a, dispersiyon_b}.
+    """
+    if min(a_once, a_sonra, b_once, b_sonra) <= 0:
+        return None
+    pa, pb = max(1.0, dispersiyon_a), max(1.0, dispersiyon_b)
+    lf = math.log(a_sonra / a_once) - math.log(b_sonra / b_once)
+    se = math.sqrt(pa * (1 / a_once + 1 / a_sonra) + pb * (1 / b_once + 1 / b_sonra))
+    return {"log_fark": round(lf, 5), "oran": round(math.exp(lf), 4), "se": round(se, 5),
+            "z": round(lf / se, 3),
+            "ga_alt": round(math.exp(lf - 1.959964 * se), 4),
+            "ga_ust": round(math.exp(lf + 1.959964 * se), 4),
+            "dispersiyon_a": round(pa, 3), "dispersiyon_b": round(pb, 3)}
+
+
+def oran_farki_log(n_once, n_sonra, sure_once, sure_sonra, dispersiyon=1.0):
+    """Tek bölgede iki dönemin oran oranı (A4.13): ln((n_s/g_s)/(n_ö/g_ö)),
+    varyans φ(1/n_ö + 1/n_s). Kontrol bölgesi yokken ortalamaya dönüş sınaması.
+
+    Returns: None (sayım ya da süre sıfır) ya da {log_fark, oran, se, z, dispersiyon}.
+    """
+    if min(n_once, n_sonra) <= 0 or min(sure_once, sure_sonra) <= 0:
+        return None
+    phi = max(1.0, dispersiyon)
+    lf = math.log((n_sonra / sure_sonra) / (n_once / sure_once))
+    se = math.sqrt(phi * (1 / n_once + 1 / n_sonra))
+    return {"log_fark": round(lf, 5), "oran": round(math.exp(lf), 4), "se": round(se, 5),
+            "z": round(lf / se, 3), "dispersiyon": round(phi, 3)}
+
+
 def sara_kontrol_listesi():
     """Problem yönelimli polislik SARA döngüsü hatırlatıcısı (Ch 13)."""
     return {

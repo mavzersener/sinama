@@ -15,7 +15,7 @@ DURUMLAR = ("dışlandı", "destekleniyor", "çözülmedi", "uygulanamaz")
 KATALOG = {
     "R-RASTLANTI": {
         "ad": "Rastgele dalgalanma / küçük sayı / çoklu karşılaştırma",
-        "turler": ("ARTIS", "YOGUNLASMA", "SERI"),
+        "turler": ("ARTIS", "YOGUNLASMA", "SERI", "ETKI"),
         "mekanizma": "gürültü, rastgele nokta deseni ya da çok sayıda sınamadan biri "
                      "tesadüfen 'anlamlı' görünür",
         "sinama": "birincil öngörünün anlamlılık sınaması (çoklu test düzeltmeli)",
@@ -55,7 +55,7 @@ KATALOG = {
     },
     "R-VERI": {
         "ad": "Veri kalitesi (geçersiz tarih/koordinat, varsayılan konum yığılması, boş MO)",
-        "turler": ("ARTIS", "YOGUNLASMA", "SERI"),
+        "turler": ("ARTIS", "YOGUNLASMA", "SERI", "ETKI"),
         "mekanizma": "kayıt hataları deseni üretir ya da gizler",
         "sinama": "soru türüne göre alan geçerliliği ve yığılma denetimi",
         "etki": "yüksek",
@@ -80,6 +80,38 @@ KATALOG = {
         "etki": "orta",
         "sonraki_kanit": "fiziksel/dijital iz ya da tanık bilgisi (insan incelemesi)",
         "kaynak": "Johnson vd. (2007) yakın tekrar",
+    },
+    "R-ESZAMANLI": {
+        "ad": "Eşzamanlı genel değişim (tarih etkisi)",
+        "turler": ("ETKI",),
+        "mekanizma": "mevsim, ekonomi, politika ya da başka bir olay müdahaleyle aynı "
+                     "anda her yerde değişim yaratır; müdahale bölgesindeki düşüş ona ait "
+                     "olmayabilir",
+        "sinama": "kontrol bölgesiyle oran oranları farkı (farkların farkı)",
+        "etki": "yüksek",
+        "sonraki_kanit": "karşılaştırılabilir bir kontrol bölgesinin verisi",
+        "kaynak": "Shadish, Cook & Campbell (2002) — tarih tehdidi",
+    },
+    "R-ORTALAMAYA-DONUS": {
+        "ad": "Ortalamaya dönüş (seçim etkisi)",
+        "turler": ("ETKI",),
+        "mekanizma": "bölge olağandışı yüksek bir dönemden sonra müdahale için "
+                     "seçildiyse düşüş kendiliğinden gelir",
+        "sinama": "müdahale öncesi son 3 ayın önceki temel döneme (kontrol varsa ona "
+                  "göre) oranı",
+        "etki": "yüksek",
+        "sonraki_kanit": "daha uzun müdahale öncesi dönem",
+        "kaynak": "Campbell & Ross (1968) — Connecticut hız denetimi",
+    },
+    "R-YER-DEGISTIRME": {
+        "ad": "Yer değiştirme (suçun komşu bölgeye kayması)",
+        "turler": ("ETKI",),
+        "mekanizma": "suç ortadan kalkmaz, tampon bölgeye kayar; net etki sıfıra yakın "
+                     "olabilir",
+        "sinama": "tampon bölgenin kontrole göre oran oranları farkı",
+        "etki": "yüksek",
+        "sonraki_kanit": "müdahale bölgesini çevreleyen tampon bölgenin verisi",
+        "kaynak": "Weisburd vd. (2006); Wheeler & Ratcliffe (2018) WDD",
     },
 }
 

@@ -345,6 +345,128 @@ class TestOranDegisimiAyristirma(unittest.TestCase):
         self.assertIsNone(dg.oran_degisimi_ayristirma(1, 1, 1, 1, 0, 10))
 
 
+JITTER = [2, -1, -2, 1, 0, 1, -1, 2, -2, 0, 1, -1]
+
+
+def bolgesel(aylik_sayim, bas=(2024, 1)):
+    """{bölge: [ay başına sayı]} → ay içine yayılmış deterministik kayıtlar."""
+    satirlar = []
+    for bolge, sayimlar in aylik_sayim.items():
+        for ay, n in enumerate(sayimlar):
+            y_, m_ = bas[0] + (bas[1] - 1 + ay) // 12, (bas[1] - 1 + ay) % 12 + 1
+            gun_sayisi = calendar.monthrange(y_, m_)[1]
+            for i in range(n):
+                satirlar.append({"tarih": datetime.date(y_, m_, 1 + (i * gun_sayisi) // n).isoformat(),
+                                 "bolge": bolge})
+    satirlar.sort(key=lambda s: (s["tarih"], s["bolge"]))
+    for i, s in enumerate(satirlar):
+        s["id"] = f"b{i}"
+    return satirlar
+
+
+def seviye(once, sonra):
+    """24 ay: 12 ay 'once', 12 ay 'sonra' + deterministik dalgalanma."""
+    return [once + j for j in JITTER] + [sonra + j for j in JITTER]
+
+
+class TestOranOrani(unittest.TestCase):
+    def test_degerler(self):
+        from sinama.cekirdek import degerlendirme as dg
+        r = dg.oran_orani_farki(480, 312, 480, 480)
+        self.assertEqual((r["oran"], r["z"]), (0.65, -4.43))
+        self.assertLess(r["ga_alt"], 0.65)
+        self.assertGreater(r["ga_ust"], 0.65)
+        r4 = dg.oran_orani_farki(480, 312, 480, 480, dispersiyon_a=4, dispersiyon_b=4)
+        self.assertAlmostEqual(r4["z"], r["z"] / 2, delta=0.01)
+        self.assertIsNone(dg.oran_orani_farki(0, 10, 10, 10))
+        t = dg.oran_farki_log(270, 162, 270, 90)
+        self.assertEqual((t["oran"], t["z"]), (1.8, 5.914))
+        self.assertIsNone(dg.oran_farki_log(10, 10, 0, 10))
+
+
+class TestEtki(unittest.TestCase):
+    """ETKİ (A4.13) resmi yoldan, deterministik veride."""
+    TAM = {"bolge_alan": "bolge", "mudahale": "M", "kontrol": "K", "tampon": "T",
+           "kesinti_tarihi": "2025-01-01"}
+
+    def setUp(self):
+        self.gecici = tempfile.mkdtemp(prefix="etki_")
+        self.eski = os.environ.get("SINAMA_LOG_DIR")
+        os.environ["SINAMA_LOG_DIR"] = self.gecici
+
+    def tearDown(self):
+        if self.eski is None:
+            os.environ.pop("SINAMA_LOG_DIR", None)
+        else:
+            os.environ["SINAMA_LOG_DIR"] = self.eski
+
+    def hukum(self, veri, **arg):
+        a = {"soru_turu": "ETKI", "amac": "dogrulayici", "onaylayan": "test", **self.TAM, **arg}
+        return sunucu.arac_calistir("rehberli_calisma", {"satirlar": veri, **a})["sonuc"]
+
+    def test_gercek_etki_desteklenir_ve_adimlar_zincirde(self):
+        s = self.hukum(bolgesel({"M": seviye(40, 26), "K": seviye(40, 40), "T": seviye(25, 25)}))
+        h = s["hukum"]
+        self.assertEqual((h["kategori"], h["birincil_ongoru"]), ("DESTEKLENDİ", "tutuldu"), h["kurallar"])
+        self.assertEqual([x["arac"] for x in s["sinamalar"]],
+                         ["etki_oran_orani", "ortalamaya_donus", "yer_degistirme"])
+
+    def test_yer_degistirme_rakibi_destekler(self):
+        h = self.hukum(bolgesel({"M": seviye(40, 26), "K": seviye(40, 40), "T": seviye(25, 39)}))["hukum"]
+        self.assertEqual((h["kategori"], h["en_guclu_rakip"]), ("BELİRSİZ", "R-YER-DEGISTIRME"))
+        r = next(x for x in h["rakipler"] if x["kod"] == "R-YER-DEGISTIRME")
+        self.assertGreater(r["olcum"]["tampon_orani"], 1.3)
+
+    ZIRVE = [40 + j for j in JITTER[:9]] + [90, 90, 90] + [40 + j for j in JITTER]
+
+    def test_ortalamaya_donus_desteklenmez(self):
+        # öncesi zirve bölgenin aylık yayılımını büyütür → φ büyür → birincil çoğu
+        # zaman anlamlılığa ulaşmaz (yayılım kapısının koruyucu yan etkisi)
+        h = self.hukum(bolgesel({"M": self.ZIRVE, "K": seviye(40, 40), "T": seviye(25, 25)}))["hukum"]
+        self.assertIn(h["kategori"], ("BELİRSİZ", "KIRILGAN"))
+
+    def test_ortalamaya_donus_rakip_mantigi(self):
+        # birincil TUTULDUĞUNDA rakip mantığı: φ = 1 (Poisson varsayımı) ile yalıtılmış sınama
+        veri = bolgesel({"M": self.ZIRVE, "K": seviye(40, 40), "T": seviye(25, 25)})
+        eski = sinamalar._yayilim_sinamasi
+        sinamalar._yayilim_sinamasi = lambda tarihli, parcalar: (1.0, 1.0, 0.0, 1)
+        try:
+            b, r, _ = sinamalar.etki({}, veri, None, None, "bolge", "M", "2025-01-01",
+                                     kontrol="K", tampon="T")
+        finally:
+            sinamalar._yayilim_sinamasi = eski
+        self.assertEqual(b["durum"], "tutuldu")
+        durum = durumlar(r)
+        self.assertEqual(durum["R-ORTALAMAYA-DONUS"], "destekleniyor")
+        self.assertEqual(hukum.en_guclu_rakip(r), "R-ORTALAMAYA-DONUS")
+
+    def test_genel_dusus_desteklenmez(self):
+        h = self.hukum(bolgesel({"M": seviye(40, 26), "K": seviye(40, 26), "T": seviye(25, 16)}))["hukum"]
+        self.assertEqual((h["kategori"], h["birincil_ongoru"]), ("BELİRSİZ", "belirsiz"))
+
+    def test_kontrolsuz_tavan_kirilgan(self):
+        veri = bolgesel({"M": seviye(40, 26), "K": seviye(40, 40)})
+        h = self.hukum(veri, kontrol="", tampon="")["hukum"]
+        self.assertEqual((h["kategori"], h["en_guclu_rakip"]), ("KIRILGAN", "R-ESZAMANLI"), h["kurallar"])
+        durum = {r["kod"]: r["durum"] for r in h["rakipler"]}
+        self.assertEqual(durum["R-YER-DEGISTIRME"], "çözülmedi")
+
+    def test_kontrolsuz_kucuk_dusus_belirsiz(self):
+        # ITS tahmini negatif ama GA 0'ı kapsıyor → belirsiz (yön tek başına yetmez)
+        h = self.hukum(bolgesel({"M": seviye(40, 38)}), kontrol="", tampon="")["hukum"]
+        self.assertEqual((h["kategori"], h["birincil_ongoru"]), ("BELİRSİZ", "belirsiz"), h["kurallar"])
+
+    def test_kisa_donem_cekimser_ve_kullanim_hatalari(self):
+        kisa = bolgesel({"M": [40, 40, 26, 26], "K": [40] * 4}, bas=(2024, 11))
+        h = self.hukum(kisa)["hukum"]
+        self.assertEqual((h["kategori"], h["birincil_ongoru"]), ("ÇEKİMSER", "sınanamadı"))
+        with self.assertRaises(KullanimHatasi):
+            sunucu.arac_calistir("rehberli_calisma", {"satirlar": kisa, "soru_turu": "ETKI",
+                                                      "amac": "kesifsel", "bolge_alan": "bolge"})
+        with self.assertRaises(KullanimHatasi):
+            self.hukum(kisa, kesinti_tarihi="bilinmiyor")
+
+
 class TestSinamalarDiger(unittest.TestCase):
     def test_yigilma_veri_rakibini_cozmez(self):
         noktalar = [{"lat": 41.0 + i * 0.001, "lon": 29.0} for i in range(40)]

@@ -319,3 +319,150 @@ def seri(kaynak, kayitlar, yurut, mo_alan):
         saglamlik.append("MO'lu kayıt 20'den az: taban oranları kararsız")
     return birincil, rakipler, saglamlik
 
+
+# ---------------------------------------------------------------- ETKİ
+
+Z_IKI = statistics.NormalDist().inv_cdf(1 - ALFA / 2)   # iki yönlü, ≈ 1,96
+MIN_ETKI_GUN = 90        # öncesi/sonrası penceresinin en kısa uzunluğu
+SON_DONEM_GUN = 90       # ortalamaya dönüş: müdahale öncesi "son" dönem
+
+
+def etki(kaynak, kayitlar, yurut, kaydet, bolge_alan, mudahale, kesinti_tarihi,
+         kontrol=None, tampon=None):
+    """ETKİ (A4.13): müdahale bölgesinde azalma (birincil), R-RASTLANTI, R-VERI,
+    R-ESZAMANLI, R-ORTALAMAYA-DONUS, R-YER-DEGISTIRME.
+
+    Pencereler kesintinin iki yanında EŞİT uzunluktadır (L = kısa taraf).
+    Kontrol varsa birincil sınama oran oranlarının log farkıdır (bölgeye özgü,
+    Fisher testiyle kapılı φ); kontrol yoksa müdahale bölgesinin kesintili
+    zaman serisidir ve R-ESZAMANLI çözülemez (hüküm en çok KIRILGAN).
+    """
+    kt = veri.tarih_coz(kesinti_tarihi)
+    tarihli = []
+    for r in kayitlar:
+        dt, b = veri.tarih_coz(r.get("tarih")), r.get(bolge_alan)
+        if dt is not None and b not in (None, ""):
+            tarihli.append((dt, str(b)))
+    saglamlik = []
+    n = len(kayitlar)
+    kalite = len(tarihli) / n if n else 0.0
+    r_veri = (_rakip("R-VERI", "dışlandı", "tarih ve bölge alanı geçerli") if kalite >= 1 - VERI_ESIK
+              else _rakip("R-VERI", "çözülmedi",
+                          f"tarih ya da bölge alanı kayıtların %{round(100 * (1 - kalite))}'inde geçersiz/eksik"))
+    if not tarihli or kt is None:
+        birincil = {"durum": "sınanamadı", "gerekce": "geçerli tarih/bölge ya da kesinti tarihi yok"}
+        return birincil, [_rakip(k, "çözülmedi", "veri yok") for k in
+                          ("R-RASTLANTI", "R-ESZAMANLI", "R-ORTALAMAYA-DONUS", "R-YER-DEGISTIRME")] + [r_veri], []
+    t0 = min(dt for dt, _ in tarihli)
+    t1 = max(dt for dt, _ in tarihli)
+    gun = min((kt - t0).days, (t1 - kt).days + 1)
+    if gun < MIN_ETKI_GUN:
+        birincil = {"durum": "sınanamadı",
+                    "gerekce": f"kesintinin iki yanında en az {MIN_ETKI_GUN} gün gerekir ({gun})"}
+        return birincil, [_rakip(k, "çözülmedi", "dönem kısa") for k in
+                          ("R-RASTLANTI", "R-ESZAMANLI", "R-ORTALAMAYA-DONUS", "R-YER-DEGISTIRME")] + [r_veri], []
+    from datetime import timedelta
+    bas, bit = kt - timedelta(days=gun), kt + timedelta(days=gun)
+    say = Counter((b, dt >= kt) for dt, b in tarihli if bas <= dt < bit)
+
+    def phi(b):
+        """Bölgenin Fisher testiyle kapılı yayılım çarpanı (öncesi + sonrası)."""
+        return _yayilim_sinamasi(tarihli, [({b}, bas, kt), ({b}, kt, bit)])[0]
+
+    m_o, m_s = say[(mudahale, False)], say[(mudahale, True)]
+    if kontrol:
+        k_o, k_s = say[(kontrol, False)], say[(kontrol, True)]
+        r = degerlendirme.oran_orani_farki(m_o, m_s, k_o, k_s, phi(mudahale), phi(kontrol))
+        if kaydet is not None and r is not None:
+            kaydet("etki_oran_orani", {k: v for k, v in r.items() if isinstance(v, (int, float))},
+                   "H1", "müdahale bölgesinin kontrole göre oran oranı")
+        if r is None:
+            birincil = {"durum": "sınanamadı", "gerekce": "bir bölgede sıfır sayım: oran tanımsız"}
+        else:
+            durum = ("tutuldu" if r["z"] <= -Z_IKI else "karşıt" if r["z"] >= Z_IKI else "belirsiz")
+            birincil = {"durum": durum,
+                        "gerekce": f"oran oranı {r['oran']} (GA {r['ga_alt']}–{r['ga_ust']}, z {r['z']})"}
+    else:
+        alt = [x for x in kayitlar if str(x.get(bolge_alan)) == str(mudahale)]
+        its, hata = _dene(yurut, "kesinti_analizi",
+                          {"satirlar": alt, "kesinti_tarihi": kesinti_tarihi, "donem": "ay"},
+                          "H1", "kontrolsüz: müdahale bölgesinin kesintili zaman serisi")
+        sv = (its or {}).get("seviye_degisimi") or {}
+        if hata or sv.get("ga_ust") is None:
+            birincil = {"durum": "sınanamadı", "gerekce": hata or "kesinti analizi modeli kurulamadı"}
+        else:
+            durum = ("tutuldu" if sv["ga_ust"] < 0 else "karşıt" if sv["ga_alt"] > 0 else "belirsiz")
+            birincil = {"durum": durum,
+                        "gerekce": f"ITS seviye değişimi {sv.get('tahmin')} (GA {sv['ga_alt']}–{sv['ga_ust']})"}
+    tuttu = birincil["durum"] == "tutuldu"
+    rakipler = [_rakip("R-RASTLANTI", "dışlandı" if tuttu else "çözülmedi",
+                       "birincil sınama anlamlı" if tuttu else "anlamlı azalma yok"), r_veri]
+
+    if not tuttu:
+        rakipler.append(_rakip("R-ESZAMANLI", "uygulanamaz", "açıklanacak azalma yok"))
+    elif kontrol:
+        rakipler.append(_rakip("R-ESZAMANLI", "dışlandı", "azalma kontrol bölgesindeki değişimden anlamlı farklı"))
+    else:
+        rakipler.append(_rakip("R-ESZAMANLI", "çözülmedi", "kontrol bölgesi yok"))
+
+    # ortalamaya dönüş: müdahale öncesi son dönem, önceki temel döneme göre olağandışı yüksek mi
+    if not tuttu:
+        rakipler.append(_rakip("R-ORTALAMAYA-DONUS", "uygulanamaz", "açıklanacak azalma yok"))
+    else:
+        son_bas = kt - timedelta(days=SON_DONEM_GUN)
+        g_onceki = (son_bas - bas).days
+        if g_onceki < SON_DONEM_GUN:
+            rakipler.append(_rakip("R-ORTALAMAYA-DONUS", "çözülmedi",
+                                   f"müdahale öncesi temel dönem {SON_DONEM_GUN} günden kısa"))
+        else:
+            ps = Counter((b, dt >= son_bas) for dt, b in tarihli if bas <= dt < kt)
+            if kontrol:
+                r2 = degerlendirme.oran_orani_farki(ps[(mudahale, False)], ps[(mudahale, True)],
+                                                    ps[(kontrol, False)], ps[(kontrol, True)],
+                                                    phi(mudahale), phi(kontrol))
+            else:
+                r2 = degerlendirme.oran_farki_log(ps[(mudahale, False)], ps[(mudahale, True)],
+                                                  g_onceki, SON_DONEM_GUN, phi(mudahale))
+            if kaydet is not None and r2 is not None:
+                kaydet("ortalamaya_donus", {k: v for k, v in r2.items() if isinstance(v, (int, float))},
+                       "R-ORTALAMAYA-DONUS", "müdahale öncesi son 3 ay / önceki temel dönem")
+            if r2 is None:
+                rakipler.append(_rakip("R-ORTALAMAYA-DONUS", "çözülmedi", "sıfır sayım: oran tanımsız"))
+            elif r2["z"] > Z_TEK:
+                rakipler.append(_rakip("R-ORTALAMAYA-DONUS", "destekleniyor",
+                                       f"müdahale öncesi son 3 ayda olağandışı yükseliş (oran {r2['oran']}, z {r2['z']})",
+                                       {"oncesi_zirve_orani": r2["oran"], "z": r2["z"]}))
+            else:
+                rakipler.append(_rakip("R-ORTALAMAYA-DONUS", "dışlandı",
+                                       f"müdahale öncesinde olağandışı zirve yok (oran {r2['oran']}, z {r2['z']})",
+                                       {"oncesi_zirve_orani": r2["oran"], "z": r2["z"]}))
+
+    # yer değiştirme: tampon bölge kontrole göre arttı mı
+    if not tuttu:
+        rakipler.append(_rakip("R-YER-DEGISTIRME", "uygulanamaz", "açıklanacak azalma yok"))
+    elif not tampon:
+        rakipler.append(_rakip("R-YER-DEGISTIRME", "çözülmedi", "tampon bölge verilmedi"))
+    elif not kontrol:
+        rakipler.append(_rakip("R-YER-DEGISTIRME", "çözülmedi",
+                               "kontrol yok: tampondaki değişim genel eğilimden ayrılamaz"))
+    else:
+        r3 = degerlendirme.oran_orani_farki(say[(tampon, False)], say[(tampon, True)],
+                                            say[(kontrol, False)], say[(kontrol, True)],
+                                            phi(tampon), phi(kontrol))
+        if kaydet is not None and r3 is not None:
+            kaydet("yer_degistirme", {k: v for k, v in r3.items() if isinstance(v, (int, float))},
+                   "R-YER-DEGISTIRME", "tampon bölgenin kontrole göre oran oranı")
+        if r3 is None:
+            rakipler.append(_rakip("R-YER-DEGISTIRME", "çözülmedi", "sıfır sayım: oran tanımsız"))
+        elif r3["z"] > Z_TEK:
+            rakipler.append(_rakip("R-YER-DEGISTIRME", "destekleniyor",
+                                   f"tampon bölge kontrole göre arttı (oran {r3['oran']}, z {r3['z']})",
+                                   {"tampon_orani": r3["oran"], "z": r3["z"]}))
+        else:
+            rakipler.append(_rakip("R-YER-DEGISTIRME", "dışlandı",
+                                   f"tamponda kontrole göre anlamlı artış yok (oran {r3['oran']}, z {r3['z']})",
+                                   {"tampon_orani": r3["oran"], "z": r3["z"]}))
+    if gun < 2 * MIN_ETKI_GUN:
+        saglamlik.append(f"kısa dönem: kesintinin iki yanında {gun} gün (< {2 * MIN_ETKI_GUN})")
+    return birincil, rakipler, saglamlik
+

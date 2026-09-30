@@ -15,7 +15,8 @@ from ..cekirdek.hatalar import KullanimHatasi
 from ..surec import dongu, kanit, kilit
 from . import hukum, rak, sablon, sinamalar
 
-URUN_TURU = {"ARTIS": "stratejik", "YOGUNLASMA": "taktik", "SERI": "sorun_cozme"}
+URUN_TURU = {"ARTIS": "stratejik", "YOGUNLASMA": "taktik", "SERI": "sorun_cozme",
+             "ETKI": "sorun_cozme"}
 
 
 def _kisa_ozet(ad, sonuc):
@@ -30,7 +31,8 @@ def _kisa_ozet(ad, sonuc):
 
 
 def rehberli(kaynak, kayitlar, soru_turu, amac, log_dir, yurut_ham, kapi_karari,
-             onaylayan=None, kanal_alan=None, mo_alan=None, soru=None):
+             onaylayan=None, kanal_alan=None, mo_alan=None, soru=None, bolge_alan=None,
+             mudahale=None, kontrol=None, tampon=None, kesinti_tarihi=None):
     """Rehberli çalışma: hipotez seti → sınamalar → kategorik hüküm.
 
     Args:
@@ -47,6 +49,10 @@ def rehberli(kaynak, kayitlar, soru_turu, amac, log_dir, yurut_ham, kapi_karari,
         kanal_alan: ARTIS'te bildirim kanalı/kaynak alanı (R-BILDIRIM için).
         mo_alan: SERI'de MO metni alanı (zorunlu).
         soru: kullanıcının soru metni (kayıt için).
+        bolge_alan, mudahale, kontrol, tampon, kesinti_tarihi: ETKİ için bölge alanı,
+            müdahale/kontrol/tampon bölge değerleri ve müdahalenin başlangıç tarihi
+            (bolge_alan, mudahale ve kesinti_tarihi zorunlu; kontrol ve tampon
+            isteğe bağlı — yoksa ilgili rakipler çözülemez).
 
     Returns:
         {oturum_id, soru_turu, amac, kilit_hash, hipotezler, sinamalar, hukum}
@@ -60,6 +66,11 @@ def rehberli(kaynak, kayitlar, soru_turu, amac, log_dir, yurut_ham, kapi_karari,
                              "veriden önce onun adıyla kilitlenir")
     if soru_turu == "SERI" and not mo_alan:
         raise KullanimHatasi("SERI sorusu için mo_alan zorunlu")
+    if soru_turu == "ETKI":
+        if not (bolge_alan and mudahale and kesinti_tarihi):
+            raise KullanimHatasi("ETKI sorusu için bolge_alan, mudahale ve kesinti_tarihi zorunlu")
+        if veri.tarih_coz(kesinti_tarihi) is None:
+            raise KullanimHatasi("kesinti_tarihi çözülemedi")
 
     d = dongu.AnalizDongusu({"karar": soru or f"{soru_turu} sorusu", "soru_turu": soru_turu,
                              "urun_turu": URUN_TURU[soru_turu]}, mod="resmi", amac=amac)
@@ -77,9 +88,10 @@ def rehberli(kaynak, kayitlar, soru_turu, amac, log_dir, yurut_ham, kapi_karari,
 
     profil = veri.veri_profili(kayitlar)
     d.veri_bagla(profil)
-    ongoru_araci = sablon.SABLONLAR[soru_turu]["ongoru"]["arac"]
+    kapi_araci = sablon.SABLONLAR[soru_turu].get("kapi_araci",
+                                                  sablon.SABLONLAR[soru_turu]["ongoru"]["arac"])
     arg0 = {**kaynak, "mo_alan": mo_alan} if soru_turu == "SERI" else dict(kaynak)
-    uygunluk = kapi_karari(ongoru_araci, arg0)
+    uygunluk = kapi_karari(kapi_araci, arg0)
     d.manifesto["gate_kararlari"].append({"faz": "VERI-kapi", **uygunluk})
 
     sinama_izi = []
@@ -103,6 +115,10 @@ def rehberli(kaynak, kayitlar, soru_turu, amac, log_dir, yurut_ham, kapi_karari,
                                                             kaydet)
         elif soru_turu == "YOGUNLASMA":
             birincil, rakipler, saglamlik = sinamalar.yogunlasma(kaynak, kayitlar, yurut)
+        elif soru_turu == "ETKI":
+            birincil, rakipler, saglamlik = sinamalar.etki(
+                kaynak, kayitlar, yurut, kaydet, bolge_alan, mudahale, kesinti_tarihi,
+                kontrol=kontrol, tampon=tampon)
         else:
             birincil, rakipler, saglamlik = sinamalar.seri(kaynak, kayitlar, yurut, mo_alan)
     else:

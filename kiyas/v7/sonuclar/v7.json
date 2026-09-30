@@ -32,148 +32,144 @@
       "olcutler": [
         {
           "kimlik": "K13.1",
-          "deger": 0.0,
+          "deger": 0.94,
           "yon": ">=",
           "esik": 0.8,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir: bugünkü çekirdek ETKI soru türünü tanımıyor (hüküm YOK)"
         },
         {
           "kimlik": "K13.2",
-          "deger": 0.0,
+          "deger": 0.99,
           "yon": ">=",
           "esik": 0.9,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir: araç ETKI'yi tanımıyor"
         },
         {
           "kimlik": "K13.3",
-          "deger": 0.0,
+          "deger": 1.0,
           "yon": ">=",
           "esik": 0.9,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir: araç ETKI'yi tanımıyor"
         },
         {
           "kimlik": "K13.4",
-          "deger": 0.0,
+          "deger": 1.0,
           "yon": ">=",
           "esik": 0.8,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir: araç ETKI'yi tanımıyor"
         },
         {
           "kimlik": "K13.5",
-          "deger": 0.0,
+          "deger": 1.0,
           "yon": ">=",
           "esik": 0.9,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir: araç ETKI'yi tanımıyor"
         },
         {
           "kimlik": "K13.6",
-          "deger": 0.0,
+          "deger": 0.9798,
           "yon": ">=",
           "esik": 0.8,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir: araç ETKI'yi tanımıyor"
         },
         {
           "kimlik": "K13.7",
-          "deger": 0.0,
+          "deger": 1.0,
           "yon": ">=",
           "esik": 1.0,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir: araç ETKI'yi tanımıyor"
         },
         {
           "kimlik": "K13.8",
-          "deger": 0.0,
+          "deger": 0.96,
           "yon": ">=",
           "esik": 0.9,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir: araç ETKI'yi tanımıyor"
         },
         {
           "kimlik": "K13.9",
-          "deger": 0.0,
+          "deger": 0.98,
           "yon": ">=",
           "esik": 0.9,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir: araç ETKI'yi tanımıyor"
         }
       ],
       "ek_olcumler": {
         "kategori_dagilimi": {
           "gercek_etki": {
-            "YOK": 100
+            "BELİRSİZ": 6,
+            "DESTEKLENDİ": 94
           },
           "genel_dusus": {
-            "YOK": 100
+            "BELİRSİZ": 97,
+            "DESTEKLENDİ": 1,
+            "ÇELİŞKİLİ": 2
           },
           "ortalamaya_donus": {
-            "YOK": 100
+            "BELİRSİZ": 100
           },
           "yer_degistirme": {
-            "YOK": 100
+            "BELİRSİZ": 100
           },
           "kontrolsuz": {
-            "YOK": 100
+            "BELİRSİZ": 26,
+            "KIRILGAN": 74
           },
           "etkisiz": {
-            "YOK": 100
+            "BELİRSİZ": 91,
+            "DESTEKLENDİ": 4,
+            "ÇELİŞKİLİ": 5
           },
           "etkisiz_nb": {
-            "YOK": 100
+            "BELİRSİZ": 94,
+            "DESTEKLENDİ": 2,
+            "ÇELİŞKİLİ": 4
           }
         },
         "en_guclu_rakip": {
           "gercek_etki": {
-            "None": 100
+            "None": 94,
+            "R-ORTALAMAYA-DONUS": 2,
+            "R-YER-DEGISTIRME": 4
           },
           "genel_dusus": {
-            "None": 100
+            "None": 1,
+            "R-RASTLANTI": 99
           },
           "ortalamaya_donus": {
-            "None": 100
+            "R-ORTALAMAYA-DONUS": 24,
+            "R-RASTLANTI": 76
           },
           "yer_degistirme": {
-            "None": 100
+            "R-ORTALAMAYA-DONUS": 2,
+            "R-RASTLANTI": 1,
+            "R-YER-DEGISTIRME": 97
           },
           "kontrolsuz": {
-            "None": 100
+            "R-ESZAMANLI": 74,
+            "R-ORTALAMAYA-DONUS": 3,
+            "R-RASTLANTI": 23
           },
           "etkisiz": {
-            "None": 100
+            "None": 4,
+            "R-RASTLANTI": 96
           },
           "etkisiz_nb": {
-            "None": 100
+            "None": 2,
+            "R-RASTLANTI": 98
           }
         },
-        "kontrolsuz_kirilgan_orani": 0.0,
-        "hata_ya_da_yok": {
-          "gercek_etki": {
-            "AracSemaHatasi": 100
-          },
-          "genel_dusus": {
-            "AracSemaHatasi": 100
-          },
-          "ortalamaya_donus": {
-            "AracSemaHatasi": 100
-          },
-          "yer_degistirme": {
-            "AracSemaHatasi": 100
-          },
-          "kontrolsuz": {
-            "AracSemaHatasi": 100
-          },
-          "etkisiz": {
-            "AracSemaHatasi": 100
-          },
-          "etkisiz_nb": {
-            "AracSemaHatasi": 100
-          }
-        }
+        "kontrolsuz_kirilgan_orani": 0.74,
+        "hata_ya_da_yok": {}
       }
     }
   ]

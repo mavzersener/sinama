@@ -1281,14 +1281,19 @@ def _(a):
       "şablonundan hipotez seti (birincil + rakipler + H_bilinmeyen), doğrulayıcıda "
       "veriden önce kilit, sınamalar ve kategorik hüküm (DESTEKLENDİ/KIRILGAN/"
       "BELİRSİZ/ÇELİŞKİLİ/ÇEKİMSER) — olasılık yok, hüküm taslak",
-      sema({"soru_turu": {"type": "string", "enum": ["ARTIS", "YOGUNLASMA", "SERI"]},
+      sema({"soru_turu": {"type": "string", "enum": ["ARTIS", "YOGUNLASMA", "SERI", "ETKI"]},
             "amac": {"type": "string", "enum": ["dogrulayici", "kesifsel", "operasyonel"]},
             "onaylayan": {"type": "string",
                           "description": "doğrulayıcı çalışmada kilidi alan kişi (zorunlu)"},
             "kanal_alan": {"type": "string",
                            "description": "ARTIS: bildirim kanalı/kaynak alanı (R-BILDIRIM)"},
             "mo_alan": {"type": "string", "description": "SERI: MO metni alanı (zorunlu)"},
-            "soru": {"type": "string", "description": "soru metni (kayıt için)"}},
+            "soru": {"type": "string", "description": "soru metni (kayıt için)"},
+            "bolge_alan": {"type": "string", "description": "ETKI: bölge alanı (zorunlu)"},
+            "mudahale": {"type": "string", "description": "ETKI: müdahale bölgesinin değeri (zorunlu)"},
+            "kontrol": {"type": "string", "description": "ETKI: kontrol bölgesinin değeri"},
+            "tampon": {"type": "string", "description": "ETKI: yer değiştirme tamponunun değeri"},
+            "kesinti_tarihi": {"type": "string", "description": "ETKI: müdahalenin başlangıcı (zorunlu)"}},
            ["soru_turu", "amac"]))
 def _(a):
     k = kayitlari_getir(a)
@@ -1297,7 +1302,9 @@ def _(a):
                             lambda ad, arg: arac_yurut(ad, arg, sadece_analitik=True)[0],
                             _rehberli_kapi, onaylayan=a.get("onaylayan"),
                             kanal_alan=a.get("kanal_alan"), mo_alan=a.get("mo_alan"),
-                            soru=a.get("soru"))
+                            soru=a.get("soru"), bolge_alan=a.get("bolge_alan"),
+                            mudahale=a.get("mudahale"), kontrol=a.get("kontrol"),
+                            tampon=a.get("tampon"), kesinti_tarihi=a.get("kesinti_tarihi"))
 
 
 def _rehberli_kapi(ad, arg):

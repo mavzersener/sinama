@@ -75,7 +75,7 @@ kapanır.
 | A1 | Kapandı — 29.09.2026 | `origin` = github.com/mavzersener/sinama (özel: oturumsuz web ve API 404); yerel ve uzak `main` aynı commit |
 | A2 | Kapandı — 29.09.2026 | `cekirdek/` = suc_analizi `20d6e2c` birebir hasadı (93 dosyanın 92'si blob düzeyinde aynı); paket adı `sinama` (aynı adla import konuma göre kanoniği alıyordu — ölçüldü, testle kilitlendi); P06 mahremiyet + 07 zincir v2 üçlü birleşimi (birleşik testler, iki mutasyon yakalandı). CI koşusu `36516719251`: bekçi tüm geçmişte (8 commit), çekirdek tam kapı Linux py3.12 (505 test, kapsam %94,1) ve Windows py3.14 (505 test, %93,7) — hepsi yeşil |
 | A3 | Kapandı — 29.09.2026 | BMK v0: ön-kayıt `db8bf95` (11:47:42, sonuç görülmeden kilit) → ölçüm `ef1b5a6`. 15 ölçütün 6'sı geçti; kod incelemesinden yazılan 6/6 öngörü doğrulandı; öngörülmeyen 3 başarısızlık keşifle açıklandı (biri ölçüt tasarım hatası, v1'de düzeltilecek). CI `36519746996`: Windows/py3.14'te üretilen sonuç Linux/py3.12'de birebir yeniden üretildi. Bulgular: `kiyas/sonuclar/v0_bulgular.md` |
-| A4 | Açık | Araç dürüstlüğü: BMK v0 12/15, v1 8/9, v2 10/10 (A4.1–A4.8, `e1f408c`). Bilim katmanı: [ADR-002](ADR-002-bilim-katmani.md) kabul edildi (30.09.2026); v1 uygulandı (A4.9), BMK v3 0/12 → 12/12 |
+| A4 | Açık — kapanış dosyası hazır, sahibin kararını bekliyor | Araç dürüstlüğü + bilim katmanı v1 ([ADR-002](ADR-002-bilim-katmani.md)): A4.1–A4.16; 10 ön-kayıtlı kıyasta (BMK v0–v9) 37/96 → 90/96; kalan 6 ölçüt ölçülmüş ve belgeli (yöntem/bilgi sınırı, bir ölçüt hatası). [Kapanış dosyası](A4-kapanis-dosyasi.md); A5 taslağı [ADR-003](ADR-003-a5-arka-uc-rehberli.md) |
 
 ## Kapanan konular
 

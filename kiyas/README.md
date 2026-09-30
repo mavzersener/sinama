@@ -21,8 +21,9 @@ Programın bilimsel gücünü **ölçmek** için gerçeği önceden bilinen sent
    günceller (CI `--dogrula` bunu zorlar) — her bilimsel davranış değişikliği diff'te
    görünür. İlk ölçüm `sonuclar/v0_ilk_olcum.json`'da dondurulmuştur (önce/sonra için).
 6. **Tohum ayrımı.** Her sürümün ölçüm tohumları ayrıdır (v0 1–30, v1 101–130,
-   v2 201–230). Bir ön-kayıttan sonra yapılan YÖNTEM TASARIMI keşfi yalnız 900 ve
-   üstü tohumlarla yapılır; ölçüm tohumları tasarımda kullanılmaz — yöntem ölçüm
+   v2 201–230, v3 301–330, v4 401–430, v5 501–700, v6 701–880; 900'ün altı tükendi →
+   v7'den itibaren 10000+). Bir ön-kayıttan sonra yapılan YÖNTEM TASARIMI keşfi yalnız
+   900–9999 tohumlarıyla yapılır; ölçüm tohumları tasarımda kullanılmaz — yöntem ölçüm
    verisine uydurulursa önce/sonra farkı iyimser yanlı olur.
 
 ## Sürümler
@@ -53,6 +54,9 @@ Programın bilimsel gücünü **ölçmek** için gerçeği önceden bilinen sent
 - **v6** (`v6/`): V12 bileşene özgü yayılım — kanalların yayılımı farklıyken aşırı
   iddia koruması (100 tohum) ve güç (180 tohum); rakip kaydında iki bileşenin yayılım
   testi p'si. Tohum 701–880.
+- **v7** (`v7/`): V13 ETKİ — müdahale değerlendirmesi: gerçek etki, tarih etkisi (genel
+  düşüş), ortalamaya dönüş, yer değiştirme, kontrolsüz tavan, etkisiz (Poisson ve aşırı
+  yayılımlı). Tohum 10001–10100.
 
 ## Düzeyler
 
@@ -93,4 +97,8 @@ PYTHONUTF8=1 python kiyas/v5/kos_v5.py --dogrula
 
 ```bash
 PYTHONUTF8=1 python kiyas/v6/kos_v6.py --dogrula
+```
+
+```bash
+PYTHONUTF8=1 python kiyas/v7/kos_v7.py --dogrula
 ```

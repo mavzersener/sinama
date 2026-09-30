@@ -1,0 +1,84 @@
+{
+  "kimlik": "V13",
+  "ad": "ETKİ: müdahale değerlendirmesinde doğru hüküm — tarih etkisi, ortalamaya dönüş, yer değiştirme",
+  "surum": "v7",
+  "dayanak": "ADR-002 v1'de ETKİ soru türü v1.1'e bırakılmıştı; A4 planı adım 2. Birincil sınama: kontrol varsa oran oranlarının log farkı (bölgeye özgü, Fisher testiyle kapılı yayılım), yoksa kesintili zaman serisi. Yeni rakipler R-ESZAMANLI, R-ORTALAMAYA-DONUS, R-YER-DEGISTIRME.",
+  "arac": "rehberli_calisma",
+  "cikti_sozlesmesi": {
+    "girdi": "satirlar, soru_turu = ETKI, amac, onaylayan, bolge_alan, mudahale, kontrol (isteğe bağlı), tampon (isteğe bağlı), kesinti_tarihi",
+    "okunan_alanlar": "v3'ün alanları (kategori, birincil_ongoru, en_guclu_rakip, rakipler, hipotezler, insan_onayi_gerekir)",
+    "rakip_kodlari_ek": ["R-ESZAMANLI", "R-ORTALAMAYA-DONUS", "R-YER-DEGISTIRME"],
+    "hata": "araç ETKI'yi tanımıyorsa ya da hata verirse hüküm YOK; YOK hiçbir ölçütte doğru değil"
+  },
+  "uretec": {
+    "islev": "uretec_v7.v13_bolgeler",
+    "ortak_parametreler": {"baslangic": "2024-01-01", "ay_sayisi": 24, "kesinti_ayi": 13,
+                           "lambda": {"M": 40, "K": 40, "T": 25}},
+    "aciklama": "M müdahale, K kontrol, T tampon; kesinti ayından (2025-01) sonra bölge oranı carpan_sonra ile; zirve: müdahale öncesi seçilmiş aylarda M çarpanı; yayilim_k: bölge başına gama(k) karışımı"
+  },
+  "argumanlar_tam": {"bolge_alan": "bolge", "mudahale": "M", "kontrol": "K", "tampon": "T",
+                     "kesinti_tarihi": "2025-01-01"},
+  "senaryolar": {
+    "gercek_etki": {"aciklama": "M ×0,65 (−%35); K, T sabit", "soru_turu": "ETKI", "amac": "dogrulayici",
+                    "argumanlar": "tam", "tohumlar": {"bas": 10001, "adet": 100},
+                    "degisen": {"carpan_sonra": {"M": 0.65}}},
+    "genel_dusus": {"aciklama": "tarih etkisi: M, K, T hepsi ×0,65", "soru_turu": "ETKI", "amac": "dogrulayici",
+                    "argumanlar": "tam", "tohumlar": {"bas": 10001, "adet": 100},
+                    "degisen": {"carpan_sonra": {"M": 0.65, "K": 0.65, "T": 0.65}}},
+    "ortalamaya_donus": {"aciklama": "M müdahale öncesi 10–12. aylarda ×1,8 zirve, sonra temel düzey; müdahalenin gerçek etkisi yok", "soru_turu": "ETKI", "amac": "dogrulayici",
+                         "argumanlar": "tam", "tohumlar": {"bas": 10001, "adet": 100},
+                         "degisen": {"carpan_sonra": {}, "zirve": {"bolge": "M", "aylar": [10, 11, 12], "carpan": 1.8}}},
+    "yer_degistirme": {"aciklama": "M ×0,65; kaybolan olaylar T'ye kayar (T ×1,56); K sabit", "soru_turu": "ETKI", "amac": "dogrulayici",
+                       "argumanlar": "tam", "tohumlar": {"bas": 10001, "adet": 100},
+                       "degisen": {"carpan_sonra": {"M": 0.65, "T": 1.56}}},
+    "kontrolsuz": {"aciklama": "gercek_etki verisi; kontrol ve tampon verilmez", "soru_turu": "ETKI", "amac": "dogrulayici",
+                   "argumanlar": "kontrolsuz", "tohumlar": {"bas": 10001, "adet": 100},
+                   "degisen": {"carpan_sonra": {"M": 0.65}}},
+    "etkisiz": {"aciklama": "hiçbir değişim yok", "soru_turu": "ETKI", "amac": "dogrulayici",
+                "argumanlar": "tam", "tohumlar": {"bas": 10001, "adet": 100},
+                "degisen": {"carpan_sonra": {}}},
+    "etkisiz_nb": {"aciklama": "hiçbir değişim yok; üç bölge de aşırı yayılımlı (k = 8)", "soru_turu": "ETKI", "amac": "dogrulayici",
+                   "argumanlar": "tam", "tohumlar": {"bas": 10001, "adet": 100},
+                   "degisen": {"carpan_sonra": {}, "yayilim_k": {"M": 8, "K": 8, "T": 8}}}
+  },
+  "tohum_ayrimi": "v0–v6 900'ün altında (1–880); 900'ün altı tükendi. v7'den itibaren ölçüm tohumları 10000+; tasarım keşfi 900–9999 (README kural 6).",
+  "dogru_hukum": {
+    "gercek_etki": "DESTEKLENDİ (kontrol ve tampon var, öncesinde zirve yok, doğrulayıcı)",
+    "genel_dusus": "DESTEKLENMEZ: düşüş her yerde (kontrole göre fark yok)",
+    "ortalamaya_donus": "DESTEKLENMEZ: öncesi zirve; en güçlü rakip R-ORTALAMAYA-DONUS (birincil tutulduğunda)",
+    "yer_degistirme": "DESTEKLENMEZ: olaylar tampona kaydı; en güçlü rakip R-YER-DEGISTIRME",
+    "kontrolsuz": "en çok KIRILGAN: tarih etkisi kontrolsüz dışlanamaz",
+    "etkisiz": "DESTEKLENMEZ",
+    "etkisiz_nb": "DESTEKLENMEZ (aşırı yayılım sahte etki üretmemeli)"
+  },
+  "cekirdek_olcutleri": [
+    {"kimlik": "K13.1", "senaryo": "gercek_etki", "aciklama": "DESTEKLENDİ oranı", "yon": ">=", "esik": 0.80},
+    {"kimlik": "K13.2", "senaryo": "genel_dusus", "aciklama": "Hüküm var ve DESTEKLENDİ değil oranı", "yon": ">=", "esik": 0.90},
+    {"kimlik": "K13.3", "senaryo": "ortalamaya_donus", "aciklama": "Hüküm var ve DESTEKLENDİ değil oranı", "yon": ">=", "esik": 0.90},
+    {"kimlik": "K13.4", "senaryo": "ortalamaya_donus", "aciklama": "Birincil öngörüsü tutulan tohumlarda en güçlü rakip = R-ORTALAMAYA-DONUS oranı (tutulan yoksa 0)", "yon": ">=", "esik": 0.80},
+    {"kimlik": "K13.5", "senaryo": "yer_degistirme", "aciklama": "Hüküm var ve DESTEKLENDİ değil oranı", "yon": ">=", "esik": 0.90},
+    {"kimlik": "K13.6", "senaryo": "yer_degistirme", "aciklama": "Birincil öngörüsü tutulan tohumlarda en güçlü rakip = R-YER-DEGISTIRME oranı (tutulan yoksa 0)", "yon": ">=", "esik": 0.80},
+    {"kimlik": "K13.7", "senaryo": "kontrolsuz", "aciklama": "Kontrolsüz tavan: birincil öngörüsü tutulan tohumlarda DESTEKLENDİ OLMAYAN oranı (tutulan yoksa 0)", "yon": ">=", "esik": 1.0},
+    {"kimlik": "K13.8", "senaryo": "etkisiz", "aciklama": "Hüküm var ve DESTEKLENDİ değil oranı", "yon": ">=", "esik": 0.90},
+    {"kimlik": "K13.9", "senaryo": "etkisiz_nb", "aciklama": "Hüküm var ve DESTEKLENDİ değil oranı", "yon": ">=", "esik": 0.90}
+  ],
+  "esik_gerekceleri": {
+    "0,80 güç": "standart (v3 K9.3, v6 K12.6)",
+    "0,90 aşırı iddia yok": "aile yanlış alarm standardı",
+    "0,80 rakip tanıma": "v3 K9.2 ile aynı mantık, tutulan tohumlara koşullu",
+    "1,0 tavan": "ADR-002 kesin kuralı: kontrolsüz nedensel iddia en çok KIRILGAN"
+  },
+  "ongoruler": {
+    "K13.1": "BAŞARISIZ beklenir: bugünkü çekirdek ETKI soru türünü tanımıyor (hüküm YOK)",
+    "K13.2": "BAŞARISIZ beklenir: araç ETKI'yi tanımıyor",
+    "K13.3": "BAŞARISIZ beklenir: araç ETKI'yi tanımıyor",
+    "K13.4": "BAŞARISIZ beklenir: araç ETKI'yi tanımıyor",
+    "K13.5": "BAŞARISIZ beklenir: araç ETKI'yi tanımıyor",
+    "K13.6": "BAŞARISIZ beklenir: araç ETKI'yi tanımıyor",
+    "K13.7": "BAŞARISIZ beklenir: araç ETKI'yi tanımıyor",
+    "K13.8": "BAŞARISIZ beklenir: araç ETKI'yi tanımıyor",
+    "K13.9": "BAŞARISIZ beklenir: araç ETKI'yi tanımıyor"
+  },
+  "uygulama_ongorusu": "Ölçüt DEĞİL, zaman damgası için. Keşif (kiyas/kesif/a413_etki.py, 901–950, gerçek kod): gerçek etki 47/50 DESTEKLENDİ; genel düşüş ve etkisiz 3/50 yanlış DESTEKLENDİ (birincil sınamanın doğal yanlış alarmı); ortalamaya dönüş 50/50 desteksiz, tutulan 9 tohumun hepsinde en güçlü R-ORTALAMAYA-DONUS; yer değiştirme 50/50 desteksiz, tutulanlarda 48/50 R-YER-DEGISTIRME; kontrolsüz tutulan 42 tohumda DESTEKLENDİ yok; etkisiz NB 1/50. Öngörü: K13.1 ≈ 0,90–0,96; K13.2 ≈ 0,93–0,98; K13.3 ≈ 1,0; K13.4 ≈ 0,95–1,0; K13.5 ≈ 1,0; K13.6 ≈ 0,93–0,98; K13.7 = 1; K13.8 ≈ 0,93–0,98; K13.9 ≈ 0,95–1,0.",
+  "ek_olcumler": ["senaryo başına kategori dağılımı", "senaryo başına en güçlü rakip dağılımı", "kontrolsüz senaryoda KIRILGAN oranı (ITS gücü)", "hata/YOK sayısı"]
+}

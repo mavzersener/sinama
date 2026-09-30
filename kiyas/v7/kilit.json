@@ -1,0 +1,16 @@
+{
+  "surum": "v7",
+  "ilke": "Bu dosyalar ilk v7 ölçümünden ve ETKİ uygulamasından ÖNCE kilitlendi; değişirlerse koşucu ölçmeyi reddeder. v0/v2/v3/v4 bağımlılıkları dahildir.",
+  "dosyalar": {
+    "kiyas/v7/vakalar/v13_etki.json": "sha256:8aead1f0:e8497c2f:7c6063ba:ff189d15:d6b1564f:74aaec4c:b3fa3bd6:a7f35ead",
+    "kiyas/v7/uretec_v7.py": "sha256:b003a66f:381bff4d:61495c19:87e5b085:db32cd8d:0af5c731:8847793b:14ed19f5",
+    "kiyas/v7/kos_v7.py": "sha256:56e9bff3:402fc024:d33628cf:543ce62e:e027fef0:2b82f2f3:c79c62b7:47c469be",
+    "kiyas/v4/kos_v4.py": "sha256:f185eea9:dfefdaf5:8838f1c4:389a6d3a:642a58a7:6a9c8e6a:e97aafde:8645a7b1",
+    "kiyas/v4/uretec_v4.py": "sha256:2b6cf211:3550afed:08a72179:b915eeec:6128bd65:03229af5:6c2013b9:8d2f4ee7",
+    "kiyas/v3/kos_v3.py": "sha256:8fce5788:1e1d4d17:075c2ffe:30f4b404:1d3057aa:f9ceaf35:f1510e34:1c699a2c",
+    "kiyas/v3/uretec_v3.py": "sha256:bce709f3:0a86580e:73720f21:07106b2b:e6359050:4afbb23c:3f5cc9b3:d39e0233",
+    "kiyas/v2/uretec_v2.py": "sha256:d124f16e:d19356fa:ec23c5b7:460e77ae:75ab4c6c:91a12c1d:6c4941b7:d66860d4",
+    "kiyas/uretec.py": "sha256:9040a2ad:53d48f15:4a1d15c9:6f2bfefc:151509b3:a437f391:1167bf67:2e81524f",
+    "kiyas/kos.py": "sha256:1774027a:0da650b0:68169ae7:c7a1523b:faa9d9a6:bcbd5e14:69882769:4599b764"
+  }
+}

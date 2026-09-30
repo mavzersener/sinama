@@ -42,7 +42,8 @@ sahibinin onayıyla yapılır; D: yedeğine commit sonrası otomatik gider.
    `kiyas/**/kilit.json` kapsamındaki dosyalara (vakalar, üreteç, koşucu) dokunma: kilit
    bozulur ve koşucu ölçmeyi reddeder. Değişiklik gerekiyorsa yeni sürüm açılır, gerekçe
    yazılır. Ön-kayıt dışı keşif `kiyas/kesif/` altında ve açıkça öyle etiketlenir;
-   yöntem tasarımı keşfi ölçüm tohumlarıyla değil 900+ tohumlarıyla yapılır.
+   yöntem tasarımı keşfi ölçüm tohumlarıyla değil 900–9999 tohumlarıyla yapılır (v7'den
+   itibaren ölçüm tohumları 10000+).
 
 ## Yapma listesi (yaşanmış hatalardan)
 

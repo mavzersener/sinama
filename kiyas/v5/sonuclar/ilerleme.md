@@ -30,3 +30,16 @@ Ek (ölçüt değil): NB güç senaryosunda DESTEKLENDİ 0,217 (13/60).
   üç varyantta da düşük — aşırı yayılımda veri az bilgi taşır).
 - CI: BMK işi sürüm başına paralel matrise bölündü (v0–v4 tek işte 8 dk sürüyordu;
   v5 ~10 dk ekliyor, 15 dk sınırı aşılırdı).
+
+## Denenen ve reddedilen
+
+- **Sınama v1.2 — havuzlanmış Fisher-kapılı φ (REDDEDİLDİ, dal `deneme/v1.2-havuz-phi`,
+  `d3ef040`; ayrıntı o daldaki `kiyas/v5/sonuclar/v12_reddedildi.md`).** v5'te 6/7:
+  K11.3 0,92 → 0,94, K11.7 0 → 1, ama **K11.6 (NB karma, aşırı iddia yok) 0,95 →
+  0,883 KALDI** (öngörü 0,93–0,97 yanlış). v4 7/7 (K10.5 0,90 → 0,933), v3 ve v0–v2
+  değişmedi. Ana hatta alınmadı: koruma ölçütü küçük güç kazancından önce gelir.
+  Neden (çıkarım): havuzlama baskın bileşenin (sürekli kanal, φ ≈ 6) yayılımını yeni
+  kanalınkiyle (φ ≈ 2,5) ortalayıp varyansı küçük tahmin eder; v1.1'in en büyük-φ'si
+  kazara ihtiyatlı. Keşifteki "havuz" varyantı fiilen öncesi penceresi φ'sine
+  yaslanıyordu — keşif kusurum. **v1.3 adayı:** bileşene özgü, kendi Fisher testiyle
+  kapılı φ; yeni ön-kayıtla (v6).

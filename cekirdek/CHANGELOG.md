@@ -2,6 +2,12 @@
 
 ## [Yayımlanmamış]
 
+### Denenen ve reddedilen: sınama v1.2 (A4.11)
+Havuzlanmış Fisher yayılım testiyle kapılı φ (dal `deneme/v1.2-havuz-phi`,
+`d3ef040`). BMK v5 (ön-kayıt 430fcd0): Poisson gücü 0,92 → 0,94 ama aşırı
+yayılımlı karmada aşırı iddia 3/60 → 7/60 (K11.6 KALDI). Ana hatta alınmadı;
+çekirdek v1.1'de kaldı. Ayrıntı ve v1.3 adayı: `kiyas/v5/sonuclar/ilerleme.md`.
+
 ### Hüküm sağlamlığı v1.1: rakip dışlamada etki büyüklüğü (A4.10)
 BMK v3 tohum 314 ve BMK v4 (ön-kayıt 4f23e69, yeni tohumlar 401–430) başlangıcı
 3/7: R-BILDIRIM, sürekli kanalın trend testi ANLAMLI çıkınca dışlanıyordu —

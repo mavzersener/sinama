@@ -1,0 +1,77 @@
+{
+  "kimlik": "V12",
+  "ad": "Bileşene özgü yayılım: kanalların yayılımı farklıyken koruma ve güç (sınama v1.3)",
+  "surum": "v6",
+  "dayanak": "v1.2 reddi (dd140cf): havuzlanmış tek φ baskın bileşenin varyansını küçük tahmin etti; v1.1'in en büyük-φ'si ise yeni kanal çok yayılımlıyken her terime büyük φ uygulayıp gücü düşürüyor. Keşif (kiyas/kesif/a412_bilesen_yayilim.py, 901+, gerçek kod durumlarıyla — yama yok): yeni kanal NB güç v1.1 0,73 / v1.3 0,86; Poisson güç 0,82 / 0,87; koruma eşit.",
+  "arac": "rehberli_calisma",
+  "cikti_sozlesmesi": {
+    "girdi": "v3–v5 ile aynı (ARTIS, dogrulayici, onaylayan, kanal_alan)",
+    "okunan_alanlar": "v3'ün alanları + R-BILDIRIM kaydının 'olcum' sözlüğünde 'yayilim_p' ve 'yayilim_p_yeni' (sayı ya da null değil): her bileşenin yayılım testi p'si",
+    "hata": "araç yoksa/hata/sözleşme dışı → hüküm YOK; YOK hiçbir ölçütte doğru değil"
+  },
+  "uretec": {
+    "islev": "uretec_v6.v12_kanallar",
+    "ortak_parametreler": {"baslangic": "2024-01-01", "ay_sayisi": 24, "kesinti_ayi": 13,
+                           "karakol_lambda": 40, "cevrimici_lambda": 12, "cevrimici": "kesinti"},
+    "aciklama": "yayılım kanal başına (yayilim_k); null kanal Poisson; k tam sayı → aylık φ = 1 + λ/k (karakol k=8 → ≈ 6–7; çevrimiçi λ=12, k=1 → ≈ 13; λ=2, k=1 → ≈ 3)"
+  },
+  "senaryolar": {
+    "karma_ikisi_nb": {"soru_turu": "ARTIS", "amac": "dogrulayici", "argumanlar": {"kanal_alan": "kanal"},
+                       "tohumlar": {"bas": 701, "adet": 100},
+                       "degisen": {"karakol_carpani": 1.3, "yayilim_k": {"karakol": 8, "cevrimici": 8}}},
+    "karma_surekli_nb": {"soru_turu": "ARTIS", "amac": "dogrulayici", "argumanlar": {"kanal_alan": "kanal"},
+                         "tohumlar": {"bas": 701, "adet": 100},
+                         "degisen": {"karakol_carpani": 1.3, "yayilim_k": {"karakol": 8, "cevrimici": null}}},
+    "karma_yeni_nb": {"soru_turu": "ARTIS", "amac": "dogrulayici", "argumanlar": {"kanal_alan": "kanal"},
+                      "tohumlar": {"bas": 701, "adet": 100},
+                      "degisen": {"karakol_carpani": 1.3, "yayilim_k": {"karakol": null, "cevrimici": 1}}},
+    "kismi_yeni_nb": {"soru_turu": "ARTIS", "amac": "dogrulayici", "argumanlar": {"kanal_alan": "kanal"},
+                      "tohumlar": {"bas": 701, "adet": 100},
+                      "degisen": {"karakol_carpani": 1.1, "yayilim_k": {"karakol": null, "cevrimici": 1}}},
+    "saf_surekli_nb": {"soru_turu": "ARTIS", "amac": "dogrulayici", "argumanlar": {"kanal_alan": "kanal"},
+                       "tohumlar": {"bas": 701, "adet": 100},
+                       "degisen": {"karakol_carpani": 1.0, "yayilim_k": {"karakol": 8, "cevrimici": null}}},
+    "guc_yeni_nb": {"soru_turu": "ARTIS", "amac": "dogrulayici", "argumanlar": {"kanal_alan": "kanal"},
+                    "tohumlar": {"bas": 701, "adet": 180},
+                    "degisen": {"karakol_carpani": 1.3, "cevrimici_lambda": 2,
+                                "yayilim_k": {"karakol": null, "cevrimici": 1}}},
+    "guc_poisson": {"soru_turu": "ARTIS", "amac": "dogrulayici", "argumanlar": {"kanal_alan": "kanal"},
+                    "tohumlar": {"bas": 701, "adet": 180},
+                    "degisen": {"karakol_carpani": 1.3, "cevrimici_lambda": 2, "yayilim_k": {}}}
+  },
+  "tohum_ayrimi": "v0 1–30, v1 101–130, v2 201–230, v3 301–330, v4 401–430, v5 501–700, v6 701–880 (hiçbiriyle çakışmaz; Poisson güç senaryosu v5'inkiyle aynı veriyi üretir, bu yüzden 601–700 kullanılmadı); tasarım keşfi yalnız 900+.",
+  "dogru_hukum": {
+    "karma_*": "DESTEKLENDİ DEĞİL (artışın yarısı kanal değişikliğinden)",
+    "kismi_yeni_nb": "DESTEKLENMEZ (artışın ~%75'i yeni kanaldan)",
+    "saf_surekli_nb": "DESTEKLENMEZ",
+    "guc_*": "DESTEKLENDİ (artışın ~%86'sı gerçek)"
+  },
+  "cekirdek_olcutleri": [
+    {"kimlik": "K12.1", "senaryo": "karma_ikisi_nb", "aciklama": "Hüküm var ve DESTEKLENDİ değil oranı", "yon": ">=", "esik": 0.90},
+    {"kimlik": "K12.2", "senaryo": "karma_surekli_nb", "aciklama": "Hüküm var ve DESTEKLENDİ değil oranı", "yon": ">=", "esik": 0.90},
+    {"kimlik": "K12.3", "senaryo": "karma_yeni_nb", "aciklama": "Hüküm var ve DESTEKLENDİ değil oranı", "yon": ">=", "esik": 0.90},
+    {"kimlik": "K12.4", "senaryo": "kismi_yeni_nb", "aciklama": "Hüküm var ve DESTEKLENDİ değil oranı", "yon": ">=", "esik": 0.90},
+    {"kimlik": "K12.5", "senaryo": "saf_surekli_nb", "aciklama": "Hüküm var ve DESTEKLENDİ değil oranı", "yon": ">=", "esik": 0.90},
+    {"kimlik": "K12.6", "senaryo": "guc_yeni_nb", "aciklama": "DESTEKLENDİ oranı (180 tohum)", "yon": ">=", "esik": 0.80},
+    {"kimlik": "K12.7", "senaryo": "guc_poisson", "aciklama": "DESTEKLENDİ oranı (180 tohum)", "yon": ">=", "esik": 0.80},
+    {"kimlik": "K12.8", "senaryo": "yeni kanallı tüm senaryolar", "aciklama": "Birincil öngörüsü tutulan koşularda R-BILDIRIM olcum'u sayısal yayilim_p VE yayilim_p_yeni taşıyor oranı (tutulan yoksa 0)", "yon": ">=", "esik": 1.0}
+  ],
+  "esik_gerekceleri": {
+    "0,90 (aşırı iddia yok)": "aile yanlış alarm standardı",
+    "0,80 (güç)": "standart güç eşiği (v3 K9.3, v4 K10.5 ile aynı) — keşiften TÜRETİLMEDİ",
+    "100/180 tohum": "keşifte fark 0,05–0,13; 30–60 tohumda gürültü içinde kalır (v1.2 dersi)",
+    "1,0 (bileşen raporu)": "sözleşme: her bileşenin yayılım kararı görünür olmalı"
+  },
+  "ongoruler": {
+    "K12.1": "GEÇER beklenir (keşif v1.1 0,967)",
+    "K12.2": "GEÇER beklenir — ZAYIF (keşif v1.1 0,933; 100 tohumda eşiğin altına düşme olasılığı ~%12)",
+    "K12.3": "GEÇER beklenir (keşif v1.1 0,967)",
+    "K12.4": "GEÇER beklenir (keşif v1.1 1,00)",
+    "K12.5": "GEÇER beklenir (keşif v1.1 1,00)",
+    "K12.6": "BAŞARISIZ beklenir (hesap ≈ 0,73): v1.1 yeni kanalın büyük φ'sini sürekli kanalın terimlerine de uygular",
+    "K12.7": "GEÇER beklenir (≈ 0,82–0,92; v5'te v1.1 0,92)",
+    "K12.8": "BAŞARISIZ beklenir: v1.1 olcum'unda yayilim_p / yayilim_p_yeni yok (0)"
+  },
+  "uygulama_ongorusu": "Ölçüt DEĞİL, zaman damgası için. v1.3 (bileşene özgü φ: her bileşenin öncesi+sonrası tam aylarından Fisher testi; p < 0,05 ise φ = T/sd, değilse 1; φ yalnız kendi varyans terimine): K12.1 ≈ 0,95–0,97; K12.2 ≈ 0,93 (ZAYIF); K12.3 ≈ 0,95; K12.4 ≈ 1,0; K12.5 ≈ 1,0; K12.6 ≈ 0,83–0,88; K12.7 ≈ 0,87–0,94; K12.8 = 1.",
+  "ek_olcumler": ["senaryo başına kategori dağılımı", "senaryo başına R-BILDIRIM durum dağılımı", "hata/YOK sayısı"]
+}

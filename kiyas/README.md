@@ -50,6 +50,9 @@ Programın bilimsel gücünü **ölçmek** için gerçeği önceden bilinen sent
 - **v5** (`v5/`): V11 yayılım çarpanı — v4'ün ölçemediği aşırı yayılımlı (negatif
   binom) veride aşırı iddia koruması ve Poisson veride güç (200 tohum); rakip kaydında
   yayılım testinin p'si. Tohum 501–700.
+- **v6** (`v6/`): V12 bileşene özgü yayılım — kanalların yayılımı farklıyken aşırı
+  iddia koruması (100 tohum) ve güç (180 tohum); rakip kaydında iki bileşenin yayılım
+  testi p'si. Tohum 701–880.
 
 ## Düzeyler
 
@@ -86,4 +89,8 @@ PYTHONUTF8=1 python kiyas/v4/kos_v4.py --dogrula
 
 ```bash
 PYTHONUTF8=1 python kiyas/v5/kos_v5.py --dogrula
+```
+
+```bash
+PYTHONUTF8=1 python kiyas/v6/kos_v6.py --dogrula
 ```

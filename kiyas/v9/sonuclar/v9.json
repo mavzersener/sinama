@@ -1,0 +1,117 @@
+{
+  "surum": "v9",
+  "kilit": {
+    "kiyas/v9/vakalar/v16_cusum_kalibrasyon.json": "sha256:25152590:d241f649:494172a9:e32d1cc1:e0c75d1c:f70c5cb2:f53afb18:e4d1de3a",
+    "kiyas/v9/kos_v9.py": "sha256:ea3737b1:f79f4f62:6a1285ce:3db8bc34:c7e497c4:6152c794:094ccd02:3221743a",
+    "kiyas/v8/kos_v8.py": "sha256:495e025e:a095dde5:4d6fc3a2:a05c030b:df14cd73:28ac4e9a:61d286af:1f6a63ee",
+    "kiyas/v8/uretec_v8.py": "sha256:767d611e:15ee0992:3b071f09:d529822c:c11e1444:4cf43f16:526b002c:f5d3c306",
+    "kiyas/v3/kos_v3.py": "sha256:8fce5788:1e1d4d17:075c2ffe:30f4b404:1d3057aa:f9ceaf35:f1510e34:1c699a2c",
+    "kiyas/v3/uretec_v3.py": "sha256:bce709f3:0a86580e:73720f21:07106b2b:e6359050:4afbb23c:3f5cc9b3:d39e0233",
+    "kiyas/v2/uretec_v2.py": "sha256:d124f16e:d19356fa:ec23c5b7:460e77ae:75ab4c6c:91a12c1d:6c4941b7:d66860d4",
+    "kiyas/uretec.py": "sha256:9040a2ad:53d48f15:4a1d15c9:6f2bfefc:151509b3:a437f391:1167bf67:2e81524f",
+    "kiyas/kos.py": "sha256:1774027a:0da650b0:68169ae7:c7a1523b:faa9d9a6:bcbd5e14:69882769:4599b764"
+  },
+  "ortam": {
+    "python": "3.14.0",
+    "sistem": "Windows"
+  },
+  "vakalar": [
+    {
+      "kimlik": "V16",
+      "ad": "CUSUM kalibrasyonu: Poisson sayımlarda seri düzeyinde yanlış alarm nominal düzeyde mi",
+      "tohum_adedi": {
+        "sabit": 200,
+        "sabit_nb": 200,
+        "sabit_dusuk": 200,
+        "artis30": 200,
+        "artis50": 200,
+        "artis30_nb": 200
+      },
+      "olcutler": [
+        {
+          "kimlik": "K16.1",
+          "deger": 0.09,
+          "yon": "<=",
+          "esik": 0.1,
+          "gecti": true,
+          "ongoru": "GEÇER beklenir (başlangıç, sınırda): tasarım tohumlarında 0,083"
+        },
+        {
+          "kimlik": "K16.2",
+          "deger": 0.065,
+          "yon": "<=",
+          "esik": 0.1,
+          "gecti": true,
+          "ongoru": "GEÇER beklenir (başlangıç): tasarım tohumlarında 0,068 — uygulamada KORUNMALI"
+        },
+        {
+          "kimlik": "K16.3",
+          "deger": 0.075,
+          "yon": "<=",
+          "esik": 0.1,
+          "gecti": true,
+          "ongoru": "BAŞARISIZ beklenir (başlangıç, sınırda): tasarım tohumlarında 0,105"
+        },
+        {
+          "kimlik": "K16.4",
+          "deger": 0.735,
+          "yon": ">=",
+          "esik": 0.8,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir (başlangıç): tasarım tohumlarında 0,755"
+        },
+        {
+          "kimlik": "K16.5",
+          "deger": 0.89,
+          "yon": ">=",
+          "esik": 0.8,
+          "gecti": true,
+          "ongoru": "GEÇER beklenir (başlangıç): tasarım tohumlarında 0,91 — uygulamada KORUNMALI"
+        },
+        {
+          "kimlik": "K16.6",
+          "deger": 0.98,
+          "yon": ">=",
+          "esik": 0.9,
+          "gecti": true,
+          "ongoru": "GEÇER beklenir (başlangıç): tasarım tohumlarında 0,985 — uygulamada KORUNMALI"
+        },
+        {
+          "kimlik": "K16.7",
+          "deger": 0.0767,
+          "yon": "<=",
+          "esik": 0.07,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir (başlangıç): tasarım tohumlarında 0,085 (üç senaryo ortalaması)"
+        }
+      ],
+      "ek_olcumler": {
+        "alarm_yok": {
+          "sabit": 0.91,
+          "sabit_nb": 0.935,
+          "sabit_dusuk": 0.925,
+          "artis30": 0.12,
+          "artis50": 0.0,
+          "artis30_nb": 0.63
+        },
+        "once_alarm": {
+          "sabit": 0.04,
+          "sabit_nb": 0.02,
+          "sabit_dusuk": 0.03,
+          "artis30": 0.04,
+          "artis50": 0.03,
+          "artis30_nb": 0.02
+        },
+        "ilk_alarm_gecikme_medyan_gun": {
+          "sabit": 60.5,
+          "sabit_nb": 89,
+          "sabit_dusuk": 70,
+          "artis30": 71.0,
+          "artis50": 46.0,
+          "artis30_nb": 180.0
+        },
+        "hata": {}
+      }
+    }
+  ]
+}

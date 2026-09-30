@@ -16,10 +16,11 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 
 from sinama.arayuz import sunucu  # noqa: E402
-from sinama.bilim import hukum, rak, sablon, sinamalar  # noqa: E402
+from sinama.bilim import calisma, hukum, rak, sablon, sinamalar  # noqa: E402
 from sinama.cekirdek.hatalar import KullanimHatasi  # noqa: E402
 from sinama.kalite.kapi import KapiRed  # noqa: E402
-from sinama.surec import dongu  # noqa: E402
+from sinama.surec import dongu, kanit  # noqa: E402
+from sinama.surec.kilit import KilitHatasi  # noqa: E402
 
 YASAK = ("olasilik", "olasılık", "guven", "güven", "yuzde", "yüzde", "confidence",
          "probability", "posterior", "skor", "destek_orani")
@@ -598,6 +599,199 @@ class TestRehberliUctan(unittest.TestCase):
             self.cagir(veri, soru_turu="ARTIS", amac="dogrulayici")
         with self.assertRaises(KullanimHatasi):
             self.cagir(veri, soru_turu="SERI", amac="kesifsel")
+
+
+class TestAyrintiliAraclar(unittest.TestCase):
+    """Ayrıntılı bilim araçları (ADR-002 §7): calisma_baslat → hipotez_ekle →
+    sinama_plani → kanit_bagla → hukum; Rehberli akışla aynı hükmü verirler."""
+
+    ARTEFAKT = ({"karakol": [30] * 24, "cevrimici": [0] * 12 + [15] * 12},
+                {"soru_turu": "ARTIS", "amac": "dogrulayici", "onaylayan": "test",
+                 "kanal_alan": "kanal"})
+    GERCEK = ({"karakol": [30] * 12 + [39] * 12, "cevrimici": [10] * 12 + [13] * 12},
+              {"soru_turu": "ARTIS", "amac": "dogrulayici", "onaylayan": "test",
+               "kanal_alan": "kanal"})
+
+    def setUp(self):
+        self.gecici = tempfile.mkdtemp(prefix="ayrintili_")
+        self.eski = os.environ.get("SINAMA_LOG_DIR")
+        os.environ["SINAMA_LOG_DIR"] = self.gecici
+
+    def tearDown(self):
+        if self.eski is None:
+            os.environ.pop("SINAMA_LOG_DIR", None)
+        else:
+            os.environ["SINAMA_LOG_DIR"] = self.eski
+
+    def arac(self, ad, **arg):
+        return sunucu.arac_calistir(ad, arg)["sonuc"]
+
+    def ayrintili(self, veri, arg, ekler=()):
+        oid = self.arac("calisma_baslat", **arg)["oturum_id"]
+        for ifade in ekler:
+            self.arac("hipotez_ekle", oturum_id=oid, ifade=ifade, sonraki_kanit=f"{ifade} verisi")
+        plan = self.arac("sinama_plani", oturum_id=oid)
+        self.arac("kanit_bagla", oturum_id=oid, satirlar=veri)
+        return self.arac("hukum", oturum_id=oid), plan
+
+    def adimlar(self, oid):
+        return [g["arac"] for g in dongu.yukle(oid, self.gecici).manifesto["gecmis"]]
+
+    def senaryolar(self):
+        ayirt = "balkon kapisi levye ile zorlanmis yalniz altin alinmis"
+        seri = [{"id": f"s{i}", "mo": ayirt + f" genel{i}", "lat": 41.0 + 0.001 * i,
+                 "lon": 29.0, "tarih": f"2025-03-{10 + i:02d}"} for i in range(3)]
+        seri += [{"id": f"d{i}", "mo": f"f{i} g{i} h{i}", "lat": 41.2 + 0.03 * i,
+                  "lon": 29.2, "tarih": f"2025-0{1 + i % 9}-01"} for i in range(22)]
+        return [
+            ("artefakt", aylik(self.ARTEFAKT[0]), self.ARTEFAKT[1]),
+            ("gercek", aylik(self.GERCEK[0]), self.GERCEK[1]),
+            ("gercek_kanalsiz", aylik(self.GERCEK[0]), {**self.GERCEK[1], "kanal_alan": ""}),
+            ("etki", bolgesel({"M": seviye(40, 26), "K": seviye(40, 40), "T": seviye(25, 25)}),
+             {"soru_turu": "ETKI", "amac": "dogrulayici", "onaylayan": "test", **TestEtki.TAM}),
+            ("etki_kontrolsuz", bolgesel({"M": seviye(40, 26), "K": seviye(40, 40)}),
+             {"soru_turu": "ETKI", "amac": "kesifsel", "bolge_alan": "bolge", "mudahale": "M",
+              "kesinti_tarihi": "2025-01-01"}),
+            ("seri", seri, {"soru_turu": "SERI", "amac": "dogrulayici", "onaylayan": "test",
+                            "mo_alan": "mo"}),
+            ("kapi_reddi", [{"tarih": "2025-01-01", "id": f"k{i}"} for i in range(40)],
+             {"soru_turu": "YOGUNLASMA", "amac": "kesifsel"}),
+        ]
+
+    def test_rehberli_ile_esdeger(self):
+        for ad, veri, arg in self.senaryolar():
+            with self.subTest(senaryo=ad):
+                r = sunucu.arac_calistir("rehberli_calisma", {"satirlar": veri, **arg})["sonuc"]
+                a, _ = self.ayrintili(veri, arg)
+                for alan in ("soru_turu", "amac", "hipotezler", "sinamalar"):
+                    self.assertEqual(a[alan], r[alan], alan)
+                for alan in ("kategori", "rakipler", "paket_hash", "kurallar", "en_guclu_rakip"):
+                    self.assertEqual(a["hukum"][alan], r["hukum"][alan], alan)
+                self.assertEqual(self.adimlar(a["oturum_id"]), self.adimlar(r["oturum_id"]))
+                self.assertEqual(a["kilit_hash"] is None, r["kilit_hash"] is None)
+
+    def test_plan_tavani_hukumle_tutarli(self):
+        for ad, veri, arg in self.senaryolar():
+            with self.subTest(senaryo=ad):
+                s, plan = self.ayrintili(veri, arg)
+                durum = {r["kod"]: r["durum"] for r in s["hukum"]["rakipler"]}
+                for r in plan["rakipler"]:
+                    if not r["cozulebilir"]:
+                        self.assertIn(durum[r["kod"]], ("çözülmedi", "uygulanamaz"), r["kod"])
+                if plan["ulasilabilir_en_ust"] == "KIRILGAN":
+                    self.assertNotEqual(s["hukum"]["kategori"], "DESTEKLENDİ")
+        self.assertEqual(self.ayrintili(*self.senaryolar()[1][1:])[1]["ulasilabilir_en_ust"],
+                         "DESTEKLENDİ")
+
+    def test_plan_onceden_cozulemezleri_soyler(self):
+        def plan(**arg):
+            return calisma.sinama_plani(calisma.baslat(**arg))
+        p = plan(soru_turu="ARTIS", amac="dogrulayici", onaylayan="t")
+        bildirim = next(r for r in p["rakipler"] if r["kod"] == "R-BILDIRIM")
+        self.assertFalse(bildirim["cozulebilir"])
+        self.assertEqual(p["ulasilabilir_en_ust"], "KIRILGAN")
+        self.assertEqual(plan(soru_turu="ARTIS", amac="kesifsel", kanal_alan="k")["tavan_nedenleri"],
+                         ["kesifsel çalışma en çok KIRILGAN"])
+        self.assertEqual(plan(soru_turu="YOGUNLASMA", amac="dogrulayici",
+                              onaylayan="t")["ulasilabilir_en_ust"], "KIRILGAN")
+        e = plan(soru_turu="ETKI", amac="dogrulayici", onaylayan="t", bolge_alan="b",
+                 mudahale="M", kontrol="K", kesinti_tarihi="2025-01-01")
+        cozulemez = [r["kod"] for r in e["rakipler"] if not r["cozulebilir"]]
+        self.assertEqual((cozulemez, e["birincil"]["arac"]), (["R-YER-DEGISTIRME"], "oran_orani_farki"))
+        e2 = plan(soru_turu="ETKI", amac="dogrulayici", onaylayan="t", bolge_alan="b",
+                  mudahale="M", kesinti_tarihi="2025-01-01")
+        self.assertEqual(e2["birincil"]["arac"], "kesinti_analizi")
+        e3 = plan(soru_turu="ETKI", amac="kesifsel", bolge_alan="b", mudahale="M", tampon="T",
+                  kesinti_tarihi="2025-01-01")    # tampon tek başına yetmez: kontrol gerekir
+        self.assertEqual([r["kod"] for r in e3["rakipler"] if not r["cozulebilir"]],
+                         ["R-ESZAMANLI", "R-YER-DEGISTIRME"])
+
+    def test_serbest_rakip_hukmu_kirilgana_ceker(self):
+        veri, arg = aylik(self.GERCEK[0]), self.GERCEK[1]
+        s, plan = self.ayrintili(veri, arg, ekler=("devriye stratejisi değişti",))
+        self.assertEqual(plan["ulasilabilir_en_ust"], "KIRILGAN")
+        h = s["hukum"]
+        self.assertEqual((h["kategori"], h["birincil_ongoru"]), ("KIRILGAN", "tutuldu"), h["kurallar"])
+        self.assertEqual((h["en_guclu_rakip"], h["cozulmemis_rakipler"]),
+                         ("R-SERBEST-1", ["R-SERBEST-1"]))
+        self.assertEqual(h["sonraki_en_iyi_kanit"],
+                         [{"rakip": "R-SERBEST-1", "gereken": "devriye stratejisi değişti verisi"}])
+        self.assertEqual([r["kod"] for r in h["rakipler"]][-1], "R-SERBEST-1")
+
+    def test_h_bilinmeyen_korunur_ve_kilit_parametreleri_kapsar(self):
+        s, _ = self.ayrintili(aylik(self.GERCEK[0]), self.GERCEK[1], ekler=("a", "b"))
+        hs = s["hipotezler"]
+        self.assertEqual(hs[-1], sablon.H_BILINMEYEN)
+        self.assertEqual([h["kimlik"] for h in hs],
+                         ["H1", *rak.uygulanabilir("ARTIS"), "R-SERBEST-1", "R-SERBEST-2",
+                          "H_bilinmeyen"])
+        d = dongu.yukle(s["oturum_id"], self.gecici)
+        protokol = json.loads(d.manifesto["kilit"]["hipotez"])
+        self.assertEqual(protokol["parametreler"], {"kanal_alan": "kanal"})
+        self.assertEqual(protokol["hipotezler"], hs)
+        self.assertEqual(protokol["surumler"]["sinama"], sinamalar.SINAMA_SURUMU)
+        self.assertTrue(d.onkayit_dogrula()["dogrulayici_iddia_edilebilir"])
+        adim = self.adimlar(s["oturum_id"])
+        self.assertLess(adim.index("hipotez_ekle"), adim.index("protokol_kilitle"))
+        self.assertLess(adim.index("protokol_kilitle"), adim.index("veri_bagla"))
+
+    def test_onkayit_gecerliligi_hukme_girer(self):
+        # A4.14: hipotez_seti/hipotez_ekle protokol olayıdır, analiz değil → sıra sağlam;
+        # hüküm ile provenans aynı ön-kayıt doğrulamasını kullanır
+        s, _ = self.ayrintili(aylik(self.GERCEK[0]), self.GERCEK[1], ekler=("a",))
+        d = dongu.yukle(s["oturum_id"], self.gecici)
+        self.assertTrue(d.onkayit_dogrula()["dogrulayici_iddia_edilebilir"])
+        pr = self.arac("provenans_ozet", oturum_id=s["oturum_id"])
+        halka = next(h for h in pr["halkalar"] if h["halka"] == "onkayit")
+        self.assertTrue(halka["ayrinti"]["dogrulayici_iddia_edilebilir"])
+        # kilitten sonra protokol (parametre) değişirse hüküm ön-kayıtlı sayılmaz
+        oid = self.arac("calisma_baslat", **self.GERCEK[1])["oturum_id"]
+        self.arac("kanit_bagla", oturum_id=oid, satirlar=aylik(self.GERCEK[0]))
+        yol = kanit._oturum_yolu(self.gecici, oid, ".json")
+        with open(yol, encoding="utf-8") as f:
+            m = json.load(f)
+        m["bilimsel"]["parametreler"]["kanal_alan"] = "baska_alan"
+        with open(yol, "w", encoding="utf-8") as f:
+            json.dump(m, f, ensure_ascii=False)
+        h = self.arac("hukum", oturum_id=oid)["hukum"]
+        self.assertEqual(h["kategori"], "KIRILGAN")
+        self.assertIn("T1-onkayit", [k["kural"] for k in h["kurallar"]])
+
+    def test_kilitten_ve_veriden_sonra_hipotez_eklenemez(self):
+        veri = aylik(self.GERCEK[0])
+        oid = self.arac("calisma_baslat", **self.GERCEK[1])["oturum_id"]
+        self.arac("kanit_bagla", oturum_id=oid, satirlar=veri)
+        with self.assertRaises(KilitHatasi):
+            self.arac("hipotez_ekle", oturum_id=oid, ifade="sonradan akla gelen")
+        oid2 = self.arac("calisma_baslat", soru_turu="ARTIS", amac="kesifsel")["oturum_id"]
+        self.arac("kanit_bagla", oturum_id=oid2, satirlar=veri)
+        with self.assertRaises(KullanimHatasi):
+            self.arac("hipotez_ekle", oturum_id=oid2, ifade="sonradan akla gelen")
+
+    def test_akis_sirasi_ve_kullanim_hatalari(self):
+        veri = aylik(self.GERCEK[0])
+        oid = self.arac("calisma_baslat", **self.GERCEK[1])["oturum_id"]
+        with self.assertRaises(KullanimHatasi):
+            self.arac("hukum", oturum_id=oid)                   # kanıtsız hüküm yok
+        with self.assertRaises(KullanimHatasi):
+            self.arac("hipotez_ekle", oturum_id=oid, ifade="  ")
+        self.arac("kanit_bagla", oturum_id=oid, satirlar=veri)
+        with self.assertRaises(KullanimHatasi):
+            self.arac("kanit_bagla", oturum_id=oid, satirlar=veri)   # kanıt bir kez
+        h1 = self.arac("hukum", oturum_id=oid)
+        n = len(self.adimlar(oid))
+        self.assertEqual(self.arac("hukum", oturum_id=oid), h1)   # dondurulmuş
+        self.assertEqual(len(self.adimlar(oid)), n)
+        self.assertEqual(h1["hukum"]["kategori"], "DESTEKLENDİ")
+        duz = self.arac("dongu_baslat", karar="k")["oturum_id"]
+        for ad in ("sinama_plani", "hukum"):
+            with self.assertRaises(KullanimHatasi):
+                self.arac(ad, oturum_id=duz)
+        d = calisma.baslat("ARTIS", "kesifsel")
+        with self.assertRaises(KullanimHatasi):
+            calisma.hipotez_ekle(d, "x", etki="düşük")
+        with self.assertRaises(KullanimHatasi):
+            calisma.baslat("ARTIS", "kesifsel", kanal="k")         # bilinmeyen parametre
 
 
 if __name__ == "__main__":

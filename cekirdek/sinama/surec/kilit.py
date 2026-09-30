@@ -36,8 +36,11 @@ AMACLAR = ("operasyonel", "dogrulayici", "kesifsel")
 # ama KÜME sabittir: buraya alan eklemek geçmiş kilitleri geçersizler.
 KILIT_ALANLARI = ("talep", "plan")
 
-# Kilitten sonra değişmesi yasak olan alanlar (dogrula bunu sınar).
-ANALIZ_OLAYLARI_DISI = {"planla", "protokol_kilitle", "veri_bagla"}
+# Kilitten ÖNCE bulunabilecek, analiz sayılmayan olaylar (dogrula sırayı bunlar
+# dışındaki olaylara göre sınar). Bilim katmanının protokol yazan olayları
+# (hipotez_seti, hipotez_ekle) kilidin konusudur, analiz değildir.
+ANALIZ_OLAYLARI_DISI = {"planla", "protokol_kilitle", "veri_bagla",
+                        "hipotez_seti", "hipotez_ekle"}
 
 
 class KilitHatasi(SucAnaliziHatasi):

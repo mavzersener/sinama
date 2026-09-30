@@ -1277,34 +1277,118 @@ def _(a):
 
 
 
+_CALISMA_PROP = {
+    "soru_turu": {"type": "string", "enum": ["ARTIS", "YOGUNLASMA", "SERI", "ETKI"]},
+    "amac": {"type": "string", "enum": ["dogrulayici", "kesifsel", "operasyonel"]},
+    "onaylayan": {"type": "string",
+                  "description": "doğrulayıcı çalışmada kilidi alan kişi (zorunlu)"},
+    "kanal_alan": {"type": "string",
+                   "description": "ARTIS: bildirim kanalı/kaynak alanı (R-BILDIRIM)"},
+    "mo_alan": {"type": "string", "description": "SERI: MO metni alanı (zorunlu)"},
+    "soru": {"type": "string", "description": "soru metni (kayıt için)"},
+    "bolge_alan": {"type": "string", "description": "ETKI: bölge alanı (zorunlu)"},
+    "mudahale": {"type": "string", "description": "ETKI: müdahale bölgesinin değeri (zorunlu)"},
+    "kontrol": {"type": "string", "description": "ETKI: kontrol bölgesinin değeri"},
+    "tampon": {"type": "string", "description": "ETKI: yer değiştirme tamponunun değeri"},
+    "kesinti_tarihi": {"type": "string", "description": "ETKI: müdahalenin başlangıcı (zorunlu)"}}
+
+
+def _calisma_arg(a):
+    """Araç argümanlarından çalışma başlatma argümanları (parametreler dahil)."""
+    return {"soru_turu": a["soru_turu"], "amac": a["amac"], "onaylayan": a.get("onaylayan"),
+            "soru": a.get("soru"), **{k: a.get(k) for k in calisma.PARAMETRELER}}
+
+
+def _yurut_ham(ad, arg):
+    """Bilim sınamalarının araç yürütücüsü: resmi yol (şema + kapı + hesap)."""
+    return arac_yurut(ad, arg, sadece_analitik=True)[0]
+
+
+def _veri_kaynagi(a):
+    """(kaynak, kayıtlar): araçlara iletilecek kaynak + tiplenmiş kayıtlar."""
+    return {x: a[x] for x in ("satirlar", "csv_yolu") if x in a}, kayitlari_getir(a)
+
+
 @arac("rehberli_calisma", "Rehberli akış (Soru → Plan → Hüküm, ADR-002): soru türü "
       "şablonundan hipotez seti (birincil + rakipler + H_bilinmeyen), doğrulayıcıda "
       "veriden önce kilit, sınamalar ve kategorik hüküm (DESTEKLENDİ/KIRILGAN/"
       "BELİRSİZ/ÇELİŞKİLİ/ÇEKİMSER) — olasılık yok, hüküm taslak",
-      sema({"soru_turu": {"type": "string", "enum": ["ARTIS", "YOGUNLASMA", "SERI", "ETKI"]},
-            "amac": {"type": "string", "enum": ["dogrulayici", "kesifsel", "operasyonel"]},
-            "onaylayan": {"type": "string",
-                          "description": "doğrulayıcı çalışmada kilidi alan kişi (zorunlu)"},
-            "kanal_alan": {"type": "string",
-                           "description": "ARTIS: bildirim kanalı/kaynak alanı (R-BILDIRIM)"},
-            "mo_alan": {"type": "string", "description": "SERI: MO metni alanı (zorunlu)"},
-            "soru": {"type": "string", "description": "soru metni (kayıt için)"},
-            "bolge_alan": {"type": "string", "description": "ETKI: bölge alanı (zorunlu)"},
-            "mudahale": {"type": "string", "description": "ETKI: müdahale bölgesinin değeri (zorunlu)"},
-            "kontrol": {"type": "string", "description": "ETKI: kontrol bölgesinin değeri"},
-            "tampon": {"type": "string", "description": "ETKI: yer değiştirme tamponunun değeri"},
-            "kesinti_tarihi": {"type": "string", "description": "ETKI: müdahalenin başlangıcı (zorunlu)"}},
-           ["soru_turu", "amac"]))
+      sema(_CALISMA_PROP, ["soru_turu", "amac"]))
 def _(a):
-    k = kayitlari_getir(a)
-    kaynak = {x: a[x] for x in ("satirlar", "csv_yolu") if x in a}
-    return calisma.rehberli(kaynak, k, a["soru_turu"], a["amac"], _log_dir(),
-                            lambda ad, arg: arac_yurut(ad, arg, sadece_analitik=True)[0],
-                            _rehberli_kapi, onaylayan=a.get("onaylayan"),
-                            kanal_alan=a.get("kanal_alan"), mo_alan=a.get("mo_alan"),
-                            soru=a.get("soru"), bolge_alan=a.get("bolge_alan"),
-                            mudahale=a.get("mudahale"), kontrol=a.get("kontrol"),
-                            tampon=a.get("tampon"), kesinti_tarihi=a.get("kesinti_tarihi"))
+    kaynak, k = _veri_kaynagi(a)
+    c = _calisma_arg(a)
+    return calisma.rehberli(kaynak, k, c.pop("soru_turu"), c.pop("amac"), _log_dir(),
+                            _yurut_ham, _rehberli_kapi, **c)
+
+
+@arac("calisma_baslat", "Bilim çalışması 1. adım (ADR-002 §7): soru türü şablonundan "
+      "hipotez seti (birincil + RAK rakipleri + H_bilinmeyen) ve analiz parametreleri; "
+      "veri ALMAZ. Sınama planını ve ulaşılabilir en üst kategoriyi döner",
+      {"type": "object", "properties": dict(_CALISMA_PROP), "required": ["soru_turu", "amac"]})
+def _(a):
+    d = calisma.baslat(**_calisma_arg(a))
+    dongu.kaydet(d, _log_dir())
+    return {"oturum_id": d.manifesto["oturum_id"], "faz": "PLAN",
+            "hipotezler": d.manifesto["bilimsel"]["hipotezler"],
+            "plan": calisma.sinama_plani(d),
+            "sonraki": "isteğe bağlı hipotez_ekle (veriden önce), sonra kanit_bagla"}
+
+
+@arac("hipotez_ekle", "Bilim çalışmasına serbest metinli rakip açıklama ekler (yalnız "
+      "PLAN fazında, kilitten önce). Makinece sınanamaz: hep 'çözülmedi' kalır, hüküm "
+      "en çok KIRILGAN olur; H_bilinmeyen korunur",
+      {"type": "object",
+       "properties": {"oturum_id": {"type": "string"},
+                      "ifade": {"type": "string", "description": "rakip açıklama (bir cümle)"},
+                      "mekanizma": {"type": "string",
+                                    "description": "deseni nasıl üreteceği"},
+                      "sonraki_kanit": {"type": "string",
+                                        "description": "bu rakibi ayırt edecek veri/sınama"},
+                      "etki": {"type": "string", "enum": ["yüksek", "orta"],
+                               "default": "yüksek"}},
+       "required": ["oturum_id", "ifade"]})
+def _(a):
+    d = dongu.yukle(a["oturum_id"], _log_dir())
+    eklenen = calisma.hipotez_ekle(d, a["ifade"], a.get("mekanizma"), a.get("sonraki_kanit"),
+                                   a.get("etki", "yüksek"))
+    dongu.kaydet(d, _log_dir())
+    return {"eklenen": eklenen, "hipotezler": d.manifesto["bilimsel"]["hipotezler"],
+            "plan": calisma.sinama_plani(d)}
+
+
+@arac("sinama_plani", "Bilim çalışmasının sınama planı (veriye bakmadan): hangi araç "
+      "hangi öngörüyü sınar, hangi rakip verilen parametrelerle önceden çözülemez, "
+      "ulaşılabilir en üst kategori",
+      {"type": "object", "properties": {"oturum_id": {"type": "string"}},
+       "required": ["oturum_id"]})
+def _(a):
+    return calisma.sinama_plani(dongu.yukle(a["oturum_id"], _log_dir()))
+
+
+@arac("kanit_bagla", "Bilim çalışması: doğrulayıcıda protokolü (hipotezler + "
+      "parametreler) veriden önce kilitler, veriyi bağlar (profil + kapı) ve planlı "
+      "sınamaları gerekçeli adımlar olarak koşar",
+      sema({"oturum_id": {"type": "string"}}, ["oturum_id"]))
+def _(a):
+    d = dongu.yukle(a["oturum_id"], _log_dir())
+    kaynak, k = _veri_kaynagi(a)
+    sonuc = calisma.kanit_bagla(d, kaynak, k, _yurut_ham, _rehberli_kapi)
+    dongu.kaydet(d, _log_dir())
+    return {"faz": d.manifesto["faz"],
+            "kilit_hash": (d.manifesto.get("kilit") or {}).get("hash"),
+            "birincil": sonuc["birincil"],
+            "rakipler": [{"kod": r["kod"], "durum": r["durum"]} for r in sonuc["rakipler"]],
+            "saglamlik": sonuc["saglamlik"], "sinamalar": sonuc["sinamalar"],
+            "sonraki": "hukum ile kategorik hükmü alın"}
+
+
+@arac("hukum", "Bilim çalışmasının kategorik hükmü (DESTEKLENDİ/KIRILGAN/BELİRSİZ/"
+      "ÇELİŞKİLİ/ÇEKİMSER): kanıt paketi dondurulur, hash'i zincire taahhüt edilir — "
+      "olasılık yok, hüküm taslak",
+      {"type": "object", "properties": {"oturum_id": {"type": "string"}},
+       "required": ["oturum_id"]})
+def _(a):
+    return calisma.hukum_uret(dongu.yukle(a["oturum_id"], _log_dir()), _log_dir())
 
 
 def _rehberli_kapi(ad, arg):

@@ -2,6 +2,35 @@
 
 ## [Yayımlanmamış]
 
+### Bilim katmanı: ayrıntılı araçlar + ön-kayıt geçerliliği (A4.14)
+ADR-002 §7'nin ayrıntılı araçları (dil modeli ve Atölye için); Rehberli akış artık
+bu adımların bileşimidir (`calisma.rehberli` = baslat → kanit_bagla → hukum_uret).
+- Yeni araçlar: `calisma_baslat` (hipotez seti + analiz parametreleri; veri almaz,
+  sınama planını döner), `hipotez_ekle` (serbest rakip; yalnız PLAN'da, kilitten
+  önce; makinece sınanamaz → hep "çözülmedi", hüküm en çok KIRILGAN; H_bilinmeyen
+  hep sonda), `sinama_plani` (saf okuma: hangi araç hangi öngörüyü sınar, hangi
+  rakip parametrelerle ÖNCEDEN çözülemez, ulaşılabilir en üst kategori),
+  `kanit_bagla` (doğrulayıcıda kilit → VERİ → ANALİZ), `hukum` (insan onayı
+  bayraklı; dondurulmuş, yeniden çağrı zincire yazmaz). Politikalar süreç sınıfı.
+- **Kilit protokolün tamamını dondurur:** hipotez seti + analiz parametreleri
+  (kontrol bölgesi, kesinti tarihi, kanal/MO alanı — araştırmacının serbestlik
+  dereceleri) + RAK/şablon/kural/sınama sürümleri.
+- **Hata (aynı sınıf, üç yer):** `kilit.ANALIZ_OLAYLARI_DISI` `hipotez_seti`'ni
+  analiz sayıyordu → HER Rehberli doğrulayıcı oturumda `provenans_ozet` "kilitten
+  önce analiz adımı var — çalışma keşifseldir" derken hüküm aynı oturuma
+  DESTEKLENDİ (ön-kayıtlı) diyordu. Kök neden: hüküm ve `makale` sınırlılığı
+  kilidin geçerliliğine değil VARLIĞINA bakıyordu. Düzeltme: protokol olayları
+  (`hipotez_seti`, `hipotez_ekle`) analiz değil; hükmün `kilitli` alanı =
+  ön-kayıt doğrulaması (bütünlük + sıra + doğrulayıcı) ve kilitli protokol ==
+  hüküm anındaki protokol; `makale` doğrulayıcı yorumu yalnız geçerli kilitte açar.
+  BMK v0–v7 birebir aynı (normal akışta kilit hep geçerli).
+Testler: 7 senaryoda Rehberli ≡ ayrıntılı (kategori, rakipler, paket hash'i,
+kurallar, zincir olay sırası), plan tavanı hükümle tutarlı, serbest rakip →
+KIRILGAN + sonraki kanıt, H_bilinmeyen sonda, kilit parametreleri kapsar, kilitten
+sonra protokol değişirse T1-onkayit, kilit/faz sonrası ekleme reddi, akış sırası;
+`test_makale` geçersiz kilit; sözleşme turu. 13/13 mutasyon (1 eşdeğer mutant
+kaldırıldı: gereksiz koşul).
+
 ### Bilim katmanı: ETKİ soru türü — müdahale değerlendirmesi (A4.13)
 ADR-002'de v1.1'e bırakılmıştı. BMK v7 ön-kaydı (2a84f04) başlangıcı 0/9.
 - `degerlendirme.oran_orani_farki`: iki bölgenin oran oranlarının log farkı

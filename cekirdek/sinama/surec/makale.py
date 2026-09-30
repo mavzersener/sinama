@@ -31,6 +31,7 @@ sebepleri, veri kalitesi uyarıları ve amaç kipinden TÜRETİLİR. Böylece
 import re
 
 from ..cekirdek.hatalar import KullanimHatasi
+from . import kilit as kilit_mod
 
 # Anlatıda olguya atıf biçimi: [F001] veya [F001, M002]
 ATIF_DESENI = re.compile(r"\[([A-Z]\d{3}(?:\s*,\s*[A-Z]\d{3})*)\]")
@@ -130,7 +131,8 @@ def olgu_listesi(manifesto):
                         uyari, "veri_kalitesi")
 
     amac = manifesto.get("amac", "operasyonel")
-    if amac != "dogrulayici" or not manifesto.get("kilit"):
+    # kilidin VARLIĞI değil geçerliliği (bütünlük + sıra) doğrulayıcı yorumu açar
+    if not kilit_mod.dogrula(manifesto)["dogrulayici_iddia_edilebilir"]:
         lim = _ekle(
             olgular, "L", lim, "sinirlilik",
             "Çalışma keşifseldir; hipotez veriden önce kilitlenmediği için "

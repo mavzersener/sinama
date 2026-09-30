@@ -208,6 +208,25 @@ class OlguListesiTestleri(unittest.TestCase):
             "doğrulayıcı çalışma: 'doğrulayıcı yorum yapılamaz' olgusunda olmamalı"
         )
 
+    def test_gecersiz_kilit_sinirliligi_kaldirmaz(self):
+        """
+        Kilidin VARLIĞI değil geçerliliği sayılır (A4.14): kilitten sonra
+        protokol değiştirilmiş doğrulayıcı oturumda "doğrulayıcı yorum
+        yapılamaz" sınırlılığı BULUNMALIDIR.
+        """
+        d = dongu.AnalizDongusu({"soran": "Z"}, amac="dogrulayici", mod="kesif")
+        d.planla()
+        d.protokol_kilitle("bir hipotez", "Sener")
+        d.veri_bagla({"n": 10, "uyarilar": []})
+        d.manifesto["talep"]["soran"] = "sonradan değişti"
+
+        olgular = makale.olgu_listesi(d.manifesto)
+        sinirliliklar = [o["ifade"] for o in olgular if o["tur"] == "sinirlilik"]
+        self.assertTrue(
+            any("doğrulayıcı yorum yapılamaz" in s for s in sinirliliklar),
+            "geçersiz kilit doğrulayıcı yorumu açmamalı"
+        )
+
     def test_kimlikler_benzersiz(self):
         """
         olgu_listesi çıktısındaki tüm 'kimlik' değerleri benzersiz olmalıdır.

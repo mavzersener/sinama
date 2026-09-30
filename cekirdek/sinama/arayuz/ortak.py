@@ -248,6 +248,11 @@ ARAC_UYARILARI = {
                          "göredir, modellenmemiş açıklamalar (H_bilinmeyen) açık kalır",
                          "'çözülmedi' rakip, eksik veri ya da sınamadır — 'sonraki en "
                          "iyi kanıt' neyin gerektiğini söyler"],
+    "hukum": ["hüküm TASLAKTIR: SONUÇ'a insan onayıyla (dongu_sonuc) geçer",
+              "kategoriler olasılık değildir; hüküm listelenen rakiplere göredir, "
+              "modellenmemiş açıklamalar (H_bilinmeyen) açık kalır"],
+    "hipotez_ekle": ["serbest rakip v1'de makinece sınanamaz: hep 'çözülmedi' kalır, "
+                     "hüküm en çok KIRILGAN olur"],
     "seri_eslestirme": ["dönen çiftler SERİ ADAYIDIR (inceleme hipotezi): MO "
                         "benzerliği aynı fail ya da kimlik anlamına gelmez; insan "
                         "incelemesi gerekir",
@@ -634,9 +639,13 @@ ARAC_POLITIKALARI.update(_politika("surec", (
     "provenans_ozet", "dongu_baslat", "dongu_veri", "dongu_analize_gec",
     "dongu_analiz", "dongu_sonuc", "dongu_izleme", "dongu_durum"),
     muafiyet="süreç yönetimi analiz hesabı değildir", veri_sinifi="oturum"))
-ARAC_POLITIKALARI.update(_politika("surec", ("rehberli_calisma",),
+ARAC_POLITIKALARI.update(_politika("surec", ("rehberli_calisma", "hukum"),
     muafiyet="Rehberli akış: iç sınamalar kendi gate'leriyle ve kapı kararıyla koşar",
     veri_sinifi="oturum", insan_onayi=True))
+ARAC_POLITIKALARI.update(_politika("surec", (
+    "calisma_baslat", "hipotez_ekle", "sinama_plani", "kanit_bagla"),
+    muafiyet="bilim çalışması adımı: kanit_bagla'nın iç sınamaları kendi gate'leriyle "
+              "ve kapı kararıyla koşar", veri_sinifi="oturum"))
 ARAC_POLITIKALARI.update(_politika("raporlama", ("brifing_uret", "muhakeme_izi"),
     muafiyet="resmî çıktı oturum sağlığıyla doğrulanır", veri_sinifi="oturum"))
 

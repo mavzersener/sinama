@@ -2,9 +2,9 @@
 
 - **Durum:** Kabul edildi — 30.09.2026 (proje sahibinin onayı; dört nokta aynen)
 - **Kapsam:** A4'ün ikinci yarısı (ADR-001 aşama tablosu: "Bilim katmanı v1")
-- **Uygulama:** A4.9 — BMK v3 0/12 → 12/12 (ön-kayıt `b65c8a9`); §7'nin ayrıntılı
-  araçları (`calisma_baslat`, `hipotez_ekle`, `sinama_plani`, `kanit_bagla`,
-  `hukum`) henüz yok — v1'de yalnız Rehberli giriş noktası (`rehberli_calisma`)
+- **Uygulama:** A4.9 — BMK v3 0/12 → 12/12 (ön-kayıt `b65c8a9`); A4.9'da yalnız
+  Rehberli giriş noktası (`rehberli_calisma`) vardı, §7'nin ayrıntılı araçları
+  (`calisma_baslat`, `hipotez_ekle`, `sinama_plani`, `kanit_bagla`, `hukum`) A4.14'te
 - **Değişiklik (A4.10, sınama v1.1):** bir rakip, ayırt edici sınamanın yalnız
   anlamlılığıyla değil **etki büyüklüğüyle** dışlanır (R-BILDIRIM: artışın çoğu
   sürekli kanallarda mı). Rakip kaydı ölçümü (`olcum`) hükme taşır. BMK v4 3/7 → 7/7
@@ -17,6 +17,14 @@
   ölçeğe bağımlı olduğu için değil), yoksa kesintili zaman serisi. RAK'a R-ESZAMANLI,
   R-ORTALAMAYA-DONUS, R-YER-DEGISTIRME. Kontrolsüz: R-ESZAMANLI çözülemez → en çok
   KIRILGAN (ek tavan kuralı gerekmez). Ön-kayıt BMK v7 (`2a84f04`)
+- **Değişiklik (A4.14, §7 ayrıntılı araçlar):** `calisma_baslat`, `hipotez_ekle`,
+  `sinama_plani`, `kanit_bagla`, `hukum` eklendi; `rehberli_calisma` bunların
+  bileşimi (eşdeğerlik testle kanıtlı). Varsayılan kararlar: (i) serbest rakip v1'de
+  makinece sınanamaz → hep "çözülmedi" (hüküm en çok KIRILGAN); (ii) analiz
+  parametreleri `calisma_baslat`'ta verilir ve kilide girer (sonradan kontrol
+  bölgesi ya da kesinti tarihi seçilemez); (iii) kilit `kanit_bagla`'da, veriden
+  hemen önce alınır; (iv) hükmün "kilitli" girdisi kilidin varlığı değil ön-kayıt
+  doğrulamasıdır (bütünlük + sıra + protokol eşitliği)
 
 ## Bağlam
 

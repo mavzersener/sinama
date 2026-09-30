@@ -114,6 +114,7 @@ ARG_OZEL = {
     "konsantrasyon_dagilimi": {"bolge_alan": "mahalle", "zaman_alan": "tarih"},
     "kesinti_analizi": {"kesinti_tarihi": "2026-05-20", "donem": "gun"},
     "rehberli_calisma": {"soru_turu": "ARTIS", "amac": "kesifsel"},
+    "calisma_baslat": {"soru_turu": "ARTIS", "amac": "kesifsel"},
     "mekansal_regresyon": {"hedef": "zarar_tl", "degiskenler": ["adet"]},
     "risk_arazi": {"faktor_alan": "tur"},
     "bolge_oran": {"bolge_alan": "mahalle"},
@@ -130,6 +131,9 @@ DONGU_AILESI = {"dongu_baslat", "dongu_veri", "dongu_analize_gec",
                 "dongu_durum", "muhakeme_izi", "kanit_dogrula",
                 "provenans_hazirlik", "provenans_dis_denetim",
                 "provenans_ozet"}
+# Bilim çalışmasının oturum tabanlı adımları (ADR-002 §7): calisma_baslat'ın
+# açtığı oturumu isterler; sözleşmeleri aşağıdaki bilim turunda sınanır.
+BILIM_AILESI = {"hipotez_ekle", "sinama_plani", "kanit_bagla", "hukum"}
 
 
 def _cagir(ad, argumanlar):
@@ -147,7 +151,7 @@ class TestSozlesmeTumAraclar(unittest.TestCase):
 
     def test_her_arac_sozlesme_kapsaminda(self):
         for ad in sorted(ARACLAR):
-            if ad in DONGU_AILESI:
+            if ad in DONGU_AILESI | BILIM_AILESI:
                 continue
             with self.subTest(arac=ad):
                 t = ARACLAR[ad]
@@ -172,6 +176,7 @@ class TestSozlesmeTumAraclar(unittest.TestCase):
         for ad in ARG_OZEL:
             self.assertIn(ad, ARACLAR, f"ARG_OZEL'de ölü araç: {ad}")
         self.assertTrue(DONGU_AILESI <= set(ARACLAR))
+        self.assertTrue(BILIM_AILESI <= set(ARACLAR))
 
 
 class TestSozlesmeDonguAilesi(unittest.TestCase):
@@ -213,6 +218,18 @@ class TestSozlesmeDonguAilesi(unittest.TestCase):
         self._paket("dongu_durum", {"oturum_id": oid})
         d = self._paket("kanit_dogrula", {"oturum_id": oid})
         self.assertTrue(d["saglam"])
+
+    def test_bilim_calismasi_turu(self):
+        oid = self._paket("calisma_baslat", {"soru_turu": "ARTIS", "amac": "kesifsel",
+                                             "soru": "sözleşme testi"})["oturum_id"]
+        self._paket("hipotez_ekle", {"oturum_id": oid, "ifade": "sözleşme rakibi"})
+        self._paket("sinama_plani", {"oturum_id": oid})
+        self._paket("kanit_bagla", {"oturum_id": oid, "satirlar": KAYITLAR})
+        h = self._paket("hukum", {"oturum_id": oid})
+        self.assertNotEqual(h["hukum"]["kategori"], "DESTEKLENDİ")   # keşifsel + serbest rakip
+        self._paket("dongu_sonuc", {"oturum_id": oid, "sonuc_turu": "izlemeye_alindi",
+                                    "onaylayan": "sözleşme testi"})
+        self.assertTrue(self._paket("kanit_dogrula", {"oturum_id": oid})["saglam"])
 
     def test_dongu_ailesi_kapsam_tam(self):
         # Muafiyet listesi kendiliğinden büyüyemez: oturum tabanlı araçlar

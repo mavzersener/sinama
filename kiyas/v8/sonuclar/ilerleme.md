@@ -4,21 +4,21 @@ Aynı ön-kayıtlı kıyas (v8, `59586b0`, eşikler değişmedi), değişen çek
 bir çekirdek değişikliğinden sonra yapılan tam ölçümdür; sayılar o commit'teki
 `v8.json`'dadır. Kalın: önceki sütuna göre değişen.
 
-| Ölçüt | Senaryo | Eşik | Başlangıç (A4.14) | A4.15 NNI + CUSUM |
-|---|---|---|---|---|
-| K14.1 yön iddiası yok | CSR n=200 | ≤ 0,10 | 0,26 | **0,05** |
-| K14.2 yan \|ort. NNI − 1\| | CSR n=200 | ≤ 0,03 | 0,0452 | **0,0040** |
-| K14.3 yön iddiası yok | CSR n=50 | ≤ 0,10 | 0,34 | **0,03** |
-| K14.4 kümelenme gücü | güçlü yaygın küme | ≥ 0,90 | 1,00 | 1,00 |
-| K14.5 kümelenme gücü | orta yaygın küme n=50 | ≥ 0,80 | 0,74 | **0,93** |
-| K14.6 "küresel ölçü" uyarısı | yerel odak | = 1 | 0 | **1** |
-| K15.1 seri boyunca yanlış alarm | sabit | ≤ 0,10 | 0,89 | **0,14** |
-| K15.2 seri boyunca yanlış alarm | sabit NB | ≤ 0,10 | 1,00 | **0,07** |
-| K15.3 seri boyunca yanlış alarm | seyrek | ≤ 0,10 | 0,96 | **0,08** |
-| K15.4 ilk alarm [−15, +180] | %30 artış | ≥ 0,80 | 0,59 | **0,74** |
-| K15.5 ilk alarm [−15, +90] | %50 artış | ≥ 0,80 | 0,67 | **0,88** |
-| K15.6 önce alarm yok | %30 artış NB | ≥ 0,90 | 0,43 | **0,99** |
-| **Geçen** | | | **1/12** | **10/12** |
+| Ölçüt | Senaryo | Eşik | Başlangıç (A4.14) | A4.15 NNI + CUSUM | A4.16 Anscombe (incelenmiş tohum) |
+|---|---|---|---|---|---|
+| K14.1 yön iddiası yok | CSR n=200 | ≤ 0,10 | 0,26 | **0,05** | 0,05 |
+| K14.2 yan \|ort. NNI − 1\| | CSR n=200 | ≤ 0,03 | 0,0452 | **0,0040** | 0,0040 |
+| K14.3 yön iddiası yok | CSR n=50 | ≤ 0,10 | 0,34 | **0,03** | 0,03 |
+| K14.4 kümelenme gücü | güçlü yaygın küme | ≥ 0,90 | 1,00 | 1,00 | 1,00 |
+| K14.5 kümelenme gücü | orta yaygın küme n=50 | ≥ 0,80 | 0,74 | **0,93** | 0,93 |
+| K14.6 "küresel ölçü" uyarısı | yerel odak | = 1 | 0 | **1** | 1 |
+| K15.1 seri boyunca yanlış alarm | sabit | ≤ 0,10 | 0,89 | **0,14** | **0,06** |
+| K15.2 seri boyunca yanlış alarm | sabit NB | ≤ 0,10 | 1,00 | **0,07** | **0,04** |
+| K15.3 seri boyunca yanlış alarm | seyrek | ≤ 0,10 | 0,96 | **0,08** | **0,05** |
+| K15.4 ilk alarm [−15, +180] | %30 artış | ≥ 0,80 | 0,59 | **0,74** | **0,66** |
+| K15.5 ilk alarm [−15, +90] | %50 artış | ≥ 0,80 | 0,67 | **0,88** | **0,86** |
+| K15.6 önce alarm yok | %30 artış NB | ≥ 0,90 | 0,43 | **0,99** | **1,00** |
+| **Geçen** | | | **1/12** | **10/12** | **11/12** |
 
 ## Notlar
 
@@ -53,3 +53,6 @@ bir çekirdek değişikliğinden sonra yapılan tam ölçümdür; sayılar o com
   ya da Poisson parametrik önyükleme ile eşik — yeni tohumlarla ön-kayıt.
 - v0: K1.1 0,233 → **0,567** (öngörü 0,40–0,60 ✓; yine KALDI — NNI küresel ölçü), K1.2 0
   (korundu), K2.1 0,467 → **0,400** (öngörü 0,35–0,60 ✓; yine KALDI). v1–v7 birebir aynı.
+- **A4.16 (Anscombe, BMK v9'da ön-kayıtlı):** v8 10/12 → 11/12 (K15.1 0,14 → 0,06).
+  **Kanıt sayılmaz:** v8 ölçüm tohumları K15.1 teşhisinde incelendi; iyileşmenin kanıtı
+  yeni tohumlu v9'dur (havuzlanmış %7,7 → %2,5). Burada yalnız kayıt ve gerileme bekçisi.

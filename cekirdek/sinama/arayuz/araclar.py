@@ -453,8 +453,8 @@ def _(a):
 
 
 @arac("cusum", "Kalıcı artış alarmı: kendinden başlayan CUSUM (dönem hafta/ay "
-      "otomatik); eşik seri düzeyinde kalibre (normal varsayımıyla %5 yanlış alarm; "
-      "Poisson haftalık sayımda ölçülen ~%9–14, BMK v8)", sema({"donem": {"type": "string", "enum": ["hafta", "ay"],
+      "otomatik, Anscombe dönüşümlü); eşik seri düzeyinde kalibre: değişim yokken seri "
+      "boyunca yanlış alarm hedefi %5 (BMK v9'da ölçülen %2,5)", sema({"donem": {"type": "string", "enum": ["hafta", "ay"],
                                  "description": "verilmezse otomatik (aylar arası "
                                                 "heterojenlik varsa ay)"}}))
 def _(a):

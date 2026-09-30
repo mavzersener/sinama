@@ -30,7 +30,7 @@
       "olcutler": [
         {
           "kimlik": "K16.1",
-          "deger": 0.09,
+          "deger": 0.025,
           "yon": "<=",
           "esik": 0.1,
           "gecti": true,
@@ -38,7 +38,7 @@
         },
         {
           "kimlik": "K16.2",
-          "deger": 0.065,
+          "deger": 0.03,
           "yon": "<=",
           "esik": 0.1,
           "gecti": true,
@@ -46,7 +46,7 @@
         },
         {
           "kimlik": "K16.3",
-          "deger": 0.075,
+          "deger": 0.02,
           "yon": "<=",
           "esik": 0.1,
           "gecti": true,
@@ -54,7 +54,7 @@
         },
         {
           "kimlik": "K16.4",
-          "deger": 0.735,
+          "deger": 0.685,
           "yon": ">=",
           "esik": 0.8,
           "gecti": false,
@@ -62,7 +62,7 @@
         },
         {
           "kimlik": "K16.5",
-          "deger": 0.89,
+          "deger": 0.865,
           "yon": ">=",
           "esik": 0.8,
           "gecti": true,
@@ -70,7 +70,7 @@
         },
         {
           "kimlik": "K16.6",
-          "deger": 0.98,
+          "deger": 0.995,
           "yon": ">=",
           "esik": 0.9,
           "gecti": true,
@@ -78,37 +78,37 @@
         },
         {
           "kimlik": "K16.7",
-          "deger": 0.0767,
+          "deger": 0.025,
           "yon": "<=",
           "esik": 0.07,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir (başlangıç): tasarım tohumlarında 0,085 (üç senaryo ortalaması)"
         }
       ],
       "ek_olcumler": {
         "alarm_yok": {
-          "sabit": 0.91,
-          "sabit_nb": 0.935,
-          "sabit_dusuk": 0.925,
-          "artis30": 0.12,
+          "sabit": 0.975,
+          "sabit_nb": 0.97,
+          "sabit_dusuk": 0.98,
+          "artis30": 0.17,
           "artis50": 0.0,
-          "artis30_nb": 0.63
+          "artis30_nb": 0.755
         },
         "once_alarm": {
-          "sabit": 0.04,
-          "sabit_nb": 0.02,
-          "sabit_dusuk": 0.03,
-          "artis30": 0.04,
-          "artis50": 0.03,
-          "artis30_nb": 0.02
+          "sabit": 0.005,
+          "sabit_nb": 0.005,
+          "sabit_dusuk": 0.0,
+          "artis30": 0.005,
+          "artis50": 0.005,
+          "artis30_nb": 0.005
         },
         "ilk_alarm_gecikme_medyan_gun": {
-          "sabit": 60.5,
-          "sabit_nb": 89,
-          "sabit_dusuk": 70,
-          "artis30": 71.0,
-          "artis50": 46.0,
-          "artis30_nb": 180.0
+          "sabit": 291,
+          "sabit_nb": 134.5,
+          "sabit_dusuk": 104.5,
+          "artis30": 81.0,
+          "artis50": 53.0,
+          "artis30_nb": 180
         },
         "hata": {}
       }

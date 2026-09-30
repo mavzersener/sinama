@@ -115,15 +115,15 @@
       "olcutler": [
         {
           "kimlik": "K15.1",
-          "deger": 0.14,
+          "deger": 0.06,
           "yon": "<=",
           "esik": 0.1,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir (başlangıç): tüm seri ortalaması ve günlük k = 0,5σ, h = 5σ kalibre değil; keşifte 0,84"
         },
         {
           "kimlik": "K15.2",
-          "deger": 0.07,
+          "deger": 0.04,
           "yon": "<=",
           "esik": 0.1,
           "gecti": true,
@@ -131,7 +131,7 @@
         },
         {
           "kimlik": "K15.3",
-          "deger": 0.08,
+          "deger": 0.05,
           "yon": "<=",
           "esik": 0.1,
           "gecti": true,
@@ -139,7 +139,7 @@
         },
         {
           "kimlik": "K15.4",
-          "deger": 0.74,
+          "deger": 0.66,
           "yon": ">=",
           "esik": 0.8,
           "gecti": false,
@@ -147,7 +147,7 @@
         },
         {
           "kimlik": "K15.5",
-          "deger": 0.88,
+          "deger": 0.86,
           "yon": ">=",
           "esik": 0.8,
           "gecti": true,
@@ -155,7 +155,7 @@
         },
         {
           "kimlik": "K15.6",
-          "deger": 0.99,
+          "deger": 1.0,
           "yon": ">=",
           "esik": 0.9,
           "gecti": true,
@@ -164,28 +164,28 @@
       ],
       "ek_olcumler": {
         "alarm_yok": {
-          "sabit": 0.86,
-          "sabit_nb": 0.93,
-          "sabit_dusuk": 0.92,
-          "artis30": 0.13,
+          "sabit": 0.94,
+          "sabit_nb": 0.96,
+          "sabit_dusuk": 0.95,
+          "artis30": 0.19,
           "artis50": 0.0,
-          "artis30_nb": 0.63
+          "artis30_nb": 0.7
         },
         "once_alarm": {
-          "sabit": 0.04,
-          "sabit_nb": 0.01,
-          "sabit_dusuk": 0.05,
-          "artis30": 0.04,
-          "artis50": 0.04,
-          "artis30_nb": 0.01
+          "sabit": 0.02,
+          "sabit_nb": 0.0,
+          "sabit_dusuk": 0.02,
+          "artis30": 0.02,
+          "artis50": 0.02,
+          "artis30_nb": 0.0
         },
         "ilk_alarm_gecikme_medyan_gun": {
-          "sabit": 130.5,
-          "sabit_nb": 150,
-          "sabit_dusuk": -50.5,
-          "artis30": 68,
-          "artis50": 46.0,
-          "artis30_nb": 180
+          "sabit": 77.5,
+          "sabit_nb": 165.0,
+          "sabit_dusuk": 33,
+          "artis30": 95,
+          "artis50": 50.0,
+          "artis30_nb": 180.0
         },
         "hata": {}
       }

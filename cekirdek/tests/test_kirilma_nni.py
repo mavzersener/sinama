@@ -105,6 +105,20 @@ class TestKirilmaCusum(unittest.TestCase):
         self.assertAlmostEqual(z[1], NormalDist().inv_cdf(t_cdf(tt, 3)), places=12)
         self.assertEqual(ileri._kendinden_z([5, 5, 5, 9], 3), [0.0])   # sıfır sapma
 
+    def test_anscombe_donusumu_uygulanir(self):
+        # A4.16: sayımlar standartlaştırmadan önce 2√(x + 3/8) ile dönüştürülür (BMK v9)
+        gunler = seri(3, 40, carpan=1.6)
+        alarm = ileri.kirilma_cusum(gunler, donem="hafta")[0][0]
+        sayim, _ = ileri._donem_sayimlari(gunler, "hafta")
+        z = ileri._kendinden_z([2 * math.sqrt(c + 3 / 8) for c in sayim], 8)
+        h = ileri._cusum_esigi(len(z), 0.5, 0.05)
+        s = 0.0
+        for d in z:
+            s = max(0.0, s + d - 0.5)
+            if s > h:
+                break
+        self.assertEqual(alarm["cusum"], round(s, 3))
+
     def test_isinma_doneminde_izlenmez(self):
         # 5. haftadaki sıçrama ısınma (8 hafta) içinde: alarm yok; aynı sıçrama 30. haftada: alarm
         def haftalik(sayimlar):

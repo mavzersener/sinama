@@ -4,24 +4,24 @@ Aynı ön-kayıtlı kıyas (v0, eşikler değişmedi), değişen çekirdek. Her 
 çekirdek değişikliğinden sonra yapılan tam ölçümdür; sayılar o commit'teki
 `v0.json`'dadır. Kalın: önceki sütuna göre değişen.
 
-| Ölçüt | Eşik | İlk ölçüm `ef1b5a6` | A4.1 Gi* FDR | A4.2 seri adayı | A4.7 trend + ITS | A4.8 seri katmanı | A4.15 NNI + CUSUM |
-|---|---|---|---|---|---|---|---|
-| K1.1 NNI gücü | ≥ 0,90 | 0,233 | 0,233 | 0,233 | 0,233 | 0,233 | **0,567** |
-| K1.2 NNI yanlış alarmı | ≤ 0,10 | 0,000 | 0,000 | 0,000 | 0,000 | 0,000 | 0,000 |
-| K1.3 Moran gücü | ≥ 0,90 | 0,967 | 0,967 | 0,967 | 0,967 | 0,967 | 0,967 |
-| K1.4 Moran yanlış alarmı | ≤ 0,10 | 0,000 | 0,000 | 0,000 | 0,000 | 0,000 | 0,000 |
-| K1.5 Gi* gücü | ≥ 0,90 | 1,000 | **0,900** | 0,900 | 0,900 | 0,900 | 0,900 |
-| K1.6 Gi* yanlış alarmı | ≤ 0,10 | 0,700 | **0,000** | 0,000 | 0,000 | 0,000 | 0,000 |
-| K2.1 CUSUM kırılma zamanı | ≥ 0,90 | 0,467 | 0,467 | 0,467 | 0,467 | 0,467 | **0,400** |
-| K2.2 kayıtlı artış | ≥ 0,90 | 1,000 | 1,000 | 1,000 | **0,967** | 0,967 | 0,967 |
-| K2.3 sahte trend | ≤ 0,10 | 1,000 | 1,000 | 1,000 | **0,067** | 0,067 | 0,067 |
-| K2.4 kanal ayrıştırma (ölçüt hatalı) | ≥ 0,90 | 0,800 | 0,800 | 0,800 | 0,800 | 0,800 | 0,800 |
-| K2.5 ITS aracı | = 1 | 0 | 0 | 0 | **1** | 1 | 1 |
-| K3.1 seri geri çağırma | ≥ 0,90 | 1,000 | 1,000 | 1,000 | 1,000 | 1,000 | 1,000 |
-| K3.2 seri kesinliği | ≥ 0,90 | 0,050 | 0,050 | **0,970** | 0,970 | **0,968** | 0,968 |
-| K3.3 "benzerlik ≠ kimlik" uyarısı | = 1 | 0 | 0 | **1** | 1 | 1 | 1 |
-| K3.4 insan onayı | = 1 | 0 | 0 | **1** | 1 | 1 | 1 |
-| **Geçen** | | **6/15** | **7/15** | **10/15** | **12/15** | **12/15** | **12/15** |
+| Ölçüt | Eşik | İlk ölçüm `ef1b5a6` | A4.1 Gi* FDR | A4.2 seri adayı | A4.7 trend + ITS | A4.8 seri katmanı | A4.15 NNI + CUSUM | A4.16 CUSUM Anscombe |
+|---|---|---|---|---|---|---|---|---|
+| K1.1 NNI gücü | ≥ 0,90 | 0,233 | 0,233 | 0,233 | 0,233 | 0,233 | **0,567** | 0,567 |
+| K1.2 NNI yanlış alarmı | ≤ 0,10 | 0,000 | 0,000 | 0,000 | 0,000 | 0,000 | 0,000 | 0,000 |
+| K1.3 Moran gücü | ≥ 0,90 | 0,967 | 0,967 | 0,967 | 0,967 | 0,967 | 0,967 | 0,967 |
+| K1.4 Moran yanlış alarmı | ≤ 0,10 | 0,000 | 0,000 | 0,000 | 0,000 | 0,000 | 0,000 | 0,000 |
+| K1.5 Gi* gücü | ≥ 0,90 | 1,000 | **0,900** | 0,900 | 0,900 | 0,900 | 0,900 | 0,900 |
+| K1.6 Gi* yanlış alarmı | ≤ 0,10 | 0,700 | **0,000** | 0,000 | 0,000 | 0,000 | 0,000 | 0,000 |
+| K2.1 CUSUM kırılma zamanı | ≥ 0,90 | 0,467 | 0,467 | 0,467 | 0,467 | 0,467 | **0,400** | **0,300** |
+| K2.2 kayıtlı artış | ≥ 0,90 | 1,000 | 1,000 | 1,000 | **0,967** | 0,967 | 0,967 | 0,967 |
+| K2.3 sahte trend | ≤ 0,10 | 1,000 | 1,000 | 1,000 | **0,067** | 0,067 | 0,067 | 0,067 |
+| K2.4 kanal ayrıştırma (ölçüt hatalı) | ≥ 0,90 | 0,800 | 0,800 | 0,800 | 0,800 | 0,800 | 0,800 | 0,800 |
+| K2.5 ITS aracı | = 1 | 0 | 0 | 0 | **1** | 1 | 1 | 1 |
+| K3.1 seri geri çağırma | ≥ 0,90 | 1,000 | 1,000 | 1,000 | 1,000 | 1,000 | 1,000 | 1,000 |
+| K3.2 seri kesinliği | ≥ 0,90 | 0,050 | 0,050 | **0,970** | 0,970 | **0,968** | 0,968 | 0,968 |
+| K3.3 "benzerlik ≠ kimlik" uyarısı | = 1 | 0 | 0 | **1** | 1 | 1 | 1 | 1 |
+| K3.4 insan onayı | = 1 | 0 | 0 | **1** | 1 | 1 | 1 | 1 |
+| **Geçen** | | **6/15** | **7/15** | **10/15** | **12/15** | **12/15** | **12/15** | **12/15** |
 
 ## Notlar
 
@@ -68,3 +68,8 @@ Aynı ön-kayıtlı kıyas (v0, eşikler değişmedi), değişen çekirdek. Her 
   veriyordu — v0'ın [−15, +60] penceresi bu gürültünün şanslı kısmını ödüllendiriyordu;
   kalibre CUSUM'da %30 artışta ilk alarm medyanı +68 gün (BMK v8). Öngörü aralıkları
   (v8 vaka dosyalarında, `59586b0`) ikisinde de tuttu.
+- **A4.16 (CUSUM Anscombe; ayrıntı BMK v9):** K2.1 0,400 → 0,300 (yine KALIR).
+  **Öngörülmedi:** v9 ön-kaydı v0 etkisini yazmadı (eksik öngörü). Yön beklenen: yanlış
+  alarm %8 → %2,5 inerken ilk alarm gecikir (medyan 69 → 85 gün). v0'ın [−15, +60]
+  penceresi bu gürültüde kalibre bir sıralı testin bilgi sınırının ötesindedir; ölçüt
+  erken (gürültülü) alarmı ödüllendirir — v0 donmuş olduğu için olduğu gibi raporlanır.

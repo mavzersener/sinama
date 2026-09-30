@@ -2,6 +2,18 @@
 
 ## [Yayımlanmamış]
 
+### Kalıcı artış alarmı: Anscombe dönüşümü (A4.16)
+BMK v9 ön-kaydı (5bb9a45; v8 K15.1 teşhisi, yeni tohumlar) başlangıcı 5/7 → 6/7.
+- `ileri.kirilma_cusum`: dönem sayımları kendinden standartlaştırmadan önce
+  2√(x + 3/8) ile dönüştürülür — Poisson çarpıklığı t → normal dönüşümünü yanlı
+  kılıyordu. Değişimsiz 600 seride yanlış alarm %7,7 → %2,5 (hedef %5); bedel
+  %30 artışta [−15, +180] 0,735 → 0,685 (zaten kalıyordu), %50 artışta 0,89 → 0,865.
+- `_kendinden_z` ayrı işlev (standartlaştırma elle hesapla test edilir).
+- Araç açıklaması ve uyarısı ölçülen oranı söyler.
+- v8 11/12 (incelenmiş tohumlar — kanıt sayılmaz), v0 K2.1 0,400 → 0,300
+  (öngörülmedi; yine KALIR).
+Testler: dönüşüm referans hesapla sabitlendi; 2/2 mutasyon.
+
 ### NNI dürüst varsayılan + kalibre kalıcı artış alarmı (A4.15)
 BMK v8 ön-kaydı (59586b0) başlangıcı 1/12 → 10/12; v0 K1.1 0,233 → 0,567, K2.1
 0,467 → 0,400 (ikisi de yine KALIR; açıklama v8 ilerleme notunda).

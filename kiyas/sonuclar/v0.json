@@ -82,7 +82,7 @@
       "olcutler": [
         {
           "kimlik": "K2.1",
-          "deger": 0.4,
+          "deger": 0.3,
           "yon": ">=",
           "esik": 0.9,
           "gecti": false,
@@ -122,8 +122,8 @@
         }
       ],
       "ek_olcumler": {
-        "cusum_ilk_alarm_gecikme_medyan_gun": 69,
-        "cusum_alarm_vermeyen_tohum": 1
+        "cusum_ilk_alarm_gecikme_medyan_gun": 85.0,
+        "cusum_alarm_vermeyen_tohum": 2
       }
     },
     {

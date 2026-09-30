@@ -144,6 +144,7 @@ def kirilma_cusum(gunler, donem=None, k=0.5, alfa=0.05):
     - Dönem: verilmezse otomatik — aylık sayımlarda ardışık-fark yayılım testi
       (ay_yayilim_p) p < alfa ise "ay" (aylar arası heterojenlik haftalık
       sapmaları ilişkili kılar), değilse "hafta".
+    - Sayımlar önce Anscombe dönüşümüyle (2√(x + 3/8)) çarpıklıktan arındırılır (A4.16).
     - Kendinden başlama (Hawkins): her dönem ÖNCEKİ dönemlerin ortalaması ve
       sapmasıyla standartlaştırılır, t → normal dönüşümüyle N(0,1)'e çevrilir;
       temel dönem varsayımı ve değişim sonrası veriyle kirlenmiş ortalama yoktur.
@@ -170,7 +171,9 @@ def kirilma_cusum(gunler, donem=None, k=0.5, alfa=0.05):
     isinma = KIRILMA_ISINMA[donem]
     if len(sayim) <= isinma + 1:
         return [], donem
-    z = _kendinden_z(sayim, isinma)
+    # A4.16: Anscombe dönüşümü 2√(x + 3/8) — Poisson sayımların sağa çarpıklığını
+    # giderir; t → normal dönüşümü normallik varsayar (dönüşümsüz yanlış alarm ~%8, BMK v9)
+    z = _kendinden_z([2 * math.sqrt(c + 3 / 8) for c in sayim], isinma)
     h = _cusum_esigi(len(z), k, alfa)
     ilk = min(gunler)
     s, alarmlar = 0.0, []

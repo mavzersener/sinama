@@ -206,9 +206,9 @@ ARAC_UYARILARI = {
             "alan verilmezse noktaların sınır kutusu (yansız genişletilmiş) çalışma "
             "alanı sayılır; gerçek alan farklıysa alan_km2 ve cevre_km verin; "
             "equirectangular yaklaşım şehir ölçeği içindir"],
-    "cusum": ["eşik seri düzeyinde kalibredir (bağımsız normal adımlarla: değişim "
-              "yokken seri boyunca en az bir alarm %5); haftalık Poisson sayımlarda "
-              "ölçülen oran daha yüksek (BMK v8: %14; tasarım tohumlarında ~%9)",
+    "cusum": ["eşik seri düzeyinde kalibredir: değişim yokken seri boyunca en az bir "
+              "alarm hedefi %5 (BMK v9, 600 değişimsiz seride ölçülen %2,5 — biraz "
+              "ihtiyatlı); aylar arası güçlü heterojenlikte dönem aya geçer, güç düşer",
               "alarm kalıcı artış İŞARETİDİR, kanıt değil; nedeni (bildirim, mevsim, "
               "gerçek artış) ayrıca sınanmalıdır",
               "alarm günü dönemin (hafta/ay) son günüdür; ilk dönemler (8 hafta / "

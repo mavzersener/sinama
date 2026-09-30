@@ -1,0 +1,171 @@
+{
+  "surum": "v3",
+  "kilit": {
+    "kiyas/v3/vakalar/v9_hukum.json": "f1bea705c30a3af6642e5b92c55980903d93b4c11f82c669a28979548075d7f7",
+    "kiyas/v3/uretec_v3.py": "bce709f30a86580e73720f2107106b2be63590504afbb23c3f5cc9b3d39e0233",
+    "kiyas/v3/kos_v3.py": "8fce57881e1d4d17075c2ffe30f4b4041d3057aaf9ceaf35f1510e341c699a2c",
+    "kiyas/v2/uretec_v2.py": "d124f16ed19356faec23c5b7460e77ae75ab4c6c91a12c1d6c4941b7d66860d4",
+    "kiyas/uretec.py": "9040a2ad53d48f154a1d15c96f2bfefc151509b3a437f3911167bf672e81524f",
+    "kiyas/kos.py": "1774027a0da650b068169ae7c7a1523bfaa9d9a6bcbd5e14698827694599b764"
+  },
+  "ortam": {
+    "python": "3.14.0",
+    "sistem": "Windows"
+  },
+  "vakalar": [
+    {
+      "kimlik": "V9",
+      "ad": "Kategorik hüküm: gerçeği bilinen vakalarda doğru hüküm, rakip ve tavan",
+      "tohum_adedi": 30,
+      "olcutler": [
+        {
+          "kimlik": "K9.1",
+          "deger": 0.0,
+          "yon": ">=",
+          "esik": 0.9,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir: rehberli_calisma aracı yok (hüküm YOK)"
+        },
+        {
+          "kimlik": "K9.2",
+          "deger": 0.0,
+          "yon": ">=",
+          "esik": 0.9,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir: araç yok"
+        },
+        {
+          "kimlik": "K9.3",
+          "deger": 0.0,
+          "yon": ">=",
+          "esik": 0.8,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir: araç yok"
+        },
+        {
+          "kimlik": "K9.4",
+          "deger": 0.0,
+          "yon": ">=",
+          "esik": 0.8,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir: araç yok"
+        },
+        {
+          "kimlik": "K9.5",
+          "deger": 0.0,
+          "yon": ">=",
+          "esik": 0.8,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir: araç yok"
+        },
+        {
+          "kimlik": "K9.6",
+          "deger": 0.0,
+          "yon": ">=",
+          "esik": 0.9,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir: araç yok"
+        },
+        {
+          "kimlik": "K9.7",
+          "deger": 0.0,
+          "yon": ">=",
+          "esik": 0.9,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir: araç yok"
+        },
+        {
+          "kimlik": "K9.8",
+          "deger": 0.0,
+          "yon": ">=",
+          "esik": 1.0,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir: araç yok"
+        },
+        {
+          "kimlik": "K9.9",
+          "deger": 0.0,
+          "yon": ">=",
+          "esik": 0.9,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir: araç yok"
+        },
+        {
+          "kimlik": "K9.10",
+          "deger": 0.0,
+          "yon": ">=",
+          "esik": 1.0,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir: araç yok"
+        },
+        {
+          "kimlik": "K9.11",
+          "deger": 0.0,
+          "yon": ">=",
+          "esik": 1.0,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir: araç yok"
+        },
+        {
+          "kimlik": "K9.12",
+          "deger": 0.0,
+          "yon": ">=",
+          "esik": 1.0,
+          "gecti": false,
+          "ongoru": "BAŞARISIZ beklenir: araç yok"
+        }
+      ],
+      "ek_olcumler": {
+        "kategori_dagilimi": {
+          "artefakt": {
+            "YOK": 30
+          },
+          "gercek_artis": {
+            "YOK": 30
+          },
+          "gercek_artis_kesifsel": {
+            "YOK": 30
+          },
+          "odakli": {
+            "YOK": 30
+          },
+          "csr": {
+            "YOK": 30
+          },
+          "seri": {
+            "YOK": 30
+          },
+          "seri_yok": {
+            "YOK": 30
+          }
+        },
+        "artefakt_en_guclu_rakip": {
+          "None": 30
+        },
+        "hata_ya_da_yok": {
+          "artefakt": {
+            "KullanimHatasi": 30
+          },
+          "gercek_artis": {
+            "KullanimHatasi": 30
+          },
+          "gercek_artis_kesifsel": {
+            "KullanimHatasi": 30
+          },
+          "odakli": {
+            "KullanimHatasi": 30
+          },
+          "csr": {
+            "KullanimHatasi": 30
+          },
+          "seri": {
+            "KullanimHatasi": 30
+          },
+          "seri_yok": {
+            "KullanimHatasi": 30
+          }
+        }
+      }
+    }
+  ]
+}

@@ -66,6 +66,8 @@ jobs:
         run: python kiyas/v1/kos_v1.py --dogrula
       - name: Kilit + yeniden ölçüm = kayıtlı sonuç (v2)
         run: python kiyas/v2/kos_v2.py --dogrula
+      - name: Kilit + yeniden ölçüm = kayıtlı sonuç (v3)
+        run: python kiyas/v3/kos_v3.py --dogrula
 
   cekirdek:
     name: çekirdek tam kapı (${{ matrix.os }}, py${{ matrix.python }})

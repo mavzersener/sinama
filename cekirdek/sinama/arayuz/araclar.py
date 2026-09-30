@@ -11,12 +11,14 @@ from ..cekirdek import (veri, istatistik, zaman, mekan, tekrar, ag, kume,
                         oneri)
 from ..cekirdek.hatalar import VeriHatasi, KullanimHatasi
 from ..surec import dongu, rapor
+from ..bilim import calisma
+from ..kalite.kapi import KapiRed
 from .ortak import (arac, sema, S_KAYIT, ALANLAR_PROP, ALAN, SEMA_IKI,
                     SEMA_GRUP, SEMA_REG, ARACLAR, kayitlari_getir,
                     noktalari_getir, quadratic_guard, kapsam_uret,
                     kayitlari_kisitla, sayisal_vektor, grup_vektorleri,
                     iki_vektor, _matris_getir, _reg_hazirla, arac_yurut,
-                    baglam, _log_dir)
+                    baglam, _log_dir, dispatch_gate, ARAC_GATE)
 from ..cekirdek.kaynak_butce import _sim_butce, _pozitif
 
 @arac("veri_ozeti", "Kayıt sayısı, alanlar ve eksik veri raporu", S_KAYIT)
@@ -1149,9 +1151,14 @@ def _(a):
     d.veri_bagla(prof)
     sonuc = {"faz": "VERI", "profil": prof}
     if a.get("analiz"):
-        uygunluk = veri.analiz_uygun_mu(prof, a["analiz"])
+        # Araç adı verilirse kapı, aracın yürütmede kullandığı analiz adıyla
+        # değerlendirilir (ör. sicak_nokta_gi → grid_hotspot); yoksa 11 araçta
+        # mekânsal/zarar kuralları atlanıp yanıltıcı "uygun" kaydediliyordu.
+        kapi_adi = ARAC_GATE[a["analiz"]][0] if a["analiz"] in ARAC_GATE else a["analiz"]
+        uygunluk = veri.analiz_uygun_mu(prof, kapi_adi)
         d.manifesto["gate_kararlari"].append({"faz": "VERI-kapi", **uygunluk})
         sonuc["uygunluk"] = uygunluk
+        sonuc["kapi_analizi"] = kapi_adi
         sonuc["sonraki"] = ("uygun ise dongu_analize_gec çağırın"
                             if uygunluk["uygun"] else
                             "gate reddetti; veriyi düzeltin veya başka analiz seçin")
@@ -1267,3 +1274,39 @@ def _(a):
         return dongu.yukle(a["oturum_id"], _log_dir()).manifesto
     return dongu.listele(_log_dir())
 
+
+
+
+@arac("rehberli_calisma", "Rehberli akış (Soru → Plan → Hüküm, ADR-002): soru türü "
+      "şablonundan hipotez seti (birincil + rakipler + H_bilinmeyen), doğrulayıcıda "
+      "veriden önce kilit, sınamalar ve kategorik hüküm (DESTEKLENDİ/KIRILGAN/"
+      "BELİRSİZ/ÇELİŞKİLİ/ÇEKİMSER) — olasılık yok, hüküm taslak",
+      sema({"soru_turu": {"type": "string", "enum": ["ARTIS", "YOGUNLASMA", "SERI"]},
+            "amac": {"type": "string", "enum": ["dogrulayici", "kesifsel", "operasyonel"]},
+            "onaylayan": {"type": "string",
+                          "description": "doğrulayıcı çalışmada kilidi alan kişi (zorunlu)"},
+            "kanal_alan": {"type": "string",
+                           "description": "ARTIS: bildirim kanalı/kaynak alanı (R-BILDIRIM)"},
+            "mo_alan": {"type": "string", "description": "SERI: MO metni alanı (zorunlu)"},
+            "soru": {"type": "string", "description": "soru metni (kayıt için)"}},
+           ["soru_turu", "amac"]))
+def _(a):
+    k = kayitlari_getir(a)
+    kaynak = {x: a[x] for x in ("satirlar", "csv_yolu") if x in a}
+    return calisma.rehberli(kaynak, k, a["soru_turu"], a["amac"], _log_dir(),
+                            lambda ad, arg: arac_yurut(ad, arg, sadece_analitik=True)[0],
+                            _rehberli_kapi, onaylayan=a.get("onaylayan"),
+                            kanal_alan=a.get("kanal_alan"), mo_alan=a.get("mo_alan"),
+                            soru=a.get("soru"))
+
+
+def _rehberli_kapi(ad, arg):
+    """Birincil sınama aracının kapı kararı — araç yürütmesiyle AYNI otorite
+    (dispatch_gate); ret istisnası karar sözlüğüne çevrilir."""
+    try:
+        karar = dispatch_gate(ad, dict(arg))
+    except KapiRed as e:
+        return {"uygun": False, "girdi_n": None, "sebepler": [str(e)]}
+    if karar is None:
+        return {"uygun": True, "girdi_n": None, "sebepler": [], "not": f"{ad} için kapı tanımlı değil"}
+    return {k: v for k, v in karar.items() if not k.startswith("_")}

@@ -190,6 +190,39 @@ class TestGateYeni(unittest.TestCase):
         self.assertTrue(any("lojistik" in s for s in karar["sebepler"]))
 
 
+class TestSifirVaryans(unittest.TestCase):
+    """A4.9 (aynı sınıf, 0/0'dan çıkarım): varyans sıfırken t/F = fark/1e-9
+    ile uyduruluyordu (sabit farkta t = 1,5·10¹⁰); Welch df 0/0 ile çöküyordu."""
+
+    def test_tek_orneklem(self):
+        from sinama.cekirdek import hipotez as h
+        r = h.t_test_tek([15] * 12, 0)
+        self.assertEqual((r["t"], r["p"]), (None, 0.0))
+        self.assertIn("varyansı sıfır", r["not"])
+        self.assertIsNone(h.t_test_tek([4] * 5, 4)["p"])      # fark da yok: tanımsız
+        self.assertIsNone(h.t_test_bagimli([5, 6], [5, 6])["p"])
+
+    def test_bagimsiz_iki_grup_sabit_welch_cokmez(self):
+        from sinama.cekirdek import hipotez as h
+        for welch in (True, False):
+            r = h.t_test_bagimsiz([3, 3, 3], [5, 5, 5], welch=welch)
+            self.assertEqual((r["t"], r["p"]), (None, 0.0))
+
+    def test_anova_grup_ici_varyans_sifir(self):
+        from sinama.cekirdek import hipotez as h
+        r = h.anova({"a": [1, 1, 1], "b": [2, 2, 2]})
+        self.assertEqual((r["F"], r["p"]), (None, 0.0))
+        self.assertIs(r["pairwise_bonferroni"][0]["anlamli"], True)
+        r = h.anova({"a": [1, 1], "b": [1, 1]})
+        self.assertEqual((r["F"], r["p"], r["eta_kare"]), (None, None, None))
+        self.assertIsNone(r["pairwise_bonferroni"][0]["anlamli"])
+
+    def test_normal_veride_degismedi(self):
+        from sinama.cekirdek import hipotez as h
+        self.assertAlmostEqual(h.anova({"a": [1, 2, 3], "b": [2, 3, 4]})["p"], 0.28786, places=5)
+        self.assertIsNotNone(h.t_test_tek([1, 2, 4], 0)["t"])
+
+
 class TestTPpf(unittest.TestCase):
     """A4.7: güven aralığı için ters t (tablo değerleri)."""
 

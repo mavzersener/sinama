@@ -2,6 +2,42 @@
 
 ## [Yayımlanmamış]
 
+### Bilim katmanı v1: hipotez seti, rakip açıklamalar, kategorik hüküm (A4.9, ADR-002)
+Program araç çıktısı üretiyor ama bilimsel hüküm üretmiyordu. BMK v3 (ön-kayıt
+b65c8a9, katman yazılmadan kilit) başlangıçta 0/12.
+- Yeni katman `sinama/bilim/` (yalnız standart kütüphane; katman sırası
+  cekirdek → kalite → surec → bilim → arayuz, AST testi genişletildi):
+  - `rak`: Rakip Açıklama Kataloğu v1 — R-RASTLANTI, R-BILDIRIM, R-MEVSIM,
+    R-PAYDA, R-VERI, R-ORTAK-MO, R-TESADUF-YAKINLIK; her birinin ayırt edici
+    sınaması ve "sonraki kanıt"ı.
+  - `sablon`: ARTIS / YOGUNLASMA / SERI; birincil + uygulanabilir rakipler +
+    zorunlu H_bilinmeyen.
+  - `sinamalar`: birincil (tutuldu/karşıt/belirsiz/sınanamadı) ve rakip
+    (dışlandı/destekleniyor/çözülmedi/uygulanamaz) durumları; R-BILDIRIM sürekli
+    kanal trendi, R-MEVSIM aynı ayların eşli t-testi, R-VERI alan geçerliliği ve
+    konum yığılması.
+  - `hukum` (`hukum-v1`): sıralı kurallar ÇEKİMSER → ÇELİŞKİLİ → BELİRSİZ →
+    KIRILGAN → DESTEKLENDİ; tavanlar (kilitsiz/keşifsel/operasyonel ve SERİ en çok
+    KIRILGAN); kural izi, en güçlü rakip, sonraki en iyi kanıt; olasılık yok;
+    saf işlev, kanıt paketi hash'lenir.
+  - `calisma.rehberli`: PPDAC oturumunda hipotez seti → (doğrulayıcıda veriden
+    önce kilit) → kapı → gerekçeli sınamalar → hüküm; hüküm taahhüdü zincire.
+- Yeni araç `rehberli_calisma` (süreç sınıfı, insan onayı); `AnalizDongusu.
+  bilimsel_kaydet`.
+- BMK v3 0/12 → 12/12; v0/v1/v2 değişmedi. Kalan hatalar ve mekanizmaları
+  `kiyas/v3/sonuclar/ilerleme.md`'de.
+Aynı sınıf denetimi:
+- `hipotez.t_test_tek` / `t_test_bagimsiz` / `anova`: varyans sıfırken istatistik
+  fark/1e-9 ile uyduruluyordu; Welch df 0/0 ile çöküyordu → istatistik None, p = 0
+  (fark varsa) ya da None, açıklayıcı not; ANOVA ikili karşılaştırmaları None'a
+  dayanıklı.
+- `dongu_veri`: araç adı verilince kapı, aracın yürütmede kullandığı analiz adıyla
+  (`ARAC_GATE`) değerlendirilir — 11 araçta mekânsal/zarar kuralı atlanıyordu.
+Testler: `test_bilim.py` (29; hüküm dalları, tavanlar, şablon değişmezleri,
+sınamalar, resmi yoldan uçtan uca: kilit veriden önce, zincir sağlam, paket
+yeniden hesaplanır), `test_hipotez` sıfır varyans (4). 14/14 mutasyon yakalandı
+(ilk turda etki sıralaması kaçtı → etki ile katalog sırasının çeliştiği test).
+
 ### Seri eşleştirme: kanıt hatları ve katman (A4.8, BİLİMSEL DOĞRULUK)
 BMK v2 (ön-kayıt 53a4d3a): Ružička ≥ 0,6 + ikili 2 km / 60 gün süzgeci davranışı
 tutarsız seriyi %3 bağlıyordu (her olayda 8 davranışın 5'i — gerçek serilerde

@@ -243,6 +243,11 @@ ARAC_UYARILARI = {
                        "coklu_test.duzeltmesiz_anlamli kanıt değildir, yalnız keşif "
                        "ipucudur"],
     # A4.2 — kişi/kayıt bağlantısı sınıfı: benzerlik ya da bağlantı KİMLİK değildir.
+    "rehberli_calisma": ["hüküm TASLAKTIR: SONUÇ'a insan onayıyla (dongu_sonuc) geçer",
+                         "kategoriler olasılık değildir; hüküm listelenen rakiplere "
+                         "göredir, modellenmemiş açıklamalar (H_bilinmeyen) açık kalır",
+                         "'çözülmedi' rakip, eksik veri ya da sınamadır — 'sonraki en "
+                         "iyi kanıt' neyin gerektiğini söyler"],
     "seri_eslestirme": ["dönen çiftler SERİ ADAYIDIR (inceleme hipotezi): MO "
                         "benzerliği aynı fail ya da kimlik anlamına gelmez; insan "
                         "incelemesi gerekir",
@@ -629,6 +634,9 @@ ARAC_POLITIKALARI.update(_politika("surec", (
     "provenans_ozet", "dongu_baslat", "dongu_veri", "dongu_analize_gec",
     "dongu_analiz", "dongu_sonuc", "dongu_izleme", "dongu_durum"),
     muafiyet="süreç yönetimi analiz hesabı değildir", veri_sinifi="oturum"))
+ARAC_POLITIKALARI.update(_politika("surec", ("rehberli_calisma",),
+    muafiyet="Rehberli akış: iç sınamalar kendi gate'leriyle ve kapı kararıyla koşar",
+    veri_sinifi="oturum", insan_onayi=True))
 ARAC_POLITIKALARI.update(_politika("raporlama", ("brifing_uret", "muhakeme_izi"),
     muafiyet="resmî çıktı oturum sağlığıyla doğrulanır", veri_sinifi="oturum"))
 

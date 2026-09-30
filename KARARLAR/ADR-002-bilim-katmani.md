@@ -2,6 +2,9 @@
 
 - **Durum:** Kabul edildi — 30.09.2026 (proje sahibinin onayı; dört nokta aynen)
 - **Kapsam:** A4'ün ikinci yarısı (ADR-001 aşama tablosu: "Bilim katmanı v1")
+- **Uygulama:** A4.9 — BMK v3 0/12 → 12/12 (ön-kayıt `b65c8a9`); §7'nin ayrıntılı
+  araçları (`calisma_baslat`, `hipotez_ekle`, `sinama_plani`, `kanit_bagla`,
+  `hukum`) henüz yok — v1'de yalnız Rehberli giriş noktası (`rehberli_calisma`)
 
 ## Bağlam
 

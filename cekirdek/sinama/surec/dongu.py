@@ -273,6 +273,13 @@ class AnalizDongusu:
         self._kaydet("sonucla", sonuc_turu)
         return {"faz": "SONUC", "sonuc": self.manifesto["sonuc"]}
 
+    def bilimsel_kaydet(self, olay, ozet, gerekce):
+        """Bilim katmanı olayı (ADR-002: hipotez seti, hüküm) — aynı kanıt
+        zincirine; gerekçe (hipotez + yorum) zorunlu, taahhüdü zincire girer."""
+        if gerekce is None:
+            raise DonguHatasi("bilimsel olay gerekçesiz kaydedilemez")
+        self._kaydet(olay, ozet, gerekce)
+
     def izleme_plani(self, metrik, esik, kontrol_tarihi, not_=None):
         """
         Döngüyü kapat: SONUÇ'tan sonra izleme planı → yeni döngünün

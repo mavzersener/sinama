@@ -143,14 +143,30 @@ def _s(degerler):
 
 # ---------------- P0: t-testleri ----------------
 
+SIFIR_VARYANS_NOTU = ("örneklem varyansı sıfır: test istatistiği tanımsız (±∞); fark "
+                      "varsa deterministiktir (p sınır değeri 0), yoksa sınama tanımsızdır")
+
+
+def _sifir_varyans_p(fark):
+    """Varyans sıfırken p: fark varsa sınır değeri 0, yoksa tanımsız (A4.9)."""
+    return 0.0 if fark != 0 else None
+
+
 def t_test_tek(ornek, mu0):
-    """Tek örneklem t-testi: ortalama = mu0 mı?"""
+    """Tek örneklem t-testi: ortalama = mu0 mı?
+
+    Varyans sıfırsa t uydurulmaz (önce t = fark / 1e-9 → 1,5·10¹⁰ dönüyordu):
+    t None, p = 0 (fark varsa) ya da None, açıklayıcı not.
+    """
     n = len(ornek)
     if n < 2:
         return None
     xbar, s = statistics.fmean(ornek), _s(ornek)
-    t = (xbar - mu0) / (s / math.sqrt(n) or 1e-9)
     df = n - 1
+    if s == 0:
+        return {"t": None, "df": df, "p": _sifir_varyans_p(xbar - mu0),
+                "ortalama": round(xbar, 3), "mu0": mu0, "not": SIFIR_VARYANS_NOTU}
+    t = (xbar - mu0) / (s / math.sqrt(n))
     return {"t": round(t, 4), "df": df, "p": _iki_yonlu_t_p(t, df),
             "ortalama": round(xbar, 3), "mu0": mu0}
 
@@ -165,6 +181,11 @@ def t_test_bagimsiz(x, y, welch=False):
         return None
     mx, my = statistics.fmean(x), statistics.fmean(y)
     vx, vy = _s(x) ** 2, _s(y) ** 2
+    if vx == 0 and vy == 0:
+        # iki grup da sabit: t uydurulmaz; Welch df'si burada 0/0 ile çöküyordu
+        return {"t": None, "df": None, "p": _sifir_varyans_p(mx - my),
+                "ortalama_x": round(mx, 3), "ortalama_y": round(my, 3),
+                "welch": welch, "not": SIFIR_VARYANS_NOTU}
     if welch:
         se = math.sqrt(vx / nx + vy / ny)
         df = (vx / nx + vy / ny) ** 2 / \
@@ -173,7 +194,7 @@ def t_test_bagimsiz(x, y, welch=False):
         sp2 = ((nx - 1) * vx + (ny - 1) * vy) / (nx + ny - 2)
         se = math.sqrt(sp2 * (1 / nx + 1 / ny))
         df = nx + ny - 2
-    t = (mx - my) / (se or 1e-9)
+    t = (mx - my) / se
     return {"t": round(t, 4), "df": round(df, 2), "p": _iki_yonlu_t_p(t, df),
             "ortalama_x": round(mx, 3), "ortalama_y": round(my, 3),
             "welch": welch}
@@ -355,20 +376,25 @@ def anova(gruplar, alfa=0.05):
     ssw = sum(sum((v - statistics.fmean(gruplar[a])) ** 2 for v in gruplar[a])
               for a in adlar)
     dfb, dfw = k - 1, N - k
-    f = (ssb / dfb) / (ssw / dfw or 1e-9)
-    p = 1 - f_cdf(f, dfb, dfw)
+    if ssw == 0:
+        # grup içi varyans sıfır: F tanımsız (önce ssw/1e-9 ile uyduruluyordu)
+        f, p = None, _sifir_varyans_p(ssb)
+    else:
+        f = (ssb / dfb) / (ssw / dfw)
+        p = 1 - f_cdf(f, dfb, dfw)
     # Bonferroni pairwise
     cifler = []
     m = k * (k - 1) // 2
     for i in range(k):
         for j in range(i + 1, k):
             tt = t_test_bagimsiz(gruplar[adlar[i]], gruplar[adlar[j]])
+            p_b = None if tt["p"] is None else min(1.0, tt["p"] * m)
             cifler.append({"gruplar": [adlar[i], adlar[j]],
-                           "t": tt["t"], "p_ham": tt["p"],
-                           "p_bonferroni": min(1.0, tt["p"] * m),
-                           "anlamli": tt["p"] * m < alfa})
-    return {"F": round(f, 4), "df": [dfb, dfw], "p": round(p, 5),
-            "eta_kare": round(ssb / (ssb + ssw or 1e-9), 4),
+                           "t": tt["t"], "p_ham": tt["p"], "p_bonferroni": p_b,
+                           "anlamli": None if p_b is None else p_b < alfa})
+    return {"F": None if f is None else round(f, 4), "df": [dfb, dfw],
+            "p": None if p is None else round(p, 5),
+            "eta_kare": round(ssb / (ssb + ssw), 4) if ssb + ssw > 0 else None,
             "pairwise_bonferroni": cifler,
             "not": "eşit varyans varsayar; şüphede Kruskal-Wallis kullanın"}
 

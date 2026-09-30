@@ -75,7 +75,8 @@ Kod kapıyı tutar; model kapının kararına göre uygun analizi seçip yorumla
     = YAZILAMADI bayrağıyla döner.
 24. Katman bağımlılık yönü tek yönlüdür (v6.7: YAPISALDIR): cekirdek
     hiçbir üst katmanı import etmez; kalite yalnız cekirdek'i, surec
-    cekirdek+kalite'yi import eder; arayuz hepsini kullanır. AST
+    cekirdek+kalite'yi, bilim (ADR-002) cekirdek+kalite+surec'i import
+    eder; arayuz hepsini kullanır. AST
     taramasıyla kanıtlanır. İstisna kümesi (veri.py'deki iki v6.1
     uyumluluk şimi: kalite.profil, kalite.kapi) SABİTTİR, büyüyemez.
     guvenlik primitifi cekirdek katmanındadır (v6.7'de taşındı;

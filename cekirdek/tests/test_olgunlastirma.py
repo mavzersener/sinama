@@ -135,7 +135,8 @@ def _hedef_yolu(dosya, dugum):
 IZINLI = {"cekirdek": {"cekirdek"},
           "kalite": {"cekirdek", "kalite"},
           "surec": {"cekirdek", "kalite", "surec"},
-          "arayuz": {"cekirdek", "kalite", "surec", "arayuz"}}
+          "bilim": {"cekirdek", "kalite", "surec", "bilim"},   # ADR-002
+          "arayuz": {"cekirdek", "kalite", "surec", "bilim", "arayuz"}}
 
 
 # Bilinen, daraltılmış istisnalar: veri.py'deki iki GERİYE UYUMLULUK

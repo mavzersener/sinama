@@ -57,6 +57,8 @@ kayıtlıdır ve her biri bir ders üretti:
 - v5: K11.3 öngörüsü yanlış (60 tohumluk keşif farkı gürültüydü).
 - A4.11: v1.2 keşif varyantı uygulamayla özdeş değildi → red; ders: keşif kodu = uygulama.
 - A4.15: K15.1 0,00–0,07 dedim, 0,14 (100 tohumluk keşif şanslıydı) → teşhis → v9.
+- A4.17 (keşif): "v1.3'ün aşırı iddiası φ kestirim belirsizliğinden" ve "ayrım noktası
+  yanından" hipotezlerinin ikisi de çürüdü; aday ön-kayda gitmedi.
 - v9: K16.3 başlangıçta "sınırda kalır" dedim, geçti; K16.7 aralığın hemen altında;
   v0 K2.1 etkisini hiç yazmamıştım (eksik öngörü).
 
@@ -79,7 +81,7 @@ kayıtlıdır ve her biri bir ders üretti:
 | v0 K2.4 | KALIR | ölçüt tasarım hatası (v1 K2b.1 ile değiştirildi) |
 | v1 K4.1 LISA gücü 0,467 | KALIR | FDR ile yöntem sınırı; sıcak nokta için Gi* |
 | v8 K15.4 / v9 K16.4 %30 artış [−15, +180] | KALIR | 24 aylık seride bilgi sınırı |
-| sınama v1.3: yeni kanal NB karmada aşırı iddia %8 | eşik içinde | nominal %5 üstü → v1.4 adayı (φ'nin sd'siyle t kritik değeri) |
+| sınama v1.3: karma senaryolarda aşırı iddia %6–7,5 | eşik içinde | nominal %5 üstü; v1.4 adayı (t kritik değer) ve ayrım noktası yanı hipotezi keşifte ÇÜRÜDÜ ([a417](../kiyas/kesif/a417_bulgular.md)) — ölçülmüş sınır |
 | ETKİ kontrolsüz ITS gücü 0,74 | belgeli | kontrolsüz hüküm zaten en çok KIRILGAN |
 | `bulanik_eslesme`, `ag_analizi` | ÖLÇÜLMEDİ | insan onayı + uyarı var; BMK vakası yok |
 | Oturumlar `SINAMA_LOG_DIR` yoksa çalışma dizinine | açık | A5 (ADR-003 taslağı md. 3) |
@@ -94,6 +96,6 @@ Kapanış ve A5'in açılması proje sahibinin kararıdır.
 
 ## 7. Push bekleyen commit'ler
 
-`origin/main` = `1715910`. Yerel `main` bundan sonra 18 commit ileride (`430fcd0` …
+`origin/main` = `1715910`. Yerel `main` bundan sonra 19 commit ileride (`430fcd0` …
 bu dosyanın commit'i); `deneme/v1.2-havuz-phi` (d3ef040) yalnız D: yedeğinde. Hiçbiri
 itilmedi (AGENTS kural 8: push proje sahibinin açık onayıyla).

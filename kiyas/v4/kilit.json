@@ -1,0 +1,14 @@
+{
+  "surum": "v4",
+  "ilke": "Bu dosyalar ilk v4 ölçümünden ve v1.1 değişikliğinden ÖNCE kilitlendi; değişirlerse koşucu ölçmeyi reddeder. v0/v2/v3 bağımlılıkları dahildir.",
+  "dosyalar": {
+    "kiyas/v4/vakalar/v10_hukum_saglamligi.json": "456b617af145739aa125438a10b5dfe84f403388a6c20a81c30ebb07a8981ffb",
+    "kiyas/v4/uretec_v4.py": "2b6cf2113550afed08a72179b915eeec6128bd6503229af56c2013b98d2f4ee7",
+    "kiyas/v4/kos_v4.py": "f185eea9dfefdaf58838f1c4389a6d3a642a58a76a9c8e6ae97aafde8645a7b1",
+    "kiyas/v3/kos_v3.py": "8fce57881e1d4d17075c2ffe30f4b4041d3057aaf9ceaf35f1510e341c699a2c",
+    "kiyas/v3/uretec_v3.py": "bce709f30a86580e73720f2107106b2be63590504afbb23c3f5cc9b3d39e0233",
+    "kiyas/v2/uretec_v2.py": "d124f16ed19356faec23c5b7460e77ae75ab4c6c91a12c1d6c4941b7d66860d4",
+    "kiyas/uretec.py": "9040a2ad53d48f154a1d15c96f2bfefc151509b3a437f3911167bf672e81524f",
+    "kiyas/kos.py": "1774027a0da650b068169ae7c7a1523bfaa9d9a6bcbd5e14698827694599b764"
+  }
+}

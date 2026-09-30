@@ -43,6 +43,10 @@ Programın bilimsel gücünü **ölçmek** için gerçeği önceden bilinen sent
   keşifsel ve SERİ tavanları, insan onayı, H_bilinmeyen, sayısal olasılık yokluğu,
   belirlenimcilik. Bilim katmanı UYGULANMADAN önce kilitlendi; çıktı sözleşmesi vaka
   dosyasındadır.
+- **v4** (`v4/`): V10 hüküm sağlamlığı — rakibi yalnız bir sınamanın anlamlılığıyla
+  dışlamanın aşırı iddiası: saf / kısmi / karma bildirim değişikliği, küçük yeni kanallı
+  ve kanalsız gerçek artış; rakip kaydında etki büyüklüğü. v3 tohumları hata ayıklamada
+  incelendiği için v1.1 iyileşmesi yeni tohumlarla (401–430) burada sınanır.
 
 ## Düzeyler
 
@@ -71,4 +75,8 @@ PYTHONUTF8=1 python kiyas/v2/kos_v2.py --dogrula
 
 ```bash
 PYTHONUTF8=1 python kiyas/v3/kos_v3.py --dogrula
+```
+
+```bash
+PYTHONUTF8=1 python kiyas/v4/kos_v4.py --dogrula
 ```

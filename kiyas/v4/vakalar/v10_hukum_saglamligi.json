@@ -1,0 +1,69 @@
+{
+  "kimlik": "V10",
+  "ad": "Hüküm sağlamlığı: rakip dışlamada anlamlılık yetmez — kısmi ve karma bildirim değişikliği",
+  "surum": "v4",
+  "dayanak": "BMK v3 (b65c8a9) ölçümünde artefakt tohum 314: sürekli kanalın trend testi sahte anlamlı → R-BILDIRIM dışlandı → yanlış DESTEKLENDİ. v3 tohumları hata ayıklamada incelendiği için iyileşme v3'te iddia EDİLMEZ; bu yeni ön-kayıt (tohum 401–430) onu sınar.",
+  "arac": "rehberli_calisma",
+  "cikti_sozlesmesi": {
+    "girdi": "v3 ile aynı (kiyas/v3/vakalar/v9_hukum.json): satirlar, soru_turu=ARTIS, amac, onaylayan, kanal_alan",
+    "okunan_alanlar": "v3'ün alanları + sonuc.hukum.rakipler[] içinde kod = R-BILDIRIM kaydının 'olcum' sözlüğündeki 'surekli_artis_payi' (sayı): toplam kayıt artışının sürekli kanallardaki payı — etki büyüklüğü",
+    "hata": "araç yoksa/hata/sözleşme dışı → hüküm YOK; YOK hiçbir ölçütte doğru değil"
+  },
+  "uretec": {
+    "islev": "uretec_v4.v10_kanallar",
+    "ortak_parametreler": {"baslangic": "2024-01-01", "ay_sayisi": 24, "kesinti_ayi": 13,
+                           "karakol_lambda": 40, "cevrimici_lambda": 12},
+    "aciklama": "iki kanal; karakol baştan var ve kesinti ayından sonra karakol_carpani ile çarpılır; çevrimiçi ya kesinti ayında başlar (λ = cevrimici_lambda) ya da baştan vardır ve cevrimici_carpani ile çarpılır. λ = 0 kanalı için çekiliş yapılmaz (saf_artefakt v0 v2_bildirim ile, gercek_artis v3 v9_gercek_artis ile kimlikler dışında birebir aynı veri)."
+  },
+  "senaryolar": {
+    "saf_artefakt": {"aciklama": "v0 V2 / v3 artefakt: karakol sabit, çevrimiçi 13. ayda başlar",
+                     "soru_turu": "ARTIS", "amac": "dogrulayici", "argumanlar": {"kanal_alan": "kanal"},
+                     "degisen": {"karakol_carpani": 1.0, "cevrimici": "kesinti"}},
+    "kismi_artefakt": {"aciklama": "karakolda GERÇEK küçük artış (×1,1 → +4/ay) + çevrimiçi 13. ayda başlar (+12/ay): kayıt artışının ~%75'i yeni kanaldan",
+                       "soru_turu": "ARTIS", "amac": "dogrulayici", "argumanlar": {"kanal_alan": "kanal"},
+                       "degisen": {"karakol_carpani": 1.1, "cevrimici": "kesinti"}},
+    "karma": {"aciklama": "karakolda gerçek artış (×1,3 → +12/ay) + çevrimiçi 13. ayda başlar (+12/ay): artışın yarısı gerçek, yarısı kanal",
+              "soru_turu": "ARTIS", "amac": "dogrulayici", "argumanlar": {"kanal_alan": "kanal"},
+              "degisen": {"karakol_carpani": 1.3, "cevrimici": "kesinti"}},
+    "gercek_artis_kucuk_kanal": {"aciklama": "karakolda gerçek artış (×1,3 → +12/ay) + küçük yeni kanal (13. ayda başlar, +2/ay): artışın ~%86'sı gerçek",
+                                 "soru_turu": "ARTIS", "amac": "dogrulayici", "argumanlar": {"kanal_alan": "kanal"},
+                                 "degisen": {"karakol_carpani": 1.3, "cevrimici": "kesinti", "cevrimici_lambda": 2}},
+    "gercek_artis": {"aciklama": "v3 gerçek artış: iki kanal baştan, ikisi de ×1,3",
+                     "soru_turu": "ARTIS", "amac": "dogrulayici", "argumanlar": {"kanal_alan": "kanal"},
+                     "degisen": {"karakol_carpani": 1.3, "cevrimici": "bastan", "cevrimici_carpani": 1.3}}
+  },
+  "tohumlar": {"bas": 401, "adet": 30},
+  "tohum_ayrimi": "v0 1–30, v1 101–130, v2 201–230, v3 301–330, v4 401–430; tasarım keşfi yalnız 900+.",
+  "dogru_hukum": {
+    "saf_artefakt": "DESTEKLENMEZ (BELİRSİZ): kayıt artışının tamamı yeni kanaldan",
+    "kismi_artefakt": "DESTEKLENMEZ: artışın çoğu yeni kanaldan; en güçlü rakip R-BILDIRIM. DESTEKLENDİ aşırı iddiadır",
+    "karma": "DESTEKLENDİ DEĞİL: artışın önemli bir kısmı (yarısı) kanal değişikliğinden; 'kayıt artışı gerçek suç artışını yansıtır' tam destek aşırı iddiadır (KIRILGAN/BELİRSİZ kabul)",
+    "gercek_artis_kucuk_kanal": "DESTEKLENDİ: artışın büyük çoğunluğu sürekli kanalda — küçük yeni kanal tam desteği engellememeli (aşırı ihtiyat da hata)",
+    "gercek_artis": "DESTEKLENDİ"
+  },
+  "cekirdek_olcutleri": [
+    {"kimlik": "K10.1", "senaryo": "saf_artefakt", "aciklama": "Hüküm var ve DESTEKLENDİ değil (KIRILGAN/BELİRSİZ/ÇELİŞKİLİ) oranı", "yon": ">=", "esik": 0.90},
+    {"kimlik": "K10.2", "senaryo": "kismi_artefakt", "aciklama": "Hüküm var ve DESTEKLENDİ değil oranı", "yon": ">=", "esik": 0.90},
+    {"kimlik": "K10.3", "senaryo": "kismi_artefakt", "aciklama": "Birincil öngörüsü tutulan tohumlarda en güçlü rakip = R-BILDIRIM oranı (yoksa 0)", "yon": ">=", "esik": 0.90},
+    {"kimlik": "K10.4", "senaryo": "karma", "aciklama": "Hüküm var ve DESTEKLENDİ değil oranı", "yon": ">=", "esik": 0.90},
+    {"kimlik": "K10.5", "senaryo": "gercek_artis_kucuk_kanal", "aciklama": "DESTEKLENDİ oranı", "yon": ">=", "esik": 0.80},
+    {"kimlik": "K10.6", "senaryo": "gercek_artis", "aciklama": "DESTEKLENDİ oranı", "yon": ">=", "esik": 0.80},
+    {"kimlik": "K10.7", "senaryo": "yeni kanallı dört senaryo", "aciklama": "Birincil öngörüsü tutulan koşularda R-BILDIRIM kaydı sayısal etki büyüklüğü (olcum.surekli_artis_payi) taşıyor oranı (tutulan koşu yoksa 0)", "yon": ">=", "esik": 1.0}
+  ],
+  "esik_gerekceleri": {
+    "0,90 (aşırı iddia yok)": "aile yanlış alarm standardı (≤ %10)",
+    "0,80 (gerçek artışta destek)": "güç standardı (v3 K9.3 ile aynı)",
+    "1,0 (etki büyüklüğü raporu)": "sözleşme ölçütü: rakibin hangi ölçüde açıkladığı sayıyla görünür olmalı"
+  },
+  "ongoruler": {
+    "K10.1": "GEÇER beklenir (hesap ≈ 0,95): v1 R-BILDIRIM'i sürekli kanal trendinin anlamlılığıyla dışlıyor; saf artefaktta sahte anlamlılık ~%5 (v3'te 1/30)",
+    "K10.2": "BAŞARISIZ beklenir (hesap ≈ 0,70–0,80): karakoldaki +4/ay adımda trend testinin gücü ~%26 → o tohumlarda R-BILDIRIM dışlanır → DESTEKLENDİ",
+    "K10.3": "BAŞARISIZ beklenir (hesap ≈ 0,70–0,80): aynı neden",
+    "K10.4": "BAŞARISIZ beklenir (hesap ≈ 0,03–0,10): karakoldaki +12/ay adım ~%97 anlamlı → R-BILDIRIM dışlanır → DESTEKLENDİ",
+    "K10.5": "GEÇER beklenir (hesap ≈ 0,90–0,97)",
+    "K10.6": "GEÇER beklenir (v3 K9.3 = 1,00)",
+    "K10.7": "BAŞARISIZ beklenir: v1 rakip kaydında sayısal etki büyüklüğü yok (0)"
+  },
+  "uygulama_ongorusu": "Ölçüt DEĞİL, zaman damgası için. v1.1 (R-BILDIRIM = artış ayrıştırması: sürekli kanallardaki oran artışı Δc ile yeni kanalın katkısı Δn, Poisson; Δc − Δn tek yönlü z; > +1,645 dışlandı, < −1,645 destekleniyor, arası çözülmedi; ayrım noktası yeni kanal kayıtlarının %5'lik tarih yüzdeliği): K10.1 ≈ 1,0; K10.2 ≈ 1,0 (Δc − Δn ≈ −8/ay, z ≈ −2,8 → çoğunlukla destekleniyor, kalanı çözülmedi; ikisi de DESTEKLENDİ değil); K10.3 ≈ 1,0; K10.4 ≈ 0,95 (gerçek Δc − Δn ≈ 0 → ~%5 dışlandı); K10.5 ≈ 0,90–0,97 (Δc − Δn ≈ +10/ay, z ≈ 3,6); K10.6 ≈ 1,0 (yeni kanal yok: bileşim değişmedi); K10.7 = 1.",
+  "ek_olcumler": ["senaryo başına kategori dağılımı", "senaryo başına R-BILDIRIM durum dağılımı", "hata/YOK sayısı"]
+}

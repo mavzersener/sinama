@@ -1,0 +1,60 @@
+{
+  "kimlik": "V16",
+  "ad": "CUSUM kalibrasyonu: Poisson sayımlarda seri düzeyinde yanlış alarm nominal düzeyde mi",
+  "surum": "v9",
+  "dayanak": "BMK v8 K15.1 KALDI (0,14; öngörü 0,00–0,07). Ölçüm sonrası teşhis (tasarım tohumları 1000–1399): A4.15'in kendinden başlayan CUSUM'u değişimsiz Poisson seride %8,3 (seyrekte %10,5) alarm veriyor — nominal %5'in üstünde; ay uzunluğu ve dönem kapısı dışlandı. Aday neden: haftalık Poisson sayımların sağa çarpıklığı (t → normal dönüşümü normalliği varsayar). v8'in ölçüm tohumları incelendiği için iyileşme YENİ tohumlarla burada sınanır.",
+  "arac": "cusum",
+  "cikti_sozlesmesi": {
+    "girdi": "satirlar (tarih); diğer argümanlar VARSAYILAN",
+    "okunan_alanlar": "sonuc: alarm listesi; ilk alarmın 'gun' alanı",
+    "hata": "araç hata verirse o tohumda alarm YOK sayılır"
+  },
+  "uretec": {
+    "islev": "uretec_v8.v15_seri (v8'den, değişmeden)",
+    "ortak_parametreler": {"baslangic": "2024-01-01", "ay_sayisi": 24, "kesinti_ayi": 13, "lambda": 40,
+                           "carpan_sonra": 1.0},
+    "aciklama": "v8 V15 ile aynı senaryolar; tohumlar yeni ve 200'er (kalibrasyon için daha dar örnekleme payı)"
+  },
+  "senaryolar": {
+    "sabit": {"aciklama": "24 ay değişim yok (λ = 40/ay)", "tohumlar": {"bas": 10201, "adet": 200}, "degisen": {}},
+    "sabit_nb": {"aciklama": "değişim yok; aylar arası aşırı yayılım (k = 8)", "tohumlar": {"bas": 10201, "adet": 200},
+                 "degisen": {"yayilim_k": 8}},
+    "sabit_dusuk": {"aciklama": "değişim yok; seyrek seri (λ = 12/ay)", "tohumlar": {"bas": 10201, "adet": 200},
+                    "degisen": {"lambda": 12}},
+    "artis30": {"aciklama": "13. aydan itibaren kalıcı %30 artış", "tohumlar": {"bas": 10201, "adet": 200},
+                "degisen": {"carpan_sonra": 1.3}},
+    "artis50": {"aciklama": "13. aydan itibaren kalıcı %50 artış", "tohumlar": {"bas": 10201, "adet": 200},
+                "degisen": {"carpan_sonra": 1.5}},
+    "artis30_nb": {"aciklama": "kalıcı %30 artış; aylar arası aşırı yayılım (k = 8)", "tohumlar": {"bas": 10201, "adet": 200},
+                   "degisen": {"carpan_sonra": 1.3, "yayilim_k": 8}}
+  },
+  "tohum_ayrimi": "v8 10101–10200; v9 10201–10400. Tasarım keşfi 900–9999 (README kural 6).",
+  "dogru_hukum": {
+    "sabit": "alarm YOK", "sabit_nb": "alarm YOK", "sabit_dusuk": "alarm YOK",
+    "artis30": "kesintiden sonra alarm; önce alarm YOK", "artis50": "kesintiden sonra ve daha hızlı alarm",
+    "artis30_nb": "kesintiden önce alarm YOK"
+  },
+  "cekirdek_olcutleri": [
+    {"kimlik": "K16.1", "senaryo": "sabit", "aciklama": "En az bir alarm veren tohum oranı", "yon": "<=", "esik": 0.10},
+    {"kimlik": "K16.2", "senaryo": "sabit_nb", "aciklama": "En az bir alarm veren tohum oranı", "yon": "<=", "esik": 0.10},
+    {"kimlik": "K16.3", "senaryo": "sabit_dusuk", "aciklama": "En az bir alarm veren tohum oranı", "yon": "<=", "esik": 0.10},
+    {"kimlik": "K16.4", "senaryo": "artis30", "aciklama": "İlk alarmı kesintiye göre [−15, +180] gün aralığında olan tohum oranı", "yon": ">=", "esik": 0.80},
+    {"kimlik": "K16.5", "senaryo": "artis50", "aciklama": "İlk alarmı kesintiye göre [−15, +90] gün aralığında olan tohum oranı", "yon": ">=", "esik": 0.80},
+    {"kimlik": "K16.6", "senaryo": "artis30_nb", "aciklama": "Kesintiden 15 günden daha önce alarm VERMEYEN tohum oranı (alarm yok dahil)", "yon": ">=", "esik": 0.90},
+    {"kimlik": "K16.7", "senaryo": "sabit + sabit_nb + sabit_dusuk", "aciklama": "Kalibrasyon: üç değişimsiz senaryonun 600 serisinde en az bir alarm oranı (nominal %5 + örnekleme payı ≈ 2,2 sd)", "yon": "<=", "esik": 0.07}
+  ],
+  "uygulama_plani": "kirilma_cusum: dönem sayımlarına standartlaştırmadan önce Anscombe dönüşümü y = 2√(x + 3/8) (Poisson için varyans dengeleyici, çarpıklığı giderir); geri kalan her şey (kendinden başlama, t → normal, Monte Carlo eşiği, dönem kapısı) aynı. Keşifte (aynı gövde çekirdek dışında; değişimsiz 1000–1399, artış 1400–1599): sabit 0,042, NB 0,042, seyrek 0,040; artis30 [−15,+180] 0,735; artis50 [−15,+90] 0,88; artis30_nb önce 0,005.",
+  "uygulama_ongorusu": {"K16.1": "0,02–0,07", "K16.2": "0,02–0,07", "K16.3": "0,02–0,07",
+                        "K16.4": "0,66–0,80 (KALIR beklenir: bilgi sınırı)", "K16.5": "0,82–0,94",
+                        "K16.6": "0,97–1,00", "K16.7": "0,03–0,06",
+                        "v8": "K15.1 ölçüm tohumları incelendi — v8'deki değişim iyileşme kanıtı sayılmaz, yalnız kaydedilir"},
+  "ongoruler": {
+    "K16.1": "GEÇER beklenir (başlangıç, sınırda): tasarım tohumlarında 0,083",
+    "K16.2": "GEÇER beklenir (başlangıç): tasarım tohumlarında 0,068 — uygulamada KORUNMALI",
+    "K16.3": "BAŞARISIZ beklenir (başlangıç, sınırda): tasarım tohumlarında 0,105",
+    "K16.4": "BAŞARISIZ beklenir (başlangıç): tasarım tohumlarında 0,755",
+    "K16.5": "GEÇER beklenir (başlangıç): tasarım tohumlarında 0,91 — uygulamada KORUNMALI",
+    "K16.6": "GEÇER beklenir (başlangıç): tasarım tohumlarında 0,985 — uygulamada KORUNMALI",
+    "K16.7": "BAŞARISIZ beklenir (başlangıç): tasarım tohumlarında 0,085 (üç senaryo ortalaması)"
+  }
+}

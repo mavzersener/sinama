@@ -4,18 +4,18 @@ Aynı ön-kayıtlı kıyas (v1, eşikler değişmedi), değişen çekirdek. Her 
 çekirdek değişikliğinden sonraki tam ölçümdür; sayılar o commit'teki `v1.json`'dadır.
 Kalın: önceki sütuna göre değişen.
 
-| Ölçüt | Eşik | İlk ölçüm `169e7e4` | A4.5 LISA + anomali FDR | A4.6 yükselen sıcak nokta |
-|---|---|---|---|---|
-| K2b.1 kanal sayımı birebir | = 1 | 1,000 | 1,000 | 1,000 |
-| K4.1 LISA gücü | ≥ 0,90 | 1,000 | **0,467** | 0,467 |
-| K4.2 LISA yanlış alarmı | ≤ 0,10 | 0,800 | **0,033** | 0,033 |
-| K5.1 yükselen sıcak nokta gücü | ≥ 0,90 | 0,700 | 0,700 | **0,900** |
-| K5.2 yükselen sıcak nokta yanlış alarmı | ≤ 0,10 | 0,900 | 0,900 | **0,000** |
-| K6.1 anomali gücü | ≥ 0,90 | 0,967 | 0,967 | 0,967 |
-| K6.2 anomali yanlış alarmı | ≤ 0,10 | 0,400 | **0,067** | 0,067 |
-| K7.1 yayılmış seri geri çağırma | ≥ 0,80 | 0,253 | 0,253 | 0,253 |
-| K7.2 bağımsızlardan yanlış çift | ≤ 1 | 0,167 | 0,167 | 0,167 |
-| **Geçen** | | **4/9** | **5/9** | **7/9** |
+| Ölçüt | Eşik | İlk ölçüm `169e7e4` | A4.5 LISA + anomali FDR | A4.6 yükselen sıcak nokta | A4.8 seri katmanı |
+|---|---|---|---|---|---|
+| K2b.1 kanal sayımı birebir | = 1 | 1,000 | 1,000 | 1,000 | 1,000 |
+| K4.1 LISA gücü | ≥ 0,90 | 1,000 | **0,467** | 0,467 | 0,467 |
+| K4.2 LISA yanlış alarmı | ≤ 0,10 | 0,800 | **0,033** | 0,033 | 0,033 |
+| K5.1 yükselen sıcak nokta gücü | ≥ 0,90 | 0,700 | 0,700 | **0,900** | 0,900 |
+| K5.2 yükselen sıcak nokta yanlış alarmı | ≤ 0,10 | 0,900 | 0,900 | **0,000** | 0,000 |
+| K6.1 anomali gücü | ≥ 0,90 | 0,967 | 0,967 | 0,967 | 0,967 |
+| K6.2 anomali yanlış alarmı | ≤ 0,10 | 0,400 | **0,067** | 0,067 | 0,067 |
+| K7.1 yayılmış seri geri çağırma | ≥ 0,80 | 0,253 | 0,253 | 0,253 | **1,000** |
+| K7.2 bağımsızlardan yanlış çift | ≤ 1 | 0,167 | 0,167 | 0,167 | **0,033** |
+| **Geçen** | | **4/9** | **5/9** | **7/9** | **8/9** |
 
 ## Notlar
 
@@ -46,3 +46,8 @@ Kalın: önceki sütuna göre değişen.
   Eşitlik kusuru ve sınıflandırma boşluğu testle kapandı. **Belgelenmiş sınır:**
   aynı dönemde birkaç yüksek bölge varsa NB modeli orta yüksekliği maskeler
   (testte kilitli; değişirse bilinçli karar gerekir).
+- **A4.8 — seri katmanı:** ikili 2 km / 60 gün süzgeci yerine kanıt hatları ve
+  katman (ayrıntı `kiyas/v2/sonuclar/ilerleme.md`). Yayılmış seride geri çağırma
+  %25 → %100 (çiftlerin çoğu "zayıf" katmanda, gerekçesiyle); bağımsızlardan yanlış
+  çift 0,17 → 0,03. Öngörüler (≈ 1,0 ve ≈ 0) doğru. Kalan tek başarısız ölçüt K4.1
+  (kabul edilmiş yöntem sınırı).

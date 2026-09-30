@@ -141,7 +141,7 @@
         },
         {
           "kimlik": "K3.2",
-          "deger": 0.9702,
+          "deger": 0.9677,
           "yon": ">=",
           "esik": 0.9,
           "gecti": true,
@@ -165,7 +165,7 @@
         }
       ],
       "ek_olcumler": {
-        "ortalama_isaretlenen_cift": 10.3333,
+        "ortalama_isaretlenen_cift": 10.3667,
         "ortalama_ortak_mo_yanlis_cift": 0.3333
       }
     }

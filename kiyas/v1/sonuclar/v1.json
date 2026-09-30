@@ -122,15 +122,15 @@
       "olcutler": [
         {
           "kimlik": "K7.1",
-          "deger": 0.2533,
+          "deger": 1.0,
           "yon": ">=",
           "esik": 0.8,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir: A4.2'nin varsayılan uzay-zaman süzgeci (2 km / 60 gün) yayılmış serinin çiftlerinin çoğunu eler — kesinlik uğruna ödenen geri çağırma bedeli (ilerleme.md genelleme notu)"
         },
         {
           "kimlik": "K7.2",
-          "deger": 0.1667,
+          "deger": 0.0333,
           "yon": "<=",
           "esik": 1.0,
           "gecti": true,
@@ -138,7 +138,7 @@
         }
       ],
       "ek_olcumler": {
-        "ortalama_isaretlenen_cift": 2.7
+        "ortalama_isaretlenen_cift": 10.0333
       }
     }
   ]

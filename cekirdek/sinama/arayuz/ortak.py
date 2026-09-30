@@ -246,8 +246,13 @@ ARAC_UYARILARI = {
     "seri_eslestirme": ["dönen çiftler SERİ ADAYIDIR (inceleme hipotezi): MO "
                         "benzerliği aynı fail ya da kimlik anlamına gelmez; insan "
                         "incelemesi gerekir",
-                        "benzerlik bu veri setindeki MO yaygınlığıyla ağırlıklıdır; "
-                        "küçük veri setinde ağırlıklar kararsızdır"],
+                        "katman: 'güçlü' = ayırt edici MO paylaşımı (FDR) ve uzay-zaman "
+                        "penceresi örtüşür; 'zayıf' = yalnız MO (pencere dışı ya da "
+                        "konum/tarih yok) — kanıt hatları her çiftte 'kanit' alanında",
+                        "ayırt edicilik bu veri setindeki MO yaygınlığıyla ölçülür ve "
+                        "terimler bağımsız sayılır: hep birlikte geçen kalıp ifadeler "
+                        "olduğundan ayırt edici görünebilir; küçük veri setinde "
+                        "ağırlıklar kararsızdır"],
     "bulanik_eslesme": ["yazım benzerliği kimlik doğrulaması değildir; eşleşen "
                         "kayıtların aynı kişi olduğu insan incelemesiyle "
                         "doğrulanmalıdır"],

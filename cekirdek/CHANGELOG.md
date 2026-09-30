@@ -2,6 +2,35 @@
 
 ## [Yayımlanmamış]
 
+### Seri eşleştirme: kanıt hatları ve katman (A4.8, BİLİMSEL DOĞRULUK)
+BMK v2 (ön-kayıt 53a4d3a): Ružička ≥ 0,6 + ikili 2 km / 60 gün süzgeci davranışı
+tutarsız seriyi %3 bağlıyordu (her olayda 8 davranışın 5'i — gerçek serilerde
+olağan), yayılmış seriyi %20; seri yokken tohumların %20'sinde aday veriyordu
+(özdeş yaygın tanım Ružička = 1); katman/kanıt yoktu.
+- `tekrar.seri_eslestirme`: MO kanıtı ayırt edici paylaşım TESTİ — I = Σ idf
+  (nats), p = P(rastgele kayıt ≥ I paylaşır | terimler bağımsız, df/N), alt küme
+  çokluğu dahil, iki yönün büyüğü; `_kuyruk_olasiligi` dal-sınır kesin hesap,
+  bütçe aşılırsa Chernoff üst sınırı (ihtiyatlı, `kesin_hesap: false`).
+- Çoklu test: Benjamini–Hochberg iki ailede — uzay-zaman penceresi (MO'dan
+  bağımsız seçilen aile: geçerli bağımsız süzgeçleme) ve tüm çiftler.
+- Katman: güçlü = MO anlamlı + pencere içi; zayıf = MO tüm çiftlerde anlamlı,
+  pencere dışı/bilinmiyor (A4.2'de ATILIYORDU). Her çiftte `katman`, `kanit`
+  {mo: paylaşılan terimler, bilgi, p, q_tum, q_pencere; uzay; zaman},
+  `paylasilan_bilgi`; `uzay_zaman` artık yakin/uzak/bilinmiyor.
+- `benzerlik_esik` varsayılanı 0,6 → yok (isteğe bağlı ek Ružička süzgeci);
+  yeni `q_esik` (0,05). Araç şeması ve uyarısı (katman anlamı, bağımsız terim
+  varsayımı / kalıp ifade sınırı) güncellendi.
+- BMK: v2 6/10 → 10/10 (K8.4 0,20 → 1,00; K8.7 0,03 → 0,83; K8.9 0,20 → 0;
+  K8.10 0 → 1); v1 7/9 → 8/9 (K7.1 0,25 → 1,00); v0 12/15 kaldı (K3.2 0,970 →
+  0,968). Bedel: sıkı varyantta güçlü kesinlik 0,980 → 0,974 (BH uyarlanabilirliği);
+  2 davranış paylaşan tutarsız çiftler bağlanamaz. Öngörülerin hepsi doğrulandı;
+  tasarım keşfi yalnız 901–930 tohumlarıyla (`kiyas/kesif/a48_seri_tasarim.py`).
+Testler: pencere dışı ayırt edici MO → zayıf (eski "aday olmaz" testi bu kasıtlı
+değişikliği kodluyordu), aynı MO kanıtı yalnız pencereyle örtüşünce aday (iki aile),
+tutarsız seri, isteğe bağlı eşik, iki yönün ihtiyatlısı (elle hesap), çıktı
+sözleşmesi, q_esik doğrulaması, kuyruk olasılığı (kesin değer, kayan nokta sırası,
+Chernoff ihtiyatlılığı). 8 mutasyonun 8'i yakalandı.
+
 ### Trend anlamlılığı + kesinti analizi (ITS) aracı (A4.7, BİLİMSEL DOĞRULUK)
 BMK v0: `trend` anlamlılık sınamadan yön söylüyordu — oranı sabit kanalda
 30/30 tohumda "artan"/"azalan" (K2.3); ITS çekirdekte vardı ama araç değildi

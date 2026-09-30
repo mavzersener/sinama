@@ -4,24 +4,24 @@ Aynı ön-kayıtlı kıyas (v0, eşikler değişmedi), değişen çekirdek. Her 
 çekirdek değişikliğinden sonra yapılan tam ölçümdür; sayılar o commit'teki
 `v0.json`'dadır. Kalın: önceki sütuna göre değişen.
 
-| Ölçüt | Eşik | İlk ölçüm `ef1b5a6` | A4.1 Gi* FDR | A4.2 seri adayı | A4.7 trend + ITS |
-|---|---|---|---|---|---|
-| K1.1 NNI gücü | ≥ 0,90 | 0,233 | 0,233 | 0,233 | 0,233 |
-| K1.2 NNI yanlış alarmı | ≤ 0,10 | 0,000 | 0,000 | 0,000 | 0,000 |
-| K1.3 Moran gücü | ≥ 0,90 | 0,967 | 0,967 | 0,967 | 0,967 |
-| K1.4 Moran yanlış alarmı | ≤ 0,10 | 0,000 | 0,000 | 0,000 | 0,000 |
-| K1.5 Gi* gücü | ≥ 0,90 | 1,000 | **0,900** | 0,900 | 0,900 |
-| K1.6 Gi* yanlış alarmı | ≤ 0,10 | 0,700 | **0,000** | 0,000 | 0,000 |
-| K2.1 CUSUM kırılma zamanı | ≥ 0,90 | 0,467 | 0,467 | 0,467 | 0,467 |
-| K2.2 kayıtlı artış | ≥ 0,90 | 1,000 | 1,000 | 1,000 | **0,967** |
-| K2.3 sahte trend | ≤ 0,10 | 1,000 | 1,000 | 1,000 | **0,067** |
-| K2.4 kanal ayrıştırma (ölçüt hatalı) | ≥ 0,90 | 0,800 | 0,800 | 0,800 | 0,800 |
-| K2.5 ITS aracı | = 1 | 0 | 0 | 0 | **1** |
-| K3.1 seri geri çağırma | ≥ 0,90 | 1,000 | 1,000 | 1,000 | 1,000 |
-| K3.2 seri kesinliği | ≥ 0,90 | 0,050 | 0,050 | **0,970** | 0,970 |
-| K3.3 "benzerlik ≠ kimlik" uyarısı | = 1 | 0 | 0 | **1** | 1 |
-| K3.4 insan onayı | = 1 | 0 | 0 | **1** | 1 |
-| **Geçen** | | **6/15** | **7/15** | **10/15** | **12/15** |
+| Ölçüt | Eşik | İlk ölçüm `ef1b5a6` | A4.1 Gi* FDR | A4.2 seri adayı | A4.7 trend + ITS | A4.8 seri katmanı |
+|---|---|---|---|---|---|---|
+| K1.1 NNI gücü | ≥ 0,90 | 0,233 | 0,233 | 0,233 | 0,233 | 0,233 |
+| K1.2 NNI yanlış alarmı | ≤ 0,10 | 0,000 | 0,000 | 0,000 | 0,000 | 0,000 |
+| K1.3 Moran gücü | ≥ 0,90 | 0,967 | 0,967 | 0,967 | 0,967 | 0,967 |
+| K1.4 Moran yanlış alarmı | ≤ 0,10 | 0,000 | 0,000 | 0,000 | 0,000 | 0,000 |
+| K1.5 Gi* gücü | ≥ 0,90 | 1,000 | **0,900** | 0,900 | 0,900 | 0,900 |
+| K1.6 Gi* yanlış alarmı | ≤ 0,10 | 0,700 | **0,000** | 0,000 | 0,000 | 0,000 |
+| K2.1 CUSUM kırılma zamanı | ≥ 0,90 | 0,467 | 0,467 | 0,467 | 0,467 | 0,467 |
+| K2.2 kayıtlı artış | ≥ 0,90 | 1,000 | 1,000 | 1,000 | **0,967** | 0,967 |
+| K2.3 sahte trend | ≤ 0,10 | 1,000 | 1,000 | 1,000 | **0,067** | 0,067 |
+| K2.4 kanal ayrıştırma (ölçüt hatalı) | ≥ 0,90 | 0,800 | 0,800 | 0,800 | 0,800 | 0,800 |
+| K2.5 ITS aracı | = 1 | 0 | 0 | 0 | **1** | 1 |
+| K3.1 seri geri çağırma | ≥ 0,90 | 1,000 | 1,000 | 1,000 | 1,000 | 1,000 |
+| K3.2 seri kesinliği | ≥ 0,90 | 0,050 | 0,050 | **0,970** | 0,970 | **0,968** |
+| K3.3 "benzerlik ≠ kimlik" uyarısı | = 1 | 0 | 0 | **1** | 1 | 1 |
+| K3.4 insan onayı | = 1 | 0 | 0 | **1** | 1 | 1 |
+| **Geçen** | | **6/15** | **7/15** | **10/15** | **12/15** | **12/15** |
 
 ## Notlar
 
@@ -58,3 +58,6 @@ Aynı ön-kayıtlı kıyas (v0, eşikler değişmedi), değişen çekirdek. Her 
   Wald p = 0,94 ("etki yok") raporluyordu. Üçünde de çıkarım artık tanımsız (None +
   not) ya da hata; MCP demosunun `coklu_regresyon` ve `lojistik_regresyon` örnekleri
   tam da bu durumlardı. BMK'da ölçülmüyor (birim testleri + mutasyonla sınandı).
+- **A4.8 (seri katmanı):** ayrıntı `kiyas/v2/sonuclar/ilerleme.md`. v0'daki tek etki
+  K3.2 0,970 → 0,968: kesinlik artık zayıf katmanı da sayar (30 tohumda 1 fazla
+  çift). Öngörü (0,96–0,98) doğru.

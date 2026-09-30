@@ -27,7 +27,7 @@
         },
         {
           "kimlik": "K8.2",
-          "deger": 0.9804,
+          "deger": 0.974,
           "yon": ">=",
           "esik": 0.9,
           "gecti": true,
@@ -35,7 +35,7 @@
         },
         {
           "kimlik": "K8.3",
-          "deger": 0.9804,
+          "deger": 0.9677,
           "yon": ">=",
           "esik": 0.5,
           "gecti": true,
@@ -43,15 +43,15 @@
         },
         {
           "kimlik": "K8.4",
-          "deger": 0.2033,
+          "deger": 1.0,
           "yon": ">=",
           "esik": 0.8,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir: v1 K7.1 = 0,25 — 2 km / 60 gün süzgeci yayılmış serinin çiftlerini eler"
         },
         {
           "kimlik": "K8.5",
-          "deger": 0.9104,
+          "deger": 0.9901,
           "yon": ">=",
           "esik": 0.5,
           "gecti": true,
@@ -59,7 +59,7 @@
         },
         {
           "kimlik": "K8.6",
-          "deger": 0.1667,
+          "deger": 0,
           "yon": "<=",
           "esik": 1.0,
           "gecti": true,
@@ -67,15 +67,15 @@
         },
         {
           "kimlik": "K8.7",
-          "deger": 0.03,
+          "deger": 0.83,
           "yon": ">=",
           "esik": 0.8,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir (hesap ≈ 0,03–0,15): 5/8 davranışlı iki olay hipergeometrik olarak ortalama 3,1 ayırt edici kelime paylaşır; Ružička ≈ 0,35 (K = 3), ≈ 0,53 (K = 4) — 0,6 eşiğini çoğunlukla yalnız K = 5 (1/56) ve K = 4 + aynı genel kelime geçer"
         },
         {
           "kimlik": "K8.8",
-          "deger": 0.5625,
+          "deger": 0.9727,
           "yon": ">=",
           "esik": 0.5,
           "gecti": true,
@@ -83,63 +83,63 @@
         },
         {
           "kimlik": "K8.9",
-          "deger": 0.2,
+          "deger": 0.0,
           "yon": "<=",
           "esik": 0.1,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir — ZAYIF öngörü (hesap ≈ 0,16–0,25; 30 tohumda ≤ 0,10 çıkma olasılığı ~%25): ortak MO grubunda rastgele kelimesi de aynı olan çiftler (~6,3/tohum) özdeş tanımlıdır, Ružička = 1; bunların ~%3'ü 2 km / 60 gün içindedir"
         },
         {
           "kimlik": "K8.10",
-          "deger": 0.0,
+          "deger": 1.0,
           "yon": ">=",
           "esik": 1.0,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir: çiftlerde 'katman' ve 'kanit' alanı yok (0)"
         }
       ],
       "ek_olcumler": {
         "siki": {
           "geri_cagirma": 1.0,
-          "kesinlik_c": 0.9804,
-          "kesinlik_g": 0.9804,
+          "kesinlik_c": 0.9677,
+          "kesinlik_g": 0.974,
           "g_ortak_yanlis": 0.1667,
           "g_dolu_tohum": 1.0,
-          "ort_c": 10.2,
-          "ort_g": 10.2,
+          "ort_c": 10.3333,
+          "ort_g": 10.2667,
           "dogru_g_katmaninda": 300,
           "dogru_zayif_katmanda": 0
         },
         "yayilmis": {
-          "geri_cagirma": 0.2033,
-          "kesinlik_c": 0.9104,
-          "kesinlik_g": 0.9104,
-          "g_ortak_yanlis": 0.1667,
+          "geri_cagirma": 1.0,
+          "kesinlik_c": 0.9901,
+          "kesinlik_g": 0.9839,
+          "g_ortak_yanlis": 0,
           "g_dolu_tohum": 1.0,
-          "ort_c": 2.2333,
-          "ort_g": 2.2333,
+          "ort_c": 10.1,
+          "ort_g": 2.0667,
           "dogru_g_katmaninda": 61,
-          "dogru_zayif_katmanda": 0
+          "dogru_zayif_katmanda": 239
         },
         "tutarsiz": {
-          "geri_cagirma": 0.03,
-          "kesinlik_c": 0.5625,
-          "kesinlik_g": 0.5625,
+          "geri_cagirma": 0.83,
+          "kesinlik_c": 0.9727,
+          "kesinlik_g": 0.9727,
           "g_ortak_yanlis": 0.2333,
-          "g_dolu_tohum": 0.4333,
-          "ort_c": 0.5333,
-          "ort_g": 0.5333,
-          "dogru_g_katmaninda": 9,
+          "g_dolu_tohum": 1.0,
+          "ort_c": 8.5333,
+          "ort_g": 8.5333,
+          "dogru_g_katmaninda": 249,
           "dogru_zayif_katmanda": 0
         },
         "seri_yok": {
           "geri_cagirma": 0.0,
           "kesinlik_c": 0.0,
           "kesinlik_g": 0.0,
-          "g_ortak_yanlis": 0.1333,
-          "g_dolu_tohum": 0.2,
-          "ort_c": 0.2333,
-          "ort_g": 0.2333,
+          "g_ortak_yanlis": 0,
+          "g_dolu_tohum": 0.0,
+          "ort_c": 0,
+          "ort_g": 0,
           "dogru_g_katmaninda": 0,
           "dogru_zayif_katmanda": 0
         }

@@ -410,20 +410,27 @@ def _(a):
 
 
 
-@arac("seri_eslestirme", "Seri suç ADAYI eşleştirme: MO benzerliği (taban oranıyla "
-      "ağırlıklı) + uzay-zaman yakınlığı. Aday bir inceleme hipotezidir, aynı fail "
-      "iddiası değildir",
+@arac("seri_eslestirme", "Seri suç ADAYI eşleştirme: kanıt hatları (MO ayırt edici "
+      "paylaşım testi + FDR; uzay; zaman) ve katman (güçlü: hatlar örtüşür; zayıf: "
+      "yalnız MO). Aday bir inceleme hipotezidir, aynı fail iddiası değildir",
       sema({"mo_alan": {"type": "string"},
-            "esik": {"type": "number", "default": 0.6},
+            "esik": {"type": "number",
+                     "description": "isteğe bağlı ek Ružička benzerlik alt sınırı (boş=yok)"},
             "mesafe_km": {"type": "number", "default": tekrar.SERI_MESAFE_KM},
-            "gun": {"type": "integer", "default": tekrar.SERI_GUN}}, ["mo_alan"]))
+            "gun": {"type": "integer", "default": tekrar.SERI_GUN},
+            "q_esik": {"type": "number", "default": tekrar.SERI_Q,
+                       "description": "MO testi için FDR düzeyi (0-1)"}}, ["mo_alan"]))
 def _(a):
     k = kayitlari_getir(a)
     quadratic_guard(k, "seri_eslestirme")
     _pozitif(a.get("mesafe_km", tekrar.SERI_MESAFE_KM), "mesafe_km")
-    return tekrar.seri_eslestirme(k, a["mo_alan"], a.get("esik", 0.6),
+    q = a.get("q_esik", tekrar.SERI_Q)
+    _pozitif(q, "q_esik")
+    if q >= 1:
+        raise KullanimHatasi("q_esik: 0 ile 1 arasında olmalı")
+    return tekrar.seri_eslestirme(k, a["mo_alan"], a.get("esik"),
                                   a.get("mesafe_km", tekrar.SERI_MESAFE_KM),
-                                  a.get("gun", tekrar.SERI_GUN))
+                                  a.get("gun", tekrar.SERI_GUN), q)
 
 
 

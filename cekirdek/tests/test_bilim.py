@@ -250,12 +250,50 @@ class TestSinamalarArtis(unittest.TestCase):
         self.assertTrue(r["olcum"]["ayrim_tarihi"].startswith("2025-01"), r["olcum"])
 
     def test_asiri_yayilim_z_yi_daraltir(self):
+        # sürekli kanal aşırı yayılımlı: φ_s = havuz T/sd (öncesi 12 tam ay T = 160,
+        # sonrası 10 tam ay T = 4000/45; sd 20); yeni kanal sabit → φ_y = 1
         dalgali = [10, 50] * 6
         veri = aylik({"karakol": dalgali + [x + 15 for x in dalgali], "cevrimici": [0] * 12 + [3] * 12})
         r, adimlar, _ = self._bildirim(veri)
-        self.assertGreater(r["olcum"]["yayilim"], 5)
+        self.assertAlmostEqual(r["olcum"]["yayilim"], (160 + 4000 / 45) / 20, delta=0.01)
+        self.assertEqual(r["olcum"]["yayilim_yeni"], 1.0)
+        self.assertLess(r["olcum"]["yayilim_p"], 0.05)
         self.assertEqual(r["durum"], "çözülmedi")        # Poisson varsayımıyla dışlanırdı
         self.assertGreater(adimlar[0][2]["dispersiyon"], 5)
+
+    def test_yayilim_bilesene_ozgu(self):
+        # v1.3: yeni kanal çok yayılımlı, sürekli kanal Poisson benzeri → φ_s = 1 kalır
+        # (v1.1 büyük φ'yi sürekli kanalın terimlerine de uyguluyordu — BMK v6 K12.6)
+        veri = aylik({"karakol": [30] * 12 + [45] * 12, "cevrimici": [0] * 12 + [1, 25] * 6})
+        r, adimlar, _ = self._bildirim(veri)
+        self.assertEqual(r["olcum"]["yayilim"], 1.0)
+        self.assertGreater(r["olcum"]["yayilim_yeni"], 5)
+        self.assertLess(r["olcum"]["yayilim_p_yeni"], 0.05)
+        self.assertEqual((adimlar[0][2]["dispersiyon"], adimlar[0][2]["dispersiyon_b"]),
+                         (1.0, r["olcum"]["yayilim_yeni"]))
+
+    def test_yayilim_sinamasi(self):
+        import datetime as dt
+        bas, bit = dt.datetime(2024, 1, 1), dt.datetime(2025, 1, 1)
+
+        def veri(sayim):
+            return [(dt.datetime(2024, a + 1, 1), "k") for a, n in enumerate(sayim) for _ in range(n)]
+        phi, p, ki, sd = sinamalar._yayilim_sinamasi(
+            veri([26, 34, 30, 28, 32, 30, 27, 33, 29, 31, 30, 30]), [({"k"}, bas, bit)])
+        self.assertEqual((phi, sd), (1.0, 11))
+        self.assertGreater(p, 0.05)
+        # φ̂ > 1 ama test reddetmiyor (p ≈ 0,17): φ = 1 — gürültülü φ̂ kullanılmaz
+        phi, p, ki, sd = sinamalar._yayilim_sinamasi(
+            veri([22, 38, 30, 21, 39, 30, 23, 37, 30, 24, 36, 30]), [({"k"}, bas, bit)])
+        self.assertGreater(ki / sd, 1.3)
+        self.assertGreater(p, 0.05)
+        self.assertEqual(phi, 1.0)
+        phi, p, ki, sd = sinamalar._yayilim_sinamasi(veri([10, 50] * 6), [({"k"}, bas, bit)])
+        self.assertLess(p, 0.05)
+        self.assertAlmostEqual(ki, 12 * 400 / 30)
+        self.assertAlmostEqual(phi, ki / sd)
+        self.assertEqual(sinamalar._yayilim_sinamasi(veri([20] * 12), [({"k"}, bas, bit)])[:2], (1.0, 1.0))
+        self.assertEqual(sinamalar._yayilim_sinamasi([], [({"k"}, bas, bit)])[:2], (1.0, None))
 
     def test_kanal_bileseni_degismediyse_ek_sinama_yok(self):
         veri = aylik({"karakol": [30] * 24, "cevrimici": [10] * 24})
@@ -296,6 +334,11 @@ class TestOranDegisimiAyristirma(unittest.TestCase):
         self.assertAlmostEqual(r["z"], -1 / (300 / 100 ** 2) ** 0.5, places=3)
         r2 = dg.oran_degisimi_ayristirma(100, 100, 0, 100, 100, 100, dispersiyon=4)
         self.assertAlmostEqual(r2["z"], r["z"] / 2, places=2)
+        # v1.3: bileşene özgü çarpan — B'ninki yalnız B'nin terimlerine
+        r3 = dg.oran_degisimi_ayristirma(100, 100, 0, 100, 100, 100, dispersiyon=1, dispersiyon_b=4)
+        self.assertAlmostEqual(r3["se"], (0.02 + 4 * 0.01) ** 0.5, places=4)
+        self.assertEqual((r3["dispersiyon"], r3["dispersiyon_b"]), (1.0, 4.0))
+        self.assertEqual(r2["dispersiyon_b"], 4.0)                 # None → A'nınki
         self.assertEqual(dg.oran_degisimi_ayristirma(1, 1, 0, 0, 10, 10, dispersiyon=0.2)["dispersiyon"], 1.0)
         self.assertIsNone(dg.oran_degisimi_ayristirma(0, 0, 0, 0, 10, 10)["z"])
         self.assertIsNone(dg.oran_degisimi_ayristirma(50, 40, 0, 5, 10, 10)["pay_a"])   # toplam düştü
@@ -354,7 +397,9 @@ class TestRehberliUctan(unittest.TestCase):
                          ("BELİRSİZ", "R-BILDIRIM", "tutuldu"))
         bildirim = next(r for r in h["rakipler"] if r["kod"] == "R-BILDIRIM")
         self.assertIn("surekli_artis_payi", bildirim["olcum"])
-        self.assertEqual(h["sinama_surumu"], "sinama-v1.1")
+        self.assertEqual(h["sinama_surumu"], "sinama-v1.3")
+        self.assertIn("yayilim_p", bildirim["olcum"])
+        self.assertIn("yayilim_p_yeni", bildirim["olcum"])
         self.assertTrue(p["meta"]["insan_onayi_gerekir"])
         self.assertIn("taslak", " ".join(p["meta"]["uyarilar"]).lower())
         d = dongu.yukle(p["sonuc"]["oturum_id"], self.gecici)

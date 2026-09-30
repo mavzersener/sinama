@@ -48,7 +48,7 @@
         },
         {
           "kimlik": "K11.3",
-          "deger": 0.92,
+          "deger": 0.94,
           "yon": ">=",
           "esik": 0.88,
           "gecti": true,
@@ -72,7 +72,7 @@
         },
         {
           "kimlik": "K11.6",
-          "deger": 0.95,
+          "deger": 0.9333,
           "yon": ">=",
           "esik": 0.9,
           "gecti": true,
@@ -80,18 +80,18 @@
         },
         {
           "kimlik": "K11.7",
-          "deger": 0.0,
+          "deger": 1.0,
           "yon": ">=",
           "esik": 1.0,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir: v1.1 olcum'unda 'yayilim' var, 'yayilim_p' yok (0)"
         }
       ],
       "ek_olcumler": {
         "kategori_dagilimi": {
           "kismi_artefakt": {
-            "BELİRSİZ": 47,
-            "KIRILGAN": 13
+            "BELİRSİZ": 52,
+            "KIRILGAN": 8
           },
           "karma": {
             "DESTEKLENDİ": 3,
@@ -99,66 +99,66 @@
           },
           "gercek_artis_kucuk_kanal": {
             "BELİRSİZ": 1,
-            "DESTEKLENDİ": 184,
-            "KIRILGAN": 15
+            "DESTEKLENDİ": 188,
+            "KIRILGAN": 11
           },
           "saf_artefakt_nb": {
-            "BELİRSİZ": 26,
-            "KIRILGAN": 33,
+            "BELİRSİZ": 27,
+            "KIRILGAN": 32,
             "ÇELİŞKİLİ": 1
           },
           "kismi_artefakt_nb": {
-            "BELİRSİZ": 14,
-            "KIRILGAN": 46
+            "BELİRSİZ": 18,
+            "KIRILGAN": 42
           },
           "karma_nb": {
-            "BELİRSİZ": 2,
-            "DESTEKLENDİ": 3,
-            "KIRILGAN": 55
+            "BELİRSİZ": 5,
+            "DESTEKLENDİ": 4,
+            "KIRILGAN": 51
           },
           "gercek_artis_kucuk_kanal_nb": {
             "BELİRSİZ": 12,
-            "DESTEKLENDİ": 13,
-            "KIRILGAN": 35
+            "DESTEKLENDİ": 15,
+            "KIRILGAN": 33
           }
         },
         "r_bildirim_durumu": {
           "kismi_artefakt": {
-            "destekleniyor": 47,
-            "çözülmedi": 13
+            "destekleniyor": 52,
+            "çözülmedi": 8
           },
           "karma": {
             "dışlandı": 3,
             "çözülmedi": 57
           },
           "gercek_artis_kucuk_kanal": {
-            "dışlandı": 184,
+            "dışlandı": 188,
             "uygulanamaz": 1,
-            "çözülmedi": 15
+            "çözülmedi": 11
           },
           "saf_artefakt_nb": {
-            "destekleniyor": 16,
+            "destekleniyor": 17,
             "uygulanamaz": 11,
-            "çözülmedi": 33
+            "çözülmedi": 32
           },
           "kismi_artefakt_nb": {
-            "destekleniyor": 9,
+            "destekleniyor": 13,
             "uygulanamaz": 5,
-            "çözülmedi": 46
+            "çözülmedi": 42
           },
           "karma_nb": {
-            "destekleniyor": 1,
-            "dışlandı": 3,
+            "destekleniyor": 4,
+            "dışlandı": 4,
             "uygulanamaz": 1,
-            "çözülmedi": 55
+            "çözülmedi": 51
           },
           "gercek_artis_kucuk_kanal_nb": {
-            "dışlandı": 20,
+            "dışlandı": 22,
             "uygulanamaz": 12,
-            "çözülmedi": 28
+            "çözülmedi": 26
           }
         },
-        "nb_guc_destek_orani": 0.2167,
+        "nb_guc_destek_orani": 0.25,
         "hata_ya_da_yok": {}
       }
     }

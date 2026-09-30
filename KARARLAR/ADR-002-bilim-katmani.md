@@ -8,6 +8,9 @@
 - **Değişiklik (A4.10, sınama v1.1):** bir rakip, ayırt edici sınamanın yalnız
   anlamlılığıyla değil **etki büyüklüğüyle** dışlanır (R-BILDIRIM: artışın çoğu
   sürekli kanallarda mı). Rakip kaydı ölçümü (`olcum`) hükme taşır. BMK v4 3/7 → 7/7
+- **Değişiklik (A4.12, sınama v1.3):** ayrıştırmanın varyansı bileşene özgü yayılım
+  çarpanıyla (her bileşen kendi Fisher testiyle kapılı). v1.2 (havuzlanmış tek φ)
+  reddedildi (`d3ef040`). BMK v6 6/8 → 8/8
 
 ## Bağlam
 

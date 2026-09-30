@@ -40,7 +40,7 @@
         },
         {
           "kimlik": "K12.2",
-          "deger": 0.97,
+          "deger": 1.0,
           "yon": ">=",
           "esik": 0.9,
           "gecti": true,
@@ -48,7 +48,7 @@
         },
         {
           "kimlik": "K12.3",
-          "deger": 0.99,
+          "deger": 0.92,
           "yon": ">=",
           "esik": 0.9,
           "gecti": true,
@@ -72,15 +72,15 @@
         },
         {
           "kimlik": "K12.6",
-          "deger": 0.7722,
+          "deger": 0.8556,
           "yon": ">=",
           "esik": 0.8,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir (hesap ≈ 0,73): v1.1 yeni kanalın büyük φ'sini sürekli kanalın terimlerine de uygular"
         },
         {
           "kimlik": "K12.7",
-          "deger": 0.8889,
+          "deger": 0.9,
           "yon": ">=",
           "esik": 0.8,
           "gecti": true,
@@ -88,86 +88,84 @@
         },
         {
           "kimlik": "K12.8",
-          "deger": 0.0,
+          "deger": 1.0,
           "yon": ">=",
           "esik": 1.0,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir: v1.1 olcum'unda yayilim_p / yayilim_p_yeni yok (0)"
         }
       ],
       "ek_olcumler": {
         "kategori_dagilimi": {
           "karma_ikisi_nb": {
-            "BELİRSİZ": 6,
+            "BELİRSİZ": 7,
             "DESTEKLENDİ": 4,
-            "KIRILGAN": 90
+            "KIRILGAN": 89
           },
           "karma_surekli_nb": {
             "BELİRSİZ": 5,
-            "DESTEKLENDİ": 3,
-            "KIRILGAN": 92
+            "KIRILGAN": 95
           },
           "karma_yeni_nb": {
-            "BELİRSİZ": 1,
-            "DESTEKLENDİ": 1,
-            "KIRILGAN": 98
+            "BELİRSİZ": 5,
+            "DESTEKLENDİ": 8,
+            "KIRILGAN": 87
           },
           "kismi_yeni_nb": {
-            "BELİRSİZ": 20,
-            "KIRILGAN": 80
+            "BELİRSİZ": 53,
+            "KIRILGAN": 47
           },
           "saf_surekli_nb": {
-            "BELİRSİZ": 49,
-            "KIRILGAN": 51
+            "BELİRSİZ": 55,
+            "KIRILGAN": 45
           },
           "guc_yeni_nb": {
             "BELİRSİZ": 4,
-            "DESTEKLENDİ": 139,
-            "KIRILGAN": 37
+            "DESTEKLENDİ": 154,
+            "KIRILGAN": 22
           },
           "guc_poisson": {
             "BELİRSİZ": 3,
-            "DESTEKLENDİ": 160,
-            "KIRILGAN": 17
+            "DESTEKLENDİ": 162,
+            "KIRILGAN": 15
           }
         },
         "r_bildirim_durumu": {
           "karma_ikisi_nb": {
-            "destekleniyor": 4,
+            "destekleniyor": 5,
             "dışlandı": 4,
             "uygulanamaz": 2,
-            "çözülmedi": 90
+            "çözülmedi": 89
           },
           "karma_surekli_nb": {
             "destekleniyor": 2,
-            "dışlandı": 3,
             "uygulanamaz": 3,
-            "çözülmedi": 92
+            "çözülmedi": 95
           },
           "karma_yeni_nb": {
-            "destekleniyor": 1,
-            "dışlandı": 1,
-            "çözülmedi": 98
+            "destekleniyor": 5,
+            "dışlandı": 8,
+            "çözülmedi": 87
           },
           "kismi_yeni_nb": {
-            "destekleniyor": 18,
+            "destekleniyor": 51,
             "uygulanamaz": 2,
-            "çözülmedi": 80
+            "çözülmedi": 47
           },
           "saf_surekli_nb": {
-            "destekleniyor": 31,
+            "destekleniyor": 37,
             "uygulanamaz": 18,
-            "çözülmedi": 51
+            "çözülmedi": 45
           },
           "guc_yeni_nb": {
-            "dışlandı": 139,
+            "dışlandı": 154,
             "uygulanamaz": 4,
-            "çözülmedi": 37
+            "çözülmedi": 22
           },
           "guc_poisson": {
-            "dışlandı": 160,
+            "dışlandı": 162,
             "uygulanamaz": 3,
-            "çözülmedi": 17
+            "çözülmedi": 15
           }
         },
         "hata_ya_da_yok": {}

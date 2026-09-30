@@ -54,7 +54,7 @@
         },
         {
           "kimlik": "K10.5",
-          "deger": 0.9,
+          "deger": 0.9333,
           "yon": ">=",
           "esik": 0.8,
           "gecti": true,
@@ -83,16 +83,17 @@
             "BELİRSİZ": 30
           },
           "kismi_artefakt": {
-            "BELİRSİZ": 21,
-            "KIRILGAN": 9
+            "BELİRSİZ": 23,
+            "KIRILGAN": 7
           },
           "karma": {
+            "BELİRSİZ": 1,
             "DESTEKLENDİ": 1,
-            "KIRILGAN": 29
+            "KIRILGAN": 28
           },
           "gercek_artis_kucuk_kanal": {
-            "DESTEKLENDİ": 27,
-            "KIRILGAN": 3
+            "DESTEKLENDİ": 28,
+            "KIRILGAN": 2
           },
           "gercek_artis": {
             "DESTEKLENDİ": 30
@@ -104,16 +105,17 @@
             "uygulanamaz": 4
           },
           "kismi_artefakt": {
-            "destekleniyor": 21,
-            "çözülmedi": 9
+            "destekleniyor": 23,
+            "çözülmedi": 7
           },
           "karma": {
+            "destekleniyor": 1,
             "dışlandı": 1,
-            "çözülmedi": 29
+            "çözülmedi": 28
           },
           "gercek_artis_kucuk_kanal": {
-            "dışlandı": 27,
-            "çözülmedi": 3
+            "dışlandı": 28,
+            "çözülmedi": 2
           },
           "gercek_artis": {
             "dışlandı": 30

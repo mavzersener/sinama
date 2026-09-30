@@ -4,16 +4,16 @@ Aynı ön-kayıtlı kıyas (v4, `4f23e69` 11:52:06, eşikler değişmedi), deği
 Her sütun bir çekirdek değişikliğinden sonra yapılan tam ölçümdür; sayılar o commit'teki
 `v4.json`'dadır. Kalın: önceki sütuna göre değişen.
 
-| Ölçüt | Senaryo | Eşik | Başlangıç (A4.9, bilim v1) | A4.10 sınama v1.1 |
-|---|---|---|---|---|
-| K10.1 aşırı iddia yok | saf artefakt | ≥ 0,90 | 1,000 | 1,000 |
-| K10.2 aşırı iddia yok | kısmi artefakt | ≥ 0,90 | 0,767 | **1,000** |
-| K10.3 en güçlü rakip R-BILDIRIM | kısmi artefakt | ≥ 0,90 | 0,767 | **1,000** |
-| K10.4 aşırı iddia yok | karma | ≥ 0,90 | 0,000 | **0,967** |
-| K10.5 DESTEKLENDİ | gerçek artış + küçük yeni kanal | ≥ 0,80 | 0,967 | **0,900** |
-| K10.6 DESTEKLENDİ | gerçek artış | ≥ 0,80 | 1,000 | 1,000 |
-| K10.7 etki büyüklüğü raporu | yeni kanallı dört senaryo | = 1 | 0 | **1** |
-| **Geçen** | | | **3/7** | **7/7** |
+| Ölçüt | Senaryo | Eşik | Başlangıç (A4.9, bilim v1) | A4.10 sınama v1.1 | A4.12 sınama v1.3 |
+|---|---|---|---|---|---|
+| K10.1 aşırı iddia yok | saf artefakt | ≥ 0,90 | 1,000 | 1,000 | 1,000 |
+| K10.2 aşırı iddia yok | kısmi artefakt | ≥ 0,90 | 0,767 | **1,000** | 1,000 |
+| K10.3 en güçlü rakip R-BILDIRIM | kısmi artefakt | ≥ 0,90 | 0,767 | **1,000** | 1,000 |
+| K10.4 aşırı iddia yok | karma | ≥ 0,90 | 0,000 | **0,967** | 0,967 |
+| K10.5 DESTEKLENDİ | gerçek artış + küçük yeni kanal | ≥ 0,80 | 0,967 | **0,900** | **0,933** |
+| K10.6 DESTEKLENDİ | gerçek artış | ≥ 0,80 | 1,000 | 1,000 | 1,000 |
+| K10.7 etki büyüklüğü raporu | yeni kanallı dört senaryo | = 1 | 0 | **1** | 1 |
+| **Geçen** | | | **3/7** | **7/7** | 7/7 |
 
 ## Notlar
 
@@ -44,3 +44,5 @@ Her sütun bir çekirdek değişikliğinden sonra yapılan tam ölçümdür; say
   - v1.2 adayı (ilke A4.6'daki bölge anomalisiyle aynı): φ'yi yalnız yayılım
     sınaması Poisson'u reddederse kullanmak; aşırı yayılımlı senaryolar içeren yeni
     ön-kayıtla (v5) ölçülmeli.
+- **A4.12 — sınama v1.3:** 7/7; K10.5 0,90 → 0,933 (kısmi artefaktta 23 BELİRSİZ + 7
+  KIRILGAN, karmada 1 DESTEKLENDİ — v1.1 ile aynı sayılar).

@@ -16,9 +16,10 @@ from collections import Counter
 
 from ..cekirdek import degerlendirme, veri
 from ..cekirdek.hatalar import SucAnaliziHatasi
+from ..cekirdek.iliski import _gammaincc
 from . import rak
 
-SINAMA_SURUMU = "sinama-v1.1"
+SINAMA_SURUMU = "sinama-v1.3"
 ALFA = 0.05
 Z_TEK = statistics.NormalDist().inv_cdf(1 - ALFA)   # tek yönlü, ≈ 1,645
 YENI_KANAL_YUZDELIK = 0.05   # ayrım noktası: yeni kanal kayıtlarının %5'lik tarihi
@@ -84,24 +85,43 @@ def _aylik_sayim(tarihli):
     return aylar
 
 
-def _yayilim(tarihli, gruplar, bas, bit):
-    """Pencere içindeki TAM takvim aylarının sayımlarından quasi-Poisson yayılım
-    çarpanı: grupların var/ortalama oranlarının ortalaması, en az 1 (≥ 3 ay)."""
-    oranlar = []
-    for grup in gruplar:
-        say = Counter((dt.year, dt.month) for dt, k in tarihli
-                      if k in grup and bas <= dt <= bit)
-        aylar = []
-        y, a = bas.year, bas.month
-        while (y, a) <= (bit.year, bit.month):
-            ay_bas = bas.replace(year=y, month=a, day=1, hour=0, minute=0, second=0, microsecond=0)
-            sonraki = ay_bas.replace(year=y + (a // 12), month=a % 12 + 1)
-            if ay_bas >= bas and sonraki <= bit:
-                aylar.append(say.get((y, a), 0))
-            y, a = (y + 1, 1) if a == 12 else (y, a + 1)
+def _tam_aylar(tarihli, grup, bas, bit):
+    """Pencere içindeki TAM takvim aylarının grup sayımları."""
+    say = Counter((dt.year, dt.month) for dt, k in tarihli if k in grup and bas <= dt <= bit)
+    aylar = []
+    y, a = bas.year, bas.month
+    while (y, a) <= (bit.year, bit.month):
+        ay_bas = bas.replace(year=y, month=a, day=1, hour=0, minute=0, second=0, microsecond=0)
+        sonraki = ay_bas.replace(year=y + (a // 12), month=a % 12 + 1)
+        if ay_bas >= bas and sonraki <= bit:
+            aylar.append(say.get((y, a), 0))
+        y, a = (y + 1, 1) if a == 12 else (y, a + 1)
+    return aylar
+
+
+def _yayilim_sinamasi(tarihli, parcalar):
+    """Bir bileşenin Fisher yayılım testi (v1.3; A4.6'daki bölge anomalisiyle aynı
+    ilke): T = ΣΣ (x − μ)² / μ, sd = Σ (n − 1) — bileşenin pencere parçalarının
+    tam aylarından (≥ 3 ay, μ > 0). Poisson altında T ~ χ²(sd).
+
+    p < ALFA ise φ = T / sd (aşırı yayılım gösterildi), değilse φ = 1. Çarpan
+    YALNIZ bu bileşenin varyans terimine uygulanır: v1.1 tüm gruplara en büyük
+    oranı (kazara ihtiyatlı), v1.2 havuzlanmış tek çarpanı (baskın bileşenin
+    varyansını küçük tahmin etti — BMK v5 K11.6, reddedildi) uyguluyordu.
+
+    Returns: (phi, p ya da None, T, sd).
+    """
+    ki, sd = 0.0, 0
+    for grup, bas, bit in parcalar:
+        aylar = _tam_aylar(tarihli, grup, bas, bit)
         if len(aylar) >= 3 and statistics.fmean(aylar) > 0:
-            oranlar.append(statistics.variance(aylar) / statistics.fmean(aylar))
-    return max(1.0, statistics.fmean(oranlar)) if oranlar else 1.0
+            mu = statistics.fmean(aylar)
+            ki += sum((x - mu) ** 2 for x in aylar) / mu
+            sd += len(aylar) - 1
+    if sd == 0:
+        return 1.0, None, ki, sd
+    p = _gammaincc(sd / 2, ki / 2)
+    return (max(1.0, ki / sd) if p < ALFA else 1.0), p, ki, sd
 
 
 def _bildirim_ayristirma(tarihli, surekli, yeni, kaydet):
@@ -116,12 +136,15 @@ def _bildirim_ayristirma(tarihli, surekli, yeni, kaydet):
         return _rakip("R-BILDIRIM", "çözülmedi",
                       f"yeni kanal öncesi/sonrası dönem {MIN_DONEM_GUN} günden kısa")
     say = Counter((k in surekli, dt >= t_k) for dt, k in tarihli)
-    phi = max(_yayilim(tarihli, [set(surekli)], t0, t_k),
-              _yayilim(tarihli, [set(surekli), set(yeni)], t_k, t1))
+    phi_s, p_s, _, _ = _yayilim_sinamasi(tarihli, [(set(surekli), t0, t_k), (set(surekli), t_k, t1)])
+    phi_y, p_y, _, _ = _yayilim_sinamasi(tarihli, [(set(yeni), t0, t_k), (set(yeni), t_k, t1)])
     r = degerlendirme.oran_degisimi_ayristirma(
         say[(True, False)], say[(True, True)], say[(False, False)], say[(False, True)],
-        g_once, g_sonra, phi)
-    olcum = {"surekli_artis_payi": r["pay_a"], "z": r["z"], "yayilim": r["dispersiyon"],
+        g_once, g_sonra, phi_s, phi_y)
+    olcum = {"surekli_artis_payi": r["pay_a"], "z": r["z"],
+             "yayilim": r["dispersiyon"], "yayilim_yeni": r["dispersiyon_b"],
+             "yayilim_p": None if p_s is None else round(p_s, 5),
+             "yayilim_p_yeni": None if p_y is None else round(p_y, 5),
              "ayrim_tarihi": t_k.date().isoformat()}
     if kaydet is not None:
         kaydet("bildirim_ayristirma", {k: v for k, v in r.items() if isinstance(v, (int, float))},

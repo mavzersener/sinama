@@ -2,6 +2,26 @@
 
 ## [Yayımlanmamış]
 
+### Sınama v1.3: bileşene özgü yayılım çarpanı (A4.12)
+v1.1'in φ'si (grup/pencere var/ortalama oranlarının EN BÜYÜĞÜ, ≥ 1) yeni kanal
+çok yayılımlıyken büyük φ'yi sürekli kanalın terimlerine de uyguluyordu (BMK v6
+başlangıç: yeni kanal NB güç 0,772 < 0,80); v1.2'nin havuzlanmış tek φ'si ise
+baskın bileşenin varyansını küçük tahmin etmişti (reddedildi).
+- `degerlendirme.oran_degisimi_ayristirma`: `dispersiyon_b` — B bileşeninin
+  çarpanı yalnız B'nin varyans terimine (None → A'nınki, geriye uyumlu).
+- `sinamalar` (`sinama-v1.3`): `_yayilim_sinamasi` — bir bileşenin öncesi +
+  sonrası tam aylarından Fisher yayılım testi (T ~ χ²(sd)); p < 0,05 ise
+  φ = T/sd, değilse 1 (gürültülü φ̂ kanıtsız kullanılmaz; A4.6 ilkesi). Sürekli ve
+  yeni kanal ayrı. Rakip kaydı: yayilim, yayilim_yeni, yayilim_p, yayilim_p_yeni.
+- BMK v6 (ön-kayıt 84c4b3e): 6/8 → 8/8 (K12.6 0,772 → 0,856; K12.8 0 → 1).
+  v5 6/7 → 7/7; v4 7/7 (K10.5 → 0,933); v3 ve v0–v2 değişmedi.
+  **Bedel:** yeni kanalı yayılımlı karmada aşırı iddia 1/100 → 8/100 (eşik
+  0,90 geçildi); NB karmada (v5) 3/60 → 4/60. %8 nominal %5'in üstünde →
+  v1.4 adayı: kritik değer için φ'nin sd'siyle t.
+Keşif yamasız, gerçek kod durumlarıyla (`kiyas/kesif/a412_bilesen_yayilim.py`).
+Testler: bileşene özgü φ (sürekli Poisson + yeni NB → φ_s = 1), yayılım testi
+(reddetmeyen φ̂ > 1 → 1), havuz değeri, dispersiyon_b varyansı; 5/5 mutasyon.
+
 ### Denenen ve reddedilen: sınama v1.2 (A4.11)
 Havuzlanmış Fisher yayılım testiyle kapılı φ (dal `deneme/v1.2-havuz-phi`,
 `d3ef040`). BMK v5 (ön-kayıt 430fcd0): Poisson gücü 0,92 → 0,94 ama aşırı

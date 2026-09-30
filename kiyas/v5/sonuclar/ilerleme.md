@@ -4,16 +4,16 @@ Aynı ön-kayıtlı kıyas (v5, `430fcd0` 17:13:48, eşikler değişmedi), deği
 Her sütun bir çekirdek değişikliğinden sonra yapılan tam ölçümdür; sayılar o commit'teki
 `v5.json`'dadır. Kalın: önceki sütuna göre değişen.
 
-| Ölçüt | Senaryo | Eşik | Başlangıç (A4.10, sınama v1.1) |
-|---|---|---|---|
-| K11.1 aşırı iddia yok | kısmi artefakt (Poisson, 60) | ≥ 0,90 | 1,000 |
-| K11.2 aşırı iddia yok | karma (Poisson, 60) | ≥ 0,90 | 0,950 |
-| K11.3 DESTEKLENDİ | gerçek artış + küçük kanal (Poisson, 200) | ≥ 0,88 | 0,920 |
-| K11.4 aşırı iddia yok | saf artefakt (NB, 60) | ≥ 0,90 | 1,000 |
-| K11.5 aşırı iddia yok | kısmi artefakt (NB, 60) | ≥ 0,90 | 1,000 |
-| K11.6 aşırı iddia yok | karma (NB, 60) | ≥ 0,90 | 0,950 |
-| K11.7 yayılım testi p'si raporu | ölçüt senaryoları | = 1 | 0 |
-| **Geçen** | | | **6/7** |
+| Ölçüt | Senaryo | Eşik | Başlangıç (A4.10, sınama v1.1) | A4.12 sınama v1.3 |
+|---|---|---|---|---|
+| K11.1 aşırı iddia yok | kısmi artefakt (Poisson, 60) | ≥ 0,90 | 1,000 | 1,000 |
+| K11.2 aşırı iddia yok | karma (Poisson, 60) | ≥ 0,90 | 0,950 | 0,950 |
+| K11.3 DESTEKLENDİ | gerçek artış + küçük kanal (Poisson, 200) | ≥ 0,88 | 0,920 | **0,940** |
+| K11.4 aşırı iddia yok | saf artefakt (NB, 60) | ≥ 0,90 | 1,000 | 1,000 |
+| K11.5 aşırı iddia yok | kısmi artefakt (NB, 60) | ≥ 0,90 | 1,000 | 1,000 |
+| K11.6 aşırı iddia yok | karma (NB, 60) | ≥ 0,90 | 0,950 | **0,933** |
+| K11.7 yayılım testi p'si raporu | ölçüt senaryoları | = 1 | 0 | **1** |
+| **Geçen** | | | **6/7** | **7/7** |
 
 Ek (ölçüt değil): NB güç senaryosunda DESTEKLENDİ 0,217 (13/60).
 
@@ -43,3 +43,9 @@ Ek (ölçüt değil): NB güç senaryosunda DESTEKLENDİ 0,217 (13/60).
   kazara ihtiyatlı. Keşifteki "havuz" varyantı fiilen öncesi penceresi φ'sine
   yaslanıyordu — keşif kusurum. **v1.3 adayı:** bileşene özgü, kendi Fisher testiyle
   kapılı φ; yeni ön-kayıtla (v6).
+
+## A4.12 — sınama v1.3
+
+- 6/7 → 7/7 (gerileme bekçisi olarak; iyileşme iddiası v6'da). K11.3 0,92 → 0,94;
+  K11.7 0 → 1; K11.6 0,95 → 0,933 (4/60 aşırı iddia, eşik üstünde; v1.2'nin 0,883'ü
+  gibi kalmadı).

@@ -196,7 +196,7 @@ def kesinti_analizi(seri, kesinti_noktasi, guven=0.95):
 
 
 def oran_degisimi_ayristirma(a_once, a_sonra, b_once, b_sonra, sure_once, sure_sonra,
-                             dispersiyon=1.0):
+                             dispersiyon=1.0, dispersiyon_b=None):
     """İki bileşenli sayımda oran artışının ayrıştırılması (A4.10).
 
     Toplam = A + B iken önce→sonra oran değişimini bileşenlere ayırır ve
@@ -212,26 +212,31 @@ def oran_degisimi_ayristirma(a_once, a_sonra, b_once, b_sonra, sure_once, sure_s
     Args:
         a_once, a_sonra, b_once, b_sonra: bileşen sayımları (önce/sonra).
         sure_once, sure_sonra: dönem uzunlukları (gün).
-        dispersiyon: yayılım çarpanı (≥ 1; Poisson için 1).
+        dispersiyon: A'nın (ya da ortak) yayılım çarpanı (≥ 1; Poisson için 1).
+        dispersiyon_b: B'nin yayılım çarpanı (≥ 1); None ise A'nınki (v1.3:
+            bileşenlerin yayılımı farklıysa ortak çarpan baskın bileşenin
+            varyansını yanlış tahmin eder — BMK v5, v1.2 reddi).
 
     Returns:
         None (dönem uzunluğu sıfır) ya da {degisim_a, degisim_b (gün başına),
         fark, se, z (se sıfırsa None), pay_a (toplam artış ≤ 0 ise None),
-        dispersiyon}.
+        dispersiyon, dispersiyon_b}.
     """
     if sure_once <= 0 or sure_sonra <= 0:
         return None
     phi = max(1.0, dispersiyon)
+    phi_b = phi if dispersiyon_b is None else max(1.0, dispersiyon_b)
     da = a_sonra / sure_sonra - a_once / sure_once
     db = b_sonra / sure_sonra - b_once / sure_once
-    var = phi * ((a_sonra + b_sonra) / sure_sonra ** 2 + (a_once + b_once) / sure_once ** 2)
+    var = (phi * (a_sonra / sure_sonra ** 2 + a_once / sure_once ** 2)
+           + phi_b * (b_sonra / sure_sonra ** 2 + b_once / sure_once ** 2))
     se = math.sqrt(var)
     fark = da - db
     toplam = da + db
     return {"degisim_a": round(da, 5), "degisim_b": round(db, 5), "fark": round(fark, 5),
             "se": round(se, 5), "z": round(fark / se, 3) if se > 0 else None,
             "pay_a": round(da / toplam, 3) if toplam > 0 else None,
-            "dispersiyon": round(phi, 3)}
+            "dispersiyon": round(phi, 3), "dispersiyon_b": round(phi_b, 3)}
 
 
 def sara_kontrol_listesi():

@@ -29,6 +29,7 @@ taşınır ve her parçanın kaynağı buraya yazılır (ADR-001 md.2).
 |---|---|---|---|---|---|---|
 | 29.09.2026 | `cekirdek/` | `C:\Projects\suc_analizi` | `20d6e2c` | izlenen ağacın tamamı; hariç: `oturumlar/` (sentetik test oturumları), `.githooks/` (kanonik depoya özgü tüketici kapıları), `.gitattributes` (kök kapsıyor), `suc_analizi_audit.log` (izlenen boş log), `release.sh` (Kimi ortamına, `/mnt/agents/output`'a yazıyor) | 493 birim (1 atlama) + kapsam kapısı + `test_mcp.py` 132 kontrol + 2 demo — hepsi yeşil | 93 dosya; 92'si kaynak blob'larıyla birebir. `tests/test_faz_f.py`: 2 satıra yalnız `bekci:izin` yorumu (kural 7) |
 | 29.09.2026 | `cekirdek/sinama/surec/{kanit,dongu,rapor}.py`, `cekirdek/test_mcp.py`, `cekirdek/tests/{test_kanit_muhakeme,test_duzeltme_06_mahremiyet}.py` | `Documents\ChatGPT\JSGA Kolluk\duzeltme_suc_analizi` (git'siz, P06 mahremiyet turu) | ata: kanonik `2330936` (baseline_06 hash'leriyle doğrulandı; `dongu.py` kanonikte karışık satır sonluydu, normalleştirilmiş içerik ataya eşit) | üçlü birleştirme (`git merge-file --diff3`), ad dönüşümü ata ve kopyaya da uygulandı; `dongu`, `rapor`, `test_mcp` temiz; `kanit.py` 6 + `test_kanit_muhakeme.py` 1 çatışma elle, gerekçeli çözüldü | P06 5 test + bağımsız kabul betiği (ad dönüşümlü geçici kopya) + yeni `test_duzeltme_08_p06_v2.py` (3; iki mutasyon yakalandı); tam kapı 505 test | kaynak SHA-256 (ilk 12): kanit `9c34e645a1f5`, dongu `3753b0a7c5d9`, rapor `ec566113eaf7`, test_mcp `ea9ab3457adc`, test_kanit_muhakeme `aa74302d317f`, test_duzeltme_06 `1f038be90aed` |
+| 02.10.2026 | `uygulama/web/` (A5, ADR-003) | `C:\Projects\DataFlow` | `5ea8652` | `tailwind.config.js`, `postcss.config.js`, `src/components/ui/{button,card}.tsx`, `src/lib/utils.ts`, `src/index.css` (git archive; 6 dosya, blob'larla birebir) | ön yüz derlemesi (`tsc -b && vite build`) A5.2'de | `index.css` React Flow stilleri ve `overflow: hidden` gövdesi taşıyor — A5.2'de ayrı uyarlama commit'i |
 
 ## Kavram hasadı (kod alınmadan)
 
@@ -39,6 +40,7 @@ izlenebilirlik için kaynak@commit burada yazılır.
 |---|---|---|---|---|
 | 30.09.2026 | `cekirdek/sinama/bilim/` (ADR-002) | `science_gpt@190da89` `src/science_gpt/domain.py` | araştırma amacı ayrımı (confirmatory/exploratory → keşifsel tavanı); kilit = onay + içerik hash'i (mevcut ön-kayıt kilidi hipotez setini kapsar) | pydantic modelleri (çekirdek yalnız standart kütüphane) |
 | 30.09.2026 | `cekirdek/sinama/bilim/hukum.py` | `harp_pol_x@fbf3f31` `src/harppolx/schemas.py` | `reasoning_trail` (kural, girdi, sonuç) → hüküm `kurallar` izi; `requires_human_review` → `insan_onayi_gerekir` | `confidence` / `priority_score` ondalıkları (AGENTS kural 6: sahte olasılık) |
+| 02.10.2026 | `uygulama/sunucu.py` (A5) | `DataFlow@5ea8652` `ml-service/app/routers/suc_analizi_koprusu.py` | çekirdeğe yalnız kamusal `arac_calistir` ile girmek (MCP ile aynı boru hattı); hata tipi → HTTP durumu (kapı 422, istemci 400, sistem 500) | FastAPI iskeleti ve ML yığını (pandas/sklearn/shap — çekirdek stdlib), yalnız satır içi veri ilkesi (A5'te veri kökünden yol hapsiyle dosya okunur) |
 
 ## Uyarlamalar (hasattan sonra, ayrı commit'lerle)
 

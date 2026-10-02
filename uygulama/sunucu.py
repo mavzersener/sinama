@@ -37,7 +37,7 @@ from sinama.cekirdek.hatalar import SucAnaliziHatasi  # noqa: E402
 VARSAYILAN_HOST = "127.0.0.1"
 VARSAYILAN_PORT = 8810
 VARSAYILAN_DIL_MODELI = "http://127.0.0.1:8080"
-SURUM = "a5.1"
+SURUM = "a5.3"
 WEB_DIST = os.path.join(KOK, "uygulama", "web", "dist")
 CALISMA_ALANLARI = ("soru_turu", "amac", "onaylayan", "soru", "kanal_alan", "mo_alan",
                     "bolge_alan", "mudahale", "kontrol", "tampon", "kesinti_tarihi")

@@ -37,6 +37,17 @@ class TestPaketle(unittest.TestCase):
         finally:
             shutil.rmtree(gecici, ignore_errors=True)
 
+    def test_ozet_dosyasi_kendini_icermez(self):
+        gecici = tempfile.mkdtemp(prefix="paket_ozet_")
+        try:
+            with open(os.path.join(gecici, "a.txt"), "w", encoding="utf-8") as f:
+                f.write("x")
+            satirlar = a5_paketle.ozet_yaz(gecici)
+            self.assertEqual([s.split("  ", 1)[1] for s in satirlar], ["a.txt"])
+            self.assertEqual(a5_paketle.ozet_listesi(gecici)[0].split("  ", 1)[1], "SHA256SUMS.txt")
+        finally:
+            shutil.rmtree(gecici, ignore_errors=True)
+
 
 if __name__ == "__main__":
     unittest.main()

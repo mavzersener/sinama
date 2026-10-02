@@ -104,6 +104,14 @@ def ozet_listesi(kok):
     return sorted(satirlar, key=lambda s: s.split("  ", 1)[1])
 
 
+def ozet_yaz(kok):
+    """SHA256SUMS.txt'i yazar — liste dosya AÇILMADAN hesaplanır (kendini içermez)."""
+    satirlar = ozet_listesi(kok)
+    with open(os.path.join(kok, "SHA256SUMS.txt"), "w", encoding="utf-8", newline="\n") as f:
+        f.write("\n".join(satirlar) + "\n")
+    return satirlar
+
+
 def paketle(cikti, python_surumu=None, platform=None, tekerlek=True):
     """Paketi üretir; zip yolunu döner."""
     if depo_icinde_mi(cikti):
@@ -126,8 +134,7 @@ def paketle(cikti, python_surumu=None, platform=None, tekerlek=True):
                                    platform=platform or sys.platform))
         with open(os.path.join(hedef, "baslat.bat"), "w", encoding="utf-8", newline="\r\n") as f:
             f.write(BASLAT)
-        with open(os.path.join(hedef, "SHA256SUMS.txt"), "w", encoding="utf-8", newline="\n") as f:
-            f.write("\n".join(ozet_listesi(hedef)) + "\n")
+        ozet_yaz(hedef)
         os.makedirs(cikti, exist_ok=True)
         zip_yolu = shutil.make_archive(os.path.join(cikti, ad), "zip", gecici, ad)
     return zip_yolu

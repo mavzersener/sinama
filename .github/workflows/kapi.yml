@@ -110,6 +110,12 @@ jobs:
         run: python -m pip install -r uygulama/gereksinimler.txt
       - name: Arka uç testleri
         run: python -m unittest tests.test_uygulama -v
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020  # v7.0.0
+        with:
+          node-version: "24"
+      - name: Ön yüz — tür denetimi ve derleme
+        working-directory: uygulama/web
+        run: npm ci --no-audit --no-fund && npm run build
 
   cekirdek:
     name: çekirdek tam kapı (${{ matrix.os }}, py${{ matrix.python }})

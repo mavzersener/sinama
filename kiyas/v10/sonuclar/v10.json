@@ -59,10 +59,10 @@
         },
         {
           "kimlik": "K17.5",
-          "deger": 0.0,
+          "deger": 1.0,
           "yon": ">=",
           "esik": 1.0,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir (başlangıç): sözlükler yok"
         },
         {
@@ -87,9 +87,7 @@
         "yanit_sayisi": 84,
         "oturum_dosyasi": 40,
         "depoda_yeni_ya_da_degisen": [],
-        "eksik_ceviri": [
-          "tr.json yok"
-        ],
+        "eksik_ceviri": [],
         "esdeger_olmayan": [],
         "hata": {}
       }

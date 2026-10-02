@@ -47,6 +47,7 @@ izlenebilirlik için kaynak@commit burada yazılır.
 | Tarih | Kapsam | Ne değişti | Doğrulama |
 |---|---|---|---|
 | 29.09.2026 | `cekirdek/` | paket `suc_analizi` → `sinama`, `SUC_ANALIZI_*` → `SINAMA_*`, dağıtım/komut/MCP adı `sinama`; CHANGELOG tarihçesi eski adla kaldı | 497 test (493 + 4 paket kimliği), kapsam kapısı aynı 23 modül / %93,7, test_mcp 132/0, demolar; paket kimliği testi mutasyonla sınandı |
+| 02.10.2026 | `uygulama/web/src/index.css` (A5.2) | React Flow stilleri (DataFlow tuvaline özgü) çıkarıldı; gövdeden `overflow: hidden` ve `#root` 100vh kilidi kaldırıldı (Rehberli ekranlar kayar); yazı tipi eklendi. Tema değişkenleri birebir | `tsc -b && vite build`; üç ekran tarayıcıda uçtan uca (TR/EN) |
 
 ## Kaynak depoların başları (29.09.2026)
 

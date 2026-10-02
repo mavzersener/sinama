@@ -144,12 +144,25 @@ class TestArkaUc(unittest.TestCase):
         self.assertEqual([d["ad"] for d in self.c.get("/api/veri").json()["dosyalar"]], ["olaylar.csv"])
         o = self.c.get("/api/veri/olaylar.csv/onizleme").json()
         self.assertEqual((o["sutunlar"], len(o["ilk"])), (["tarih", "kanal"], 5))
+        self.assertEqual(o["degerler"]["kanal"], ["cevrimici", "karakol"])
+        self.assertIsNone(o["degerler"]["tarih"])          # 30'dan çok farklı değer
         oid = self.c.post("/api/calisma", json={"soru_turu": "ARTIS", "amac": "kesifsel",
                                                 "kanal_alan": "kanal"}).json()["oturum_id"]
         self.assertEqual(self.c.post(f"/api/calisma/{oid}/kanit", json={"dosya": "olaylar.csv"}).status_code, 200)
         self.assertIn(self.c.post(f"/api/calisma/{oid}/hukum").json()["hukum"]["kategori"],
                       ("KIRILGAN", "BELİRSİZ", "ÇELİŞKİLİ"))
         self.assertEqual(self.c.get("/api/veri/yok.csv/onizleme").status_code, 400)
+
+    def test_kapi_reddi_422(self):
+        oid = self.c.post("/api/calisma", json={"soru_turu": "YOGUNLASMA", "amac": "kesifsel"}).json()["oturum_id"]
+        r = self.c.post(f"/api/calisma/{oid}/kanit", json={"satirlar": [{"tarih": "2025-01-01"}] * 5})
+        self.assertEqual(r.status_code, 200)   # kapı reddi Rehberli akışta hükme işlenir (ÇEKİMSER)
+        r = self.c.get("/api/calisma/yok/plan")
+        self.assertEqual((r.status_code, r.json()["hata"]["tur"]), (400, "dongu"))
+        from sinama.kalite.kapi import KapiRed
+        self.assertEqual(uyg._hata_yaniti(KapiRed("ret")).status_code, 422)
+        from sinama.cekirdek.hatalar import SucAnaliziHatasi
+        self.assertEqual(uyg._hata_yaniti(SucAnaliziHatasi("iç")).status_code, 500)
 
     def test_dil_modeli_yokken_sade_503(self):
         oid, _ = self.akis({"soru_turu": "ARTIS", "amac": "kesifsel"}, aylik_kayitlar())

@@ -57,6 +57,7 @@ dist/
 coverage/
 test-results/
 playwright-report/
+*.tsbuildinfo
 
 # --- Editör / işletim sistemi ---
 .vscode/

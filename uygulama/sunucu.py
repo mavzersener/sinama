@@ -43,6 +43,7 @@ CALISMA_ALANLARI = ("soru_turu", "amac", "onaylayan", "soru", "kanal_alan", "mo_
                     "bolge_alan", "mudahale", "kontrol", "tampon", "kesinti_tarihi")
 HIPOTEZ_ALANLARI = ("ifade", "mekanizma", "sonraki_kanit", "etki")
 SONUC_ALANLARI = ("sonuc_turu", "onaylayan", "onay_notu", "bulgular")
+ONIZLEME_DEGER_SINIRI = 30   # daha çok farklı değeri olan sütun kategorik sayılmaz
 # Kural tabanlı öneri: sıra önemlidir (ETKİ sorusu "artırımı" içerebilir).
 ONERI_KURALLARI = (
     ("ETKI", ("azalt", "etki", "müdahale", "işe yara", "önle", "sonrasında düş")),
@@ -51,6 +52,10 @@ ONERI_KURALLARI = (
     ("ARTIS", ("art", "yüksel", "çoğal", "eğilim", "trend")),
 )
 _MOTOR = threading.Lock()   # tek motor, tek kullanıcı: çekirdek çağrıları sırayla
+# Hata tipi → HTTP durumu (DataFlow ml-service suc köprüsünden kavram hasadı): kapı reddi
+# 422, düzeltilebilir istemci hataları 400, sistem 500; bilinmeyen tip 400.
+_TIP_DURUM = {"kapi": 422, "veri": 400, "guvenlik": 400, "kullanim": 400, "dongu": 400,
+              "kilit": 400, "sistem": 500}
 
 
 def depo_icinde_mi(yol):
@@ -108,8 +113,9 @@ def _sohbet(url, sistem, kullanici, en_cok=200):
         return None
 
 
-def _hata_yaniti(e, kod=400):
+def _hata_yaniti(e, kod=None):
     """Alan hatası → istemciye tek satırlık, tipli hata (iç ayrıntı sızdırılmaz)."""
+    kod = kod or _TIP_DURUM.get(getattr(e, "tip", None), 400)
     return JSONResponse(status_code=kod, content={"hata": {
         "tur": getattr(e, "tip", "sistem"), "mesaj": str(e), "oneri": getattr(e, "oneri", None)}})
 
@@ -276,8 +282,12 @@ def uygulama_olustur(veri_koku=None, dil_modeli_url=VARSAYILAN_DIL_MODELI):
         except (SucAnaliziHatasi, OSError, ValueError) as e:
             return _hata_yaniti(e)
         sutunlar = list(satirlar[0].keys()) if satirlar else []
+        degerler = {}
+        for s in sutunlar:   # kategorik alanların değerleri (müdahale/kontrol seçimi için)
+            farkli = sorted({str(r.get(s)) for r in satirlar if str(r.get(s) or "").strip()})
+            degerler[s] = farkli if len(farkli) <= ONIZLEME_DEGER_SINIRI else None
         return {"ad": ad, "sutunlar": sutunlar, "satir": len(satirlar), "ilk": satirlar[:5],
-                "kesildi": bool(veri.son_okuma.get("kesildi"))}
+                "degerler": degerler, "kesildi": bool(veri.son_okuma.get("kesildi"))}
 
     if os.path.isfile(os.path.join(WEB_DIST, "index.html")):
         app.mount("/", StaticFiles(directory=WEB_DIST, html=True), name="web")

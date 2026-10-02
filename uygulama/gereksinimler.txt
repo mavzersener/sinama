@@ -1,5 +1,8 @@
-# A5 arka ucu (ADR-003) — çekirdek standart kitaplıkla çalışır; bunlar yalnız uygulama/ içindir.
+# A5/A6 arka ucu (ADR-003, ADR-004) — çekirdek standart kitaplıkla çalışır; bunlar yalnız uygulama/ içindir.
 fastapi==0.122.0
 uvicorn==0.38.0
+# A6 Atölye (ADR-004): veri seti yükleme (çok parçalı) ve Ed25519 kanıt defteri
+python-multipart==0.0.20
+cryptography==46.0.6
 # testler (TestClient)
 httpx==0.28.1

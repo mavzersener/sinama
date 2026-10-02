@@ -2,6 +2,8 @@
   "uyg.baslik": "Sınama",
   "uyg.altbaslik": "Bilimsel suç analizi — Soru → Plan → Hüküm",
   "uyg.dil": "Dil",
+  "uyg.atolye": "Atölye",
+  "uyg.atolye_aciklama": "Düğüm editörü (DataFlow halefi): keşif ve önizleme; kanıt üreten düğümler sunucuda",
   "uyg.yeni": "Yeni çalışma",
   "uyg.dil_modeli_acik": "Dil modeli: açık",
   "uyg.dil_modeli_kapali": "Dil modeli: kapalı (akış tam çalışır)",

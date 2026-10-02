@@ -2,6 +2,8 @@
   "uyg.baslik": "Sınama",
   "uyg.altbaslik": "Scientific crime analysis — Question → Plan → Verdict",
   "uyg.dil": "Language",
+  "uyg.atolye": "Workshop",
+  "uyg.atolye_aciklama": "Node editor (DataFlow successor): exploration and preview; evidence-producing nodes run on the server",
   "uyg.yeni": "New study",
   "uyg.dil_modeli_acik": "Language model: on",
   "uyg.dil_modeli_kapali": "Language model: off (the flow works fully)",

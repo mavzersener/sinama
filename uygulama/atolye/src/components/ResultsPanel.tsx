@@ -117,6 +117,27 @@ interface ResultNodeData extends NodeData {
   type: string;
 }
 
+// Sınama A6 (ADR-004 md. 5, AGENTS kural 5): kanıt üreten hesap yalnız sunucuda, tek
+// motorda yapılır. Tarayıcı motorunun sonuçları ÖNİZLEMEdir; suç analizi düğümleri (suc_*)
+// ve kanıt paketi sunucuda üretilir; ajan yorumu dil modelidir (bağlayıcı değil).
+type SonucKaynagi = 'sunucu' | 'dil_modeli' | 'onizleme';
+export function sonucKaynagi(tip: string): SonucKaynagi {
+  if (tip.startsWith('suc_') || tip === 'evidence_export') return 'sunucu';
+  if (tip.startsWith('agent_')) return 'dil_modeli';
+  return 'onizleme';
+}
+const KAYNAK_ETIKET: Record<SonucKaynagi, string> = { sunucu: 'SUNUCU', dil_modeli: 'DİL MODELİ', onizleme: 'ÖNİZLEME' };
+const KAYNAK_RENK: Record<SonucKaynagi, string> = {
+  sunucu: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
+  dil_modeli: 'bg-violet-500/15 text-violet-300 border-violet-500/30',
+  onizleme: 'bg-slate-500/15 text-slate-300 border-slate-500/30',
+};
+const KAYNAK_ACIKLAMA: Record<SonucKaynagi, string> = {
+  sunucu: 'Sunucuda, Sınama çekirdeğiyle üretildi (kapı, kanıt oturumu ve hash zinciri sunucuda).',
+  dil_modeli: 'Yerel dil modelinin yorumu — bağlayıcı değildir, kanıt değildir.',
+  onizleme: 'Önizleme: tarayıcı motorunda hesaplandı — kanıt değildir. Kanıt yalnız sunucuda üretilir (Suç Analizi düğümleri, kanıt paketi).',
+};
+
 function ResultCard({ node }: { node: { data: ResultNodeData; id: string } }) {
   const [expanded, setExpanded] = useState(false);
   const result = node.data.result;
@@ -124,6 +145,7 @@ function ResultCard({ node }: { node: { data: ResultNodeData; id: string } }) {
   if (!result) return null;
 
   const isError = result.status === 'error';
+  const kaynak = sonucKaynagi(node.data.type);
 
   return (
     <div className={`bg-slate-800/50 rounded-lg border ${isError ? 'border-red-800/50' : 'border-slate-700'} overflow-hidden`}>
@@ -153,12 +175,21 @@ function ResultCard({ node }: { node: { data: ResultNodeData; id: string } }) {
           {!isError && result.demo && (
             <span className="text-[9px] font-bold px-1 rounded bg-amber-500/15 text-amber-400 border border-amber-500/30">DEMO</span>
           )}
+          {!isError && (
+            <span data-testid={`kaynak-${kaynak}`} title={KAYNAK_ACIKLAMA[kaynak]}
+              className={`text-[9px] font-bold px-1 rounded border ${KAYNAK_RENK[kaynak]}`}>{KAYNAK_ETIKET[kaynak]}</span>
+          )}
         </div>
         <ChevronDown size={14} className={`text-slate-500 transition-transform ${expanded ? 'rotate-180' : ''}`} />
       </button>
 
       {expanded && (
         <div className="px-3 pb-3 border-t border-slate-700/50">
+          {!isError && kaynak === 'onizleme' && (
+            <div className="mt-2 text-[10px] text-slate-400 bg-slate-900/40 border border-slate-700/60 rounded p-2">
+              {KAYNAK_ACIKLAMA.onizleme}
+            </div>
+          )}
           {!isError && result.demo && (
             <div className="mt-2 text-[10px] text-amber-300 bg-amber-900/20 border border-amber-800/40 rounded p-2">
               Sentetik (demo) veriden üretildi — gerçek bulgu değildir. Gerçek veri için kaynağa dosya yükleyin.

@@ -1,0 +1,394 @@
+{
+ "kaynak": "DataFlow@5ea8652 tests/fixtures.ts (blob d94c99cd0615f28a9114dccce67db6701c9f5674) — Node 24 tür ayıklamasıyla JSON'a çevrildi; testUsers alınmadı (B testleri kullanmıyor)",
+ "demoWorkflow": {
+  "name": "Sales Analysis Pipeline",
+  "description": "Analyze quarterly sales data with anomaly detection and clustering",
+  "nodes": [
+   {
+    "id": "csv-1",
+    "type": "custom",
+    "position": {
+     "x": 50,
+     "y": 100
+    },
+    "data": {
+     "label": "Sales CSV",
+     "type": "csv_source",
+     "category": "Data Input",
+     "icon": "FileSpreadsheet",
+     "color": "#10b981",
+     "config": {
+      "filename": "sales.csv",
+      "delimiter": ",",
+      "hasHeader": true
+     },
+     "status": "idle"
+    }
+   },
+   {
+    "id": "dq-1",
+    "type": "custom",
+    "position": {
+     "x": 350,
+     "y": 100
+    },
+    "data": {
+     "label": "Data Quality Check",
+     "type": "data_quality",
+     "category": "Processing",
+     "icon": "ShieldCheck",
+     "color": "#f59e0b",
+     "config": {
+      "columns": []
+     },
+     "status": "idle"
+    }
+   },
+   {
+    "id": "stats-1",
+    "type": "custom",
+    "position": {
+     "x": 50,
+     "y": 300
+    },
+    "data": {
+     "label": "Statistics",
+     "type": "statistics",
+     "category": "Analysis",
+     "icon": "PieChart",
+     "color": "#8b5cf6",
+     "config": {
+      "columns": "revenue,profit",
+      "stats": [
+       "count",
+       "mean",
+       "std",
+       "min",
+       "max"
+      ]
+     },
+     "status": "idle"
+    }
+   },
+   {
+    "id": "anom-1",
+    "type": "custom",
+    "position": {
+     "x": 650,
+     "y": 100
+    },
+    "data": {
+     "label": "Anomaly Detection",
+     "type": "anomaly_detection",
+     "category": "Analysis",
+     "icon": "AlertTriangle",
+     "color": "#8b5cf6",
+     "config": {
+      "columns": "revenue",
+      "method": "iqr",
+      "threshold": 1.5
+     },
+     "status": "idle"
+    }
+   },
+   {
+    "id": "cluster-1",
+    "type": "custom",
+    "position": {
+     "x": 650,
+     "y": 300
+    },
+    "data": {
+     "label": "K-Means Clustering",
+     "type": "clustering",
+     "category": "Analysis",
+     "icon": "Target",
+     "color": "#8b5cf6",
+     "config": {
+      "features": "revenue,profit",
+      "k": 3,
+      "maxIterations": 50
+     },
+     "status": "idle"
+    }
+   },
+   {
+    "id": "chart-1",
+    "type": "custom",
+    "position": {
+     "x": 950,
+     "y": 100
+    },
+    "data": {
+     "label": "Results Chart",
+     "type": "chart",
+     "category": "Output",
+     "icon": "BarChart",
+     "color": "#ec4899",
+     "config": {
+      "chartType": "bar",
+      "title": "Sales Analysis Results"
+     },
+     "status": "idle"
+    }
+   },
+   {
+    "id": "export-1",
+    "type": "custom",
+    "position": {
+     "x": 950,
+     "y": 300
+    },
+    "data": {
+     "label": "Export CSV",
+     "type": "export",
+     "category": "Output",
+     "icon": "Download",
+     "color": "#ec4899",
+     "config": {
+      "format": "csv",
+      "filename": "sales_analysis_results"
+     },
+     "status": "idle"
+    }
+   }
+  ],
+  "edges": [
+   {
+    "id": "e1",
+    "source": "csv-1",
+    "target": "dq-1"
+   },
+   {
+    "id": "e2",
+    "source": "csv-1",
+    "target": "stats-1"
+   },
+   {
+    "id": "e3",
+    "source": "dq-1",
+    "target": "anom-1"
+   },
+   {
+    "id": "e4",
+    "source": "csv-1",
+    "target": "cluster-1"
+   },
+   {
+    "id": "e5",
+    "source": "anom-1",
+    "target": "chart-1"
+   },
+   {
+    "id": "e6",
+    "source": "cluster-1",
+    "target": "export-1"
+   }
+  ]
+ },
+ "policeWorkflow": {
+  "name": "SNA + Cografi Hotspot Analizi",
+  "description": "Supheli sosyal ag analizi ve cografi sicak nokta tespiti",
+  "nodes": [
+   {
+    "id": "pts-1",
+    "type": "custom",
+    "position": {
+     "x": 50,
+     "y": 100
+    },
+    "data": {
+     "label": "PTS Sorgu",
+     "type": "pts_source",
+     "category": "Kolluk Data",
+     "icon": "Shield",
+     "color": "#dc2626",
+     "config": {
+      "queryType": "person",
+      "queryValue": "",
+      "legalBasis": "5271-md-3",
+      "kvkkClass": "Gizli"
+     },
+     "status": "idle"
+    }
+   },
+   {
+    "id": "anpr-1",
+    "type": "custom",
+    "position": {
+     "x": 50,
+     "y": 300
+    },
+    "data": {
+     "label": "ANPR Plaka",
+     "type": "anpr_source",
+     "category": "Kolluk Data",
+     "icon": "Camera",
+     "color": "#dc2626",
+     "config": {
+      "plate": "",
+      "startDate": "2026-01-01",
+      "endDate": "2026-06-30",
+      "legalBasis": "2559-md-4",
+      "kvkkClass": "Kisitli"
+     },
+     "status": "idle"
+    }
+   },
+   {
+    "id": "sna-1",
+    "type": "custom",
+    "position": {
+     "x": 350,
+     "y": 100
+    },
+    "data": {
+     "label": "Sosyal Ag Analizi",
+     "type": "sna",
+     "category": "Kolluk Analysis",
+     "icon": "Network",
+     "color": "#7c3aed",
+     "config": {
+      "personColumn": "person_id",
+      "linkColumn": "tc_kimlik",
+      "method": "degree"
+     },
+     "status": "idle"
+    }
+   },
+   {
+    "id": "hotspot-1",
+    "type": "custom",
+    "position": {
+     "x": 350,
+     "y": 300
+    },
+    "data": {
+     "label": "Cografi Hotspot",
+     "type": "geo_hotspot",
+     "category": "Kolluk Analysis",
+     "icon": "MapPin",
+     "color": "#7c3aed",
+     "config": {
+      "latColumn": "latitude",
+      "lngColumn": "longitude",
+      "weightColumn": "violation_count",
+      "gridSize": 0.01
+     },
+     "status": "idle"
+    }
+   },
+   {
+    "id": "evidence-1",
+    "type": "custom",
+    "position": {
+     "x": 650,
+     "y": 200
+    },
+    "data": {
+     "label": "Evidence Export",
+     "type": "evidence_export",
+     "category": "Output",
+     "icon": "FileLock",
+     "color": "#dc2626",
+     "config": {
+      "caseNumber": "2026/1234",
+      "officerId": "PN-12345",
+      "format": "pdf"
+     },
+     "status": "idle"
+    }
+   }
+  ],
+  "edges": [
+   {
+    "id": "e1",
+    "source": "pts-1",
+    "target": "sna-1"
+   },
+   {
+    "id": "e2",
+    "source": "anpr-1",
+    "target": "hotspot-1"
+   },
+   {
+    "id": "e3",
+    "source": "sna-1",
+    "target": "evidence-1"
+   },
+   {
+    "id": "e4",
+    "source": "hotspot-1",
+    "target": "evidence-1"
+   }
+  ]
+ },
+ "minimalWorkflow": {
+  "name": "Minimal Test",
+  "description": "A minimal workflow for quick testing",
+  "nodes": [],
+  "edges": []
+ },
+ "workflowUpdate": {
+  "name": "Updated Sales Pipeline",
+  "description": "Updated with cross-validation node",
+  "status": "published",
+  "isPublic": "true",
+  "tags": "sales,analytics,q1"
+ },
+ "sampleDataset": {
+  "name": "sales_q1_2026",
+  "filename": "sales_q1_2026.csv",
+  "columns": [
+   "date",
+   "region",
+   "product",
+   "revenue",
+   "profit",
+   "units_sold"
+  ],
+  "rowCount": 15000,
+  "sizeBytes": 2457600
+ },
+ "policeDataset": {
+  "name": "anpr_captures_istanbul",
+  "filename": "anpr_captures.csv",
+  "columns": [
+   "capture_id",
+   "plate",
+   "capture_time",
+   "location",
+   "camera_id",
+   "speed_kmh"
+  ],
+  "rowCount": 50000,
+  "sizeBytes": 8192000
+ },
+ "auditActions": [
+  {
+   "action": "workflow_create",
+   "entityType": "workflow",
+   "details": "Created workflow: Test Analysis"
+  },
+  {
+   "action": "workflow_execute",
+   "entityType": "workflow",
+   "details": "Started execution #42"
+  },
+  {
+   "action": "node_add",
+   "entityType": "node",
+   "details": "Added node: csv_source"
+  },
+  {
+   "action": "connect",
+   "entityType": "edge",
+   "details": "Connected csv-1 to stats-1"
+  },
+  {
+   "action": "workflow_update",
+   "entityType": "workflow",
+   "details": "Updated workflow: Sales Analysis Pipeline"
+  }
+ ]
+}

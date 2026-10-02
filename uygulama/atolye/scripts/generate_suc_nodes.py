@@ -3,7 +3,8 @@
 
 Çıktı: src/nodes/sucAnaliziNodes.generated.ts — elle düzenlenmez;
 yeniden üretim: PYTHONUTF8=1 python scripts/generate_suc_nodes.py
-(suc_analizi paketi import edilebilir olmalı: pip install -e C:\\Projects\\suc_analizi)
+(Sınama A6: araç kaydı bu deponun çekirdeğinden okunur — cekirdek/ sys.path'e
+eklenir; ayrı suc_analizi kurulumu gerekmez ve kullanılmaz)
 
 Kapsam: yalnız inline veri ('satirlar') kabul eden araçlar — süreç
 (dongu_*, kanit_*, muhakeme_izi, brifing_uret) ve skaler-girdili araçlar
@@ -58,14 +59,22 @@ def config_alanlari(sema_so):
 
 
 def uret():
-    from suc_analizi.arayuz import araclar  # noqa: F401 — kayıt yan etkisi
-    from suc_analizi.arayuz.ortak import ARACLAR
+    # Sınama A6 (ADR-004): kaynak, ayrı suc_analizi paketi değil Sınama çekirdeği —
+    # köprü (uygulama/atolye_sunucu.py) de aynı kaydı kullanır.
+    kok = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
+    sys.path.insert(0, os.path.join(kok, "cekirdek"))
+    from sinama.arayuz import araclar  # noqa: F401 — kayıt yan etkisi
+    from sinama.arayuz.ortak import ARACLAR
 
     nodelar = []
     for ad in sorted(ARACLAR):
         kayit = ARACLAR[ad]
         props = kayit["sema"].get("properties", {})
         if "satirlar" not in props:
+            continue
+        # Sınama A6: oturum_id isteyen araç bir sürecin adımıdır (ör. kanit_bagla,
+        # calisma_baslat'tan sonra) — yukarıdaki kapsam kuralı gereği node olmaz.
+        if "oturum_id" in kayit["sema"].get("required", []):
             continue
         alanlar = config_alanlari(kayit["sema"])
         nodelar.append({
@@ -95,7 +104,7 @@ def uret():
     dizi_govde = json.dumps(dizi_alanlari, ensure_ascii=False, indent=2)
     ts = (
         "// OTOMATİK ÜRETİLDİ — elle düzenlemeyin.\n"
-        "// Üretici: scripts/generate_suc_nodes.py (kaynak: suc_analizi arayuz/araclar.py)\n"
+        "// Üretici: scripts/generate_suc_nodes.py (kaynak: Sınama cekirdek/sinama/arayuz/araclar.py)\n"
         "import type { NodeDefinition } from './nodeDefinitions';\n\n"
         f"export const sucAnaliziNodes: NodeDefinition[] = {govde};\n\n"
         "// node tipi -> array tipli config alanları (motor metni listeye çevirir)\n"

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-uygulama/sunucu.py — A5 tek süreç arka uç (ADR-003).
+uygulama/sunucu.py — tek süreç arka uç: A5 Rehberli (ADR-003) + A6 Atölye (ADR-004).
 
 FastAPI uygulaması çekirdeği süreç içinde çağırır; ikinci bir hesap yolu yoktur
 (AGENTS kural 5): her uç, MCP ile BİREBİR aynı boru hattı olan
@@ -34,10 +34,12 @@ from sinama.bilim import sablon, sinamalar  # noqa: E402
 from sinama.cekirdek import guvenlik, veri  # noqa: E402
 from sinama.cekirdek.hatalar import SucAnaliziHatasi  # noqa: E402
 
+from . import atolye_sunucu  # noqa: E402
+
 VARSAYILAN_HOST = "127.0.0.1"
 VARSAYILAN_PORT = 8810
 VARSAYILAN_DIL_MODELI = "http://127.0.0.1:8080"
-SURUM = "a5.3"
+SURUM = "a6.0"
 WEB_DIST = os.path.join(KOK, "uygulama", "web", "dist")
 CALISMA_ALANLARI = ("soru_turu", "amac", "onaylayan", "soru", "kanal_alan", "mo_alan",
                     "bolge_alan", "mudahale", "kontrol", "tampon", "kesinti_tarihi")
@@ -295,6 +297,10 @@ def uygulama_olustur(veri_koku=None, dil_modeli_url=VARSAYILAN_DIL_MODELI):
             degerler[s] = farkli if len(farkli) <= ONIZLEME_DEGER_SINIRI else None
         return {"ad": ad, "sutunlar": sutunlar, "satir": len(satirlar), "ilk": satirlar[:5],
                 "degerler": degerler, "kesildi": bool(veri.son_okuma.get("kesildi"))}
+
+    # A6 Atölye (ADR-004): aynı süreç, aynı motor kilidi; Rehberli'nin "/" bağlamasından ÖNCE.
+    app.state.atolye = atolye_sunucu.bagla(app, kok, cekirdek_sunucu.arac_calistir, _MOTOR,
+                                           SucAnaliziHatasi)
 
     if os.path.isfile(os.path.join(WEB_DIST, "index.html")):
         app.mount("/", StaticFiles(directory=WEB_DIST, html=True), name="web")

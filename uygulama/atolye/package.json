@@ -13,7 +13,8 @@
     "test": "vitest run",
     "ui": "playwright test -c tests/ui/playwright.config.ts",
     "ui:headed": "playwright test -c tests/ui/playwright.config.ts --headed",
-    "ui:rapor": "playwright show-report tests/ui/rapor"
+    "ui:rapor": "playwright show-report tests/ui/rapor",
+    "e2e": "playwright test -c e2e/playwright.config.ts"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.4",

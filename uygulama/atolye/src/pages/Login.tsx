@@ -1,22 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-function getOAuthUrl() {
-  const kimiAuthUrl = import.meta.env.VITE_KIMI_AUTH_URL;
-  const appID = import.meta.env.VITE_APP_ID;
-  const redirectUri = `${window.location.origin}/api/oauth/callback`;
-  const state = btoa(redirectUri);
-
-  const url = new URL(`${kimiAuthUrl}/api/oauth/authorize`);
-  url.searchParams.set("client_id", appID);
-  url.searchParams.set("redirect_uri", redirectUri);
-  url.searchParams.set("response_type", "code");
-  url.searchParams.set("scope", "profile");
-  url.searchParams.set("state", state);
-
-  return url.toString();
-}
-
 export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center">
@@ -25,9 +9,8 @@ export default function Login() {
           <CardTitle>Welcome</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
-          {/* Yerel kurulum: Kimi'nin OAuth sunucusu bu makineden erişilemez.
-              /api/dev-login, DEV_LOGIN=1 iken (bkz. .env) aynı oturum
-              çerezini yerelde imzalar — sunucuya hiç ağ isteği gitmez. */}
+          {/* Sınama A6 (ADR-004 md. 3-4): oturum yok, tek yerel kullanıcı; Kimi OAuth kapsam
+              dışı. Düğme /api/dev-login'e gider, o da doğrudan Atölye'ye döner. */}
           <Button
             className="w-full"
             size="lg"
@@ -36,16 +19,6 @@ export default function Login() {
             }}
           >
             Bu bilgisayarda giriş yap
-          </Button>
-          <Button
-            className="w-full"
-            size="lg"
-            variant="outline"
-            onClick={() => {
-              window.location.href = getOAuthUrl();
-            }}
-          >
-            Sign in with Kimi
           </Button>
         </CardContent>
       </Card>

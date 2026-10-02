@@ -30,6 +30,9 @@ function Ust({ ekran, saglik }: { ekran: Ekran; saglik: Saglik | null }) {
           ))}
         </nav>
         <DilSecici />
+        <a className="text-xs text-sky-300 underline" href="/atolye/" title={t("uyg.atolye_aciklama")}>
+          {t("uyg.atolye")}
+        </a>
         {ekran.ad !== "soru" && (
           <button className="text-xs text-sky-300 underline" onClick={() => git({ ad: "soru" })}>
             {t("uyg.yeni")}

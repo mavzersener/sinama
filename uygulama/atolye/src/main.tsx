@@ -8,7 +8,8 @@ import { HataSiniri } from './components/HataSiniri'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
+    {/* Sınama A6: Atölye /atolye/ altında sunulur (vite base) — yönlendirici de oradan başlar. */}
+    <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '')}>
       <TRPCProvider>
         <HataSiniri bolge="Uygulama">
           <App />

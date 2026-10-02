@@ -1,5 +1,5 @@
 // OTOMATİK ÜRETİLDİ — elle düzenlemeyin.
-// Üretici: scripts/generate_suc_nodes.py (kaynak: suc_analizi arayuz/araclar.py)
+// Üretici: scripts/generate_suc_nodes.py (kaynak: Sınama cekirdek/sinama/arayuz/araclar.py)
 import type { NodeDefinition } from './nodeDefinitions';
 
 export const sucAnaliziNodes: NodeDefinition[] = [
@@ -187,6 +187,34 @@ export const sucAnaliziNodes: NodeDefinition[] = [
     ]
   },
   {
+    "type": "suc_bolge_oran",
+    "label": "bolge oran",
+    "category": "Suç Analizi",
+    "icon": "Shield",
+    "description": "Bölge oranı: kayıtları bölgeye göre topla + nüfusa oranla (ham vs oran, R12)",
+    "color": "#dc2626",
+    "inputs": 1,
+    "outputs": 1,
+    "defaultConfig": {
+      "bolge_alan": "",
+      "nufus_alan": ""
+    },
+    "configFields": [
+      {
+        "name": "bolge_alan",
+        "label": "bolge_alan",
+        "type": "text",
+        "required": true
+      },
+      {
+        "name": "nufus_alan",
+        "label": "nufus_alan",
+        "type": "text",
+        "placeholder": "kayıt başına bölge nüfusu (opsiyonel)"
+      }
+    ]
+  },
+  {
     "type": "suc_bulanik_eslesme",
     "label": "bulanik eslesme",
     "category": "Suç Analizi",
@@ -338,12 +366,25 @@ export const sucAnaliziNodes: NodeDefinition[] = [
     "label": "cusum",
     "category": "Suç Analizi",
     "icon": "Shield",
-    "description": "Günlük seride kalıcı artış (CUSUM) alarmları",
+    "description": "Kalıcı artış alarmı: kendinden başlayan CUSUM (dönem hafta/ay otomatik, Anscombe dönüşümlü); eşik seri düzeyinde kalibre: değişim yokken seri boyunca yanlış alarm hedefi %5 (BMK v9'da ölçülen %2,5)",
     "color": "#dc2626",
     "inputs": 1,
     "outputs": 1,
-    "defaultConfig": {},
-    "configFields": []
+    "defaultConfig": {
+      "donem": ""
+    },
+    "configFields": [
+      {
+        "name": "donem",
+        "label": "donem",
+        "type": "select",
+        "options": [
+          "hafta",
+          "ay"
+        ],
+        "placeholder": "verilmezse otomatik (aylar arası heterojenlik varsa ay)"
+      }
+    ]
   },
   {
     "type": "suc_dagilim_olculeri",
@@ -368,39 +409,6 @@ export const sucAnaliziNodes: NodeDefinition[] = [
       {
         "name": "alan",
         "label": "alan",
-        "type": "text"
-      }
-    ]
-  },
-  {
-    "type": "suc_dongu_veri",
-    "label": "dongu veri",
-    "category": "Suç Analizi",
-    "icon": "Shield",
-    "description": "Döngü VERİ fazı: profil + fitness gate (otomatik)",
-    "color": "#dc2626",
-    "inputs": 1,
-    "outputs": 1,
-    "defaultConfig": {
-      "oturum_id": "",
-      "analiz": "",
-      "sayisal_alan": ""
-    },
-    "configFields": [
-      {
-        "name": "oturum_id",
-        "label": "oturum_id",
-        "type": "text",
-        "required": true
-      },
-      {
-        "name": "analiz",
-        "label": "analiz",
-        "type": "text"
-      },
-      {
-        "name": "sayisal_alan",
-        "label": "sayisal_alan",
         "type": "text"
       }
     ]
@@ -615,6 +623,47 @@ export const sucAnaliziNodes: NodeDefinition[] = [
         "label": "y",
         "type": "text",
         "placeholder": "virgülle ayrılmış liste"
+      }
+    ]
+  },
+  {
+    "type": "suc_kesinti_analizi",
+    "label": "kesinti analizi",
+    "category": "Suç Analizi",
+    "icon": "Shield",
+    "description": "Kesintili zaman serisi (ITS): kesinti tarihindeki SEVİYE ve EĞİM değişimi, güven aralığı ve p ile (segmentli regresyon). Tek grup ITS nedensellik kanıtlamaz",
+    "color": "#dc2626",
+    "inputs": 1,
+    "outputs": 1,
+    "defaultConfig": {
+      "kesinti_tarihi": "",
+      "donem": "ay",
+      "tarih_alan": "tarih"
+    },
+    "configFields": [
+      {
+        "name": "kesinti_tarihi",
+        "label": "kesinti_tarihi",
+        "type": "text",
+        "placeholder": "kesintinin ilk günü (YYYY-AA-GG)",
+        "required": true
+      },
+      {
+        "name": "donem",
+        "label": "donem",
+        "type": "select",
+        "options": [
+          "gun",
+          "hafta",
+          "ay"
+        ],
+        "default": "ay"
+      },
+      {
+        "name": "tarih_alan",
+        "label": "tarih_alan",
+        "type": "text",
+        "default": "tarih"
       }
     ]
   },
@@ -980,24 +1029,33 @@ export const sucAnaliziNodes: NodeDefinition[] = [
     "label": "nni",
     "category": "Suç Analizi",
     "icon": "Shield",
-    "description": "NNI + z-testi ile kümelenme anlamlılığı (kenar_duzeltme=true ile Donnelly kenar düzeltmesi, v6.3)",
+    "description": "NNI + z-testi ile küresel kümelenme anlamlılığı (Donnelly kenar düzeltmesi varsayılan; alan verilmezse sınır kutusunun yansız tahmini)",
     "color": "#dc2626",
     "inputs": 1,
     "outputs": 1,
     "defaultConfig": {
-      "kenar_duzeltme": "",
+      "kenar_duzeltme": true,
+      "alan_km2": "",
       "cevre_km": ""
     },
     "configFields": [
       {
         "name": "kenar_duzeltme",
         "label": "kenar_duzeltme",
-        "type": "boolean"
+        "type": "boolean",
+        "default": true
+      },
+      {
+        "name": "alan_km2",
+        "label": "alan_km2",
+        "type": "number",
+        "placeholder": "çalışma alanı (km²)"
       },
       {
         "name": "cevre_km",
         "label": "cevre_km",
-        "type": "number"
+        "type": "number",
+        "placeholder": "çalışma alanının çevresi (km)"
       }
     ]
   },
@@ -1164,6 +1222,108 @@ export const sucAnaliziNodes: NodeDefinition[] = [
     ]
   },
   {
+    "type": "suc_rehberli_calisma",
+    "label": "rehberli calisma",
+    "category": "Suç Analizi",
+    "icon": "Shield",
+    "description": "Rehberli akış (Soru → Plan → Hüküm, ADR-002): soru türü şablonundan hipotez seti (birincil + rakipler + H_bilinmeyen), doğrulayıcıda veriden önce kilit, sınamalar ve kategorik hüküm (DESTEKLENDİ/KIRILGAN/BELİRSİZ/ÇELİŞKİLİ/ÇEKİMSER) — olasılık yok, hüküm taslak",
+    "color": "#dc2626",
+    "inputs": 1,
+    "outputs": 1,
+    "defaultConfig": {
+      "soru_turu": "",
+      "amac": "",
+      "onaylayan": "",
+      "kanal_alan": "",
+      "mo_alan": "",
+      "soru": "",
+      "bolge_alan": "",
+      "mudahale": "",
+      "kontrol": "",
+      "tampon": "",
+      "kesinti_tarihi": ""
+    },
+    "configFields": [
+      {
+        "name": "soru_turu",
+        "label": "soru_turu",
+        "type": "select",
+        "options": [
+          "ARTIS",
+          "YOGUNLASMA",
+          "SERI",
+          "ETKI"
+        ],
+        "required": true
+      },
+      {
+        "name": "amac",
+        "label": "amac",
+        "type": "select",
+        "options": [
+          "dogrulayici",
+          "kesifsel",
+          "operasyonel"
+        ],
+        "required": true
+      },
+      {
+        "name": "onaylayan",
+        "label": "onaylayan",
+        "type": "text",
+        "placeholder": "doğrulayıcı çalışmada kilidi alan kişi (zorunlu)"
+      },
+      {
+        "name": "kanal_alan",
+        "label": "kanal_alan",
+        "type": "text",
+        "placeholder": "ARTIS: bildirim kanalı/kaynak alanı (R-BILDIRIM)"
+      },
+      {
+        "name": "mo_alan",
+        "label": "mo_alan",
+        "type": "text",
+        "placeholder": "SERI: MO metni alanı (zorunlu)"
+      },
+      {
+        "name": "soru",
+        "label": "soru",
+        "type": "text",
+        "placeholder": "soru metni (kayıt için)"
+      },
+      {
+        "name": "bolge_alan",
+        "label": "bolge_alan",
+        "type": "text",
+        "placeholder": "ETKI: bölge alanı (zorunlu)"
+      },
+      {
+        "name": "mudahale",
+        "label": "mudahale",
+        "type": "text",
+        "placeholder": "ETKI: müdahale bölgesinin değeri (zorunlu)"
+      },
+      {
+        "name": "kontrol",
+        "label": "kontrol",
+        "type": "text",
+        "placeholder": "ETKI: kontrol bölgesinin değeri"
+      },
+      {
+        "name": "tampon",
+        "label": "tampon",
+        "type": "text",
+        "placeholder": "ETKI: yer değiştirme tamponunun değeri"
+      },
+      {
+        "name": "kesinti_tarihi",
+        "label": "kesinti_tarihi",
+        "type": "text",
+        "placeholder": "ETKI: müdahalenin başlangıcı (zorunlu)"
+      }
+    ]
+  },
+  {
     "type": "suc_risk_arazi",
     "label": "risk arazi",
     "category": "Suç Analizi",
@@ -1238,13 +1398,16 @@ export const sucAnaliziNodes: NodeDefinition[] = [
     "label": "seri eslestirme",
     "category": "Suç Analizi",
     "icon": "Shield",
-    "description": "MO metin benzerliğiyle seri suç eşleştirme",
+    "description": "Seri suç ADAYI eşleştirme: kanıt hatları (MO ayırt edici paylaşım testi + FDR; uzay; zaman) ve katman (güçlü: hatlar örtüşür; zayıf: yalnız MO). Aday bir inceleme hipotezidir, aynı fail iddiası değildir",
     "color": "#dc2626",
     "inputs": 1,
     "outputs": 1,
     "defaultConfig": {
       "mo_alan": "",
-      "esik": 0.6
+      "esik": "",
+      "mesafe_km": 2.0,
+      "gun": 60,
+      "q_esik": 0.05
     },
     "configFields": [
       {
@@ -1257,7 +1420,26 @@ export const sucAnaliziNodes: NodeDefinition[] = [
         "name": "esik",
         "label": "esik",
         "type": "number",
-        "default": 0.6
+        "placeholder": "isteğe bağlı ek Ružička benzerlik alt sınırı (boş=yok)"
+      },
+      {
+        "name": "mesafe_km",
+        "label": "mesafe_km",
+        "type": "number",
+        "default": 2.0
+      },
+      {
+        "name": "gun",
+        "label": "gun",
+        "type": "number",
+        "default": 60
+      },
+      {
+        "name": "q_esik",
+        "label": "q_esik",
+        "type": "number",
+        "default": 0.05,
+        "placeholder": "MO testi için FDR düzeyi (0-1)"
       }
     ]
   },

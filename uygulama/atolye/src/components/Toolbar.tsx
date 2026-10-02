@@ -399,6 +399,15 @@ export default function Toolbar() {
           Akademik Mod
         </button>
 
+        {/* Sınama A6: aynı süreçteki Rehberli yüz (soru → plan → kategorik hüküm) */}
+        <a
+          href="/"
+          title="Sınama Rehberli: ön-kayıtlı bilimsel akış — soru, plan, kategorik hüküm"
+          className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs text-sky-300 hover:text-sky-200 underline"
+        >
+          Sınama Rehberli
+        </a>
+
         <div className="w-px h-6 bg-slate-800 mx-1" />
 
         {/* Undo/Redo */}

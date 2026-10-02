@@ -97,10 +97,10 @@ jobs:
   uygulama:
     # A5 arka ucu (ADR-003): FastAPI yalnız uygulama/ için kurulur; çekirdek işleri
     # paketsiz koşar ve standart kitaplıkla çalıştığını böylece kanıtlar.
-    name: uygulama (A5 arka uç)
+    name: uygulama (A5 Rehberli + A6 Atölye)
     needs: bekci
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
@@ -108,8 +108,8 @@ jobs:
           python-version: "3.12"
       - name: Paketler
         run: python -m pip install -r uygulama/gereksinimler.txt
-      - name: Arka uç testleri
-        run: python -m unittest tests.test_uygulama -v
+      - name: Arka uç testleri (A5 + A6 Atölye)
+        run: python -m unittest tests.test_uygulama tests.test_atolye_depo tests.test_atolye_kanit tests.test_atolye_sunucu -v
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020  # v7.0.0
         with:
           node-version: "24"
@@ -119,6 +119,11 @@ jobs:
       - name: Üç ekran uçtan uca (Playwright, gerçek arka uç, sentetik veri)
         working-directory: uygulama/web
         run: npx playwright install --with-deps chromium && npm run e2e
+      - name: Atölye — tür denetimi, derleme ve taşınan ön yüz testleri (E1)
+        working-directory: uygulama/atolye
+        run: npm ci --no-audit --no-fund && npm run build && npx vitest run
+      - name: Atölye eşdeğerliği E1–E5 (ön-kayıt 93fd618; E3 Playwright, gerçek arka uç)
+        run: python betikler/a6_esdegerlik.py
 
   cekirdek:
     name: çekirdek tam kapı (${{ matrix.os }}, py${{ matrix.python }})

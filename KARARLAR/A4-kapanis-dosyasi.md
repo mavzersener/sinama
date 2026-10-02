@@ -1,8 +1,9 @@
 # A4 kapanış dosyası — araç dürüstlüğü ve bilim katmanı v1
 
 - **Hazırlayan:** otonom çalışma (30.09–01.10.2026), proje sahibinin talimatıyla.
-- **Durum:** A4 **AÇIK**. Bu dosya kapanış için kanıtı toplar; kapanış kararı proje
-  sahibinindir (ADR-001: "her aşama testler yeşilken ve proje sahibinin onayıyla kapanır").
+- **Durum:** A4 **KAPANDI — 02.10.2026** (proje sahibinin onayı). Testler yeşilken: CI
+  `36977568707` (`253bfc3`) — BMK v0–v9 Linux/py3.12'de birebir, çekirdek tam kapı Linux ve
+  Windows. A5 açılmadı: ADR-003 taslağı sahibin kabulünü bekliyor.
 - **Çıkış ölçütü (ADR-001):** "BMK'da ölçülen kazanç."
 
 ## 1. Ölçülen kazanç (BMK, ön-kayıtlı; her sürüm uygulamadan ÖNCE kilitlendi)
@@ -87,15 +88,16 @@ kayıtlıdır ve her biri bir ders üretti:
 | Oturumlar `SINAMA_LOG_DIR` yoksa çalışma dizinine | açık | A5 (ADR-003 taslağı md. 3) |
 | P06 mahremiyet düzeltmesinin kanoniğe geri taşınması | açık | sahibin kararı; A6'ya kadar varsayılan |
 
-## 6. Öneri
+## 6. Öneri ve karar
 
 A4'ün çıkış ölçütü karşılandı: 10 ön-kayıtlı kıyasta 37/96 → 90/96, kalan 6 ölçütün her
 biri ölçülmüş ve nedeni belgeli (yöntem ya da bilgi sınırı, biri ölçüt hatası).
 **Önerim A4'ün kapatılmasıdır**; A5 taslağı [ADR-003](ADR-003-a5-arka-uc-rehberli.md).
-Kapanış ve A5'in açılması proje sahibinin kararıdır.
+Kapanış ve A5'in açılması proje sahibinin kararıdır. **Karar (02.10.2026):** A4 kapatıldı;
+açık kalanlar (§5) kayıtlı sınırlar olarak sonraki aşamalara devredildi.
 
-## 7. Push bekleyen commit'ler
+## 7. Push
 
-`origin/main` = `1715910`. Yerel `main` bundan sonra 19 commit ileride (`430fcd0` …
-bu dosyanın commit'i); `deneme/v1.2-havuz-phi` (d3ef040) yalnız D: yedeğinde. Hiçbiri
-itilmedi (AGENTS kural 8: push proje sahibinin açık onayıyla).
+02.10.2026'da proje sahibinin onayıyla itildi: `1715910..253bfc3` (19 commit), ardından
+kapanış commit'i. `deneme/v1.2-havuz-phi` (`d3ef040`, reddedilen v1.2) itilmedi; yalnız D:
+yedeğinde.

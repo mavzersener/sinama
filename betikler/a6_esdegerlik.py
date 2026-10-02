@@ -3,7 +3,7 @@
 betikler/a6_esdegerlik.py — A6 eşdeğerlik ölçümü (ADR-004 md. 6, ön-kayıt
 `uygulama/atolye_esdegerlik/ESDEGERLIK.md`, commit 93fd618).
 
-    python betikler/a6_esdegerlik.py [--e2e-atla] [--yaz]
+    python betikler/a6_esdegerlik.py [--olcut E2 ...] [--e2e-atla] [--yaz]
 
 E1  A sınıfı: Atölye'de `vitest run`, dosya dosya geçen sayısı = DataFlow başlangıcı, kalan 0.
 E2  B sınıfı: her DataFlow testinin `# DataFlow: <dosya> › <ad>` işaretli Python karşılığı var
@@ -166,15 +166,20 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[1])
     ap.add_argument("--e2e-atla", action="store_true", help="E3'ü koşma (Playwright tarayıcısı yoksa)")
     ap.add_argument("--yaz", action="store_true", help="sonucu atolye_esdegerlik/sonuc.json'a yaz")
+    ap.add_argument("--olcut", action="append", choices=("E1", "E2", "E3", "E4", "E5"),
+                    help="yalnız bu ölçüt(ler) (varsayılan: hepsi)")
     a = ap.parse_args(argv)
     t = taban()
+    secili = a.olcut or ["E1", "E2", "E3", "E4", "E5"]
     sonuc = {"on_kayit": "93fd618 (ESDEGERLIK.md)", "taban": t["kaynak"]}
-    sonuc["E1"] = e1(t)
-    sonuc["E2"] = e2(t)
-    sonuc["E3"] = {"olcut": None, "esik": 1, "gecti": False, "not": "atlandı (--e2e-atla)"} if a.e2e_atla else e3()
-    sonuc["E4"] = _sinif_kos("tests.test_atolye_kanit.TestBicimUyumuE4")
-    sonuc["E5"] = _sinif_kos("tests.test_atolye_sunucu.TestTekSurec")
-    for k in ("E1", "E2", "E3", "E4", "E5"):
+    olcer = {"E1": lambda: e1(t), "E2": lambda: e2(t),
+             "E3": lambda: ({"olcut": None, "esik": 1, "gecti": False, "not": "atlandı (--e2e-atla)"}
+                            if a.e2e_atla else e3()),
+             "E4": lambda: _sinif_kos("tests.test_atolye_kanit.TestBicimUyumuE4"),
+             "E5": lambda: _sinif_kos("tests.test_atolye_sunucu.TestTekSurec")}
+    for k in secili:
+        sonuc[k] = olcer[k]()
+    for k in secili:
         r = sonuc[k]
         print(f"{k}: {r['olcut']} (eşik {r['esik']}) — {'GEÇTİ' if r['gecti'] else 'GEÇMEDİ'}")
         for alan in ("sapmalar", "eksik", "basarisiz", "bilinmeyen_isaret"):
@@ -184,7 +189,7 @@ def main(argv=None):
         with open(os.path.join(ES, "sonuc.json"), "w", encoding="utf-8", newline="\n") as f:
             json.dump(sonuc, f, ensure_ascii=False, indent=1)
             f.write("\n")
-    return 0 if all(sonuc[k]["gecti"] for k in ("E1", "E2", "E3", "E4", "E5")) else 1
+    return 0 if all(sonuc[k]["gecti"] for k in secili) else 1
 
 
 if __name__ == "__main__":

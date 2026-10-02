@@ -1,0 +1,42 @@
+{
+ "on_kayit": "93fd618 (ESDEGERLIK.md)",
+ "taban": "C:\\Projects\\DataFlow@5ea8652 (git archive, npm ci, vitest run)",
+ "E1": {
+  "olcut": "914/914",
+  "esik": "914/914",
+  "gecti": true,
+  "sapmalar": []
+ },
+ "E2": {
+  "olcut": "88/88",
+  "esik": "88/88",
+  "gecti": true,
+  "eksik": [],
+  "basarisiz": [],
+  "bilinmeyen_isaret": []
+ },
+ "E3": {
+  "olcut": 1,
+  "esik": 1,
+  "gecti": true,
+  "senaryo": "4 geçti, 0 kaldı"
+ },
+ "E4": {
+  "olcut": 1,
+  "esik": 1,
+  "gecti": true,
+  "testler": {
+   "tests.test_atolye_kanit.TestBicimUyumuE4.test_dataflow_defteri_sinamada_gecerli": "gecti",
+   "tests.test_atolye_kanit.TestBicimUyumuE4.test_sinama_defteri_dataflow_dogrulayicisinda_gecerli": "gecti"
+  }
+ },
+ "E5": {
+  "olcut": 1,
+  "esik": 1,
+  "gecti": true,
+  "testler": {
+   "tests.test_atolye_sunucu.TestTekSurec.test_atolye_statik": "gecti",
+   "tests.test_atolye_sunucu.TestTekSurec.test_iki_yuz_bir_uygulama": "gecti"
+  }
+ }
+}

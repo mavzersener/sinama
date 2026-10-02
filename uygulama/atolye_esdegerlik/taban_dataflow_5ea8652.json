@@ -1,0 +1,462 @@
+{
+ "kaynak": "C:\\Projects\\DataFlow@5ea8652 (git archive, npm ci, vitest run)",
+ "toplam": 1047,
+ "gecen": 1040,
+ "atlanan": 7,
+ "kalan": 0,
+ "sinif_ozeti": {
+  "A": {
+   "dosya": 39,
+   "gecen": 914,
+   "atlanan": 0
+  },
+  "B": {
+   "dosya": 9,
+   "gecen": 88,
+   "atlanan": 0
+  },
+  "C": {
+   "dosya": 6,
+   "gecen": 38,
+   "atlanan": 7
+  }
+ },
+ "dosyalar": {
+  "src/engine/koordinatTespiti.test.ts": {
+   "sinif": "A",
+   "gecen": 11,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "src/lib/kanitKarti.test.ts": {
+   "sinif": "A",
+   "gecen": 15,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "src/lib/mekansalDevir.test.ts": {
+   "sinif": "A",
+   "gecen": 14,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "src/lib/scienceBridge.test.ts": {
+   "sinif": "A",
+   "gecen": 18,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "src/lib/ustSutunlar.test.ts": {
+   "sinif": "A",
+   "gecen": 14,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/agent-node.test.ts": {
+   "sinif": "A",
+   "gecen": 7,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/ajan-baglam.test.ts": {
+   "sinif": "A",
+   "gecen": 4,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/akis-sozlesmesi.test.ts": {
+   "sinif": "A",
+   "gecen": 27,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/audit-router.test.ts": {
+   "sinif": "B",
+   "gecen": 12,
+   "atlanan": 0,
+   "kalan": 0,
+   "testler": [
+    "Audit Log CRUD › Create › should log a workflow creation event",
+    "Audit Log CRUD › Create › should log all workflow actions",
+    "Audit Log CRUD › Create › should log node operations",
+    "Audit Log CRUD › Create › should log edge connections",
+    "Audit Log CRUD › Create › should log user authentication events",
+    "Audit Log CRUD › Create › should allow optional entityId and details",
+    "Audit Log CRUD › Read › should list audit logs for a user",
+    "Audit Log CRUD › Read › should sort audit logs by createdAt descending",
+    "Audit Log CRUD › Read › should return empty array for user with no audit logs",
+    "Audit Log CRUD › User Isolation › should enforce strict user isolation for audit logs",
+    "KVKK Compliance Audit › should log all Kolluk data queries with legal basis",
+    "KVKK Compliance Audit › should maintain complete audit chain for evidence export"
+   ]
+  },
+  "tests/blok-onarim.test.ts": {
+   "sinif": "A",
+   "gecen": 9,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/csv-alan-config.test.ts": {
+   "sinif": "A",
+   "gecen": 21,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/csv.test.ts": {
+   "sinif": "B",
+   "gecen": 9,
+   "atlanan": 0,
+   "kalan": 0,
+   "testler": [
+    "parseCsvMeta › parses a simple CSV with header",
+    "parseCsvMeta › ignores trailing blank lines",
+    "parseCsvMeta › handles quoted fields with embedded commas",
+    "parseCsvMeta › handles quoted fields with embedded newlines (single record)",
+    "parseCsvMeta › handles escaped quotes",
+    "parseCsvMeta › supports CRLF line endings",
+    "parseCsvMeta › supports a custom delimiter",
+    "parseCsvMeta › synthesizes column names when hasHeader is false",
+    "parseCsvMeta › returns empty meta for empty input"
+   ]
+  },
+  "tests/data-clean.test.ts": {
+   "sinif": "A",
+   "gecen": 4,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/dataset-router.test.ts": {
+   "sinif": "B",
+   "gecen": 13,
+   "atlanan": 0,
+   "kalan": 0,
+   "testler": [
+    "Dataset CRUD › Create › should register a dataset with all metadata",
+    "Dataset CRUD › Create › should register a dataset without sizeBytes",
+    "Dataset CRUD › Create › should register a police dataset",
+    "Dataset CRUD › Create › should handle large datasets",
+    "Dataset CRUD › Read › should list datasets for a user",
+    "Dataset CRUD › Read › should get a dataset by ID",
+    "Dataset CRUD › Read › should return undefined for non-existent dataset",
+    "Dataset CRUD › Read › should sort datasets by createdAt descending",
+    "Dataset CRUD › Delete › should delete a dataset",
+    "Dataset CRUD › Delete › should only delete the specified dataset",
+    "Dataset Ownership › should enforce user isolation for datasets",
+    "Dataset Validation › should handle datasets with zero rows",
+    "Dataset Validation › should handle datasets with many columns"
+   ]
+  },
+  "tests/demo-isareti.test.ts": {
+   "sinif": "A",
+   "gecen": 9,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/dev-login.test.ts": {
+   "sinif": "C",
+   "gecen": 21,
+   "atlanan": 0,
+   "kalan": 0,
+   "neden": "oturum yok (ADR-004 md. 3): tek yerel kullanıcı; korunan özellik — yalnız 127.0.0.1 — BMK v10 K17.7 ve tests/test_uygulama"
+  },
+  "tests/durum-belgesi.test.ts": {
+   "sinif": "C",
+   "gecen": 6,
+   "atlanan": 0,
+   "kalan": 0,
+   "neden": "DataFlow'un kendi belgesinin (DURUM.md, README, plan belgeleri) tutarlılığı; Atölye belgesi Sınama'da uygulama/README + ADR-004"
+  },
+  "tests/e2e-live.test.ts": {
+   "sinif": "C",
+   "gecen": 0,
+   "atlanan": 3,
+   "kalan": 0,
+   "neden": "canlı MySQL (DataFlow'da da atlanıyor); Sınama SQLite kullanır"
+  },
+  "tests/flow-generator.test.ts": {
+   "sinif": "A",
+   "gecen": 16,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/gercek-csv-tani.test.ts": {
+   "sinif": "C",
+   "gecen": 0,
+   "atlanan": 4,
+   "kalan": 0,
+   "neden": "depo dışı gerçek CSV ister (DataFlow'da da atlanıyor)"
+  },
+  "tests/grafik-verisi.test.ts": {
+   "sinif": "A",
+   "gecen": 8,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/guided-result-shape.test.ts": {
+   "sinif": "A",
+   "gecen": 10,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/hata-siniri.test.ts": {
+   "sinif": "A",
+   "gecen": 7,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/i18n-nodes.test.ts": {
+   "sinif": "A",
+   "gecen": 4,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/ifade.test.ts": {
+   "sinif": "A",
+   "gecen": 59,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/integration.test.ts": {
+   "sinif": "B",
+   "gecen": 4,
+   "atlanan": 0,
+   "kalan": 0,
+   "testler": [
+    "End-to-End: Sales Analysis Pipeline › should complete full lifecycle: create workflow, execute, audit, and register dataset",
+    "End-to-End: Police Kolluk Investigation › should complete Kolluk investigation with KVKK compliance",
+    "End-to-End: Multi-Workflow User Dashboard › should support a user with multiple workflows, datasets, and audit history",
+    "End-to-End: Concurrent User Isolation › should maintain strict isolation between multiple users"
+   ]
+  },
+  "tests/istatistik.test.ts": {
+   "sinif": "A",
+   "gecen": 21,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/k-onerisi.test.ts": {
+   "sinif": "A",
+   "gecen": 6,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/kalicilik.test.ts": {
+   "sinif": "A",
+   "gecen": 8,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/kanit-defteri.test.ts": {
+   "sinif": "B",
+   "gecen": 13,
+   "atlanan": 0,
+   "kalan": 0,
+   "testler": [
+    "kanonikJson (RFC 8785) › anahtarlar UTF-16 kod birimi sırasıyla, iç içe, boşluksuz",
+    "kanonikJson (RFC 8785) › sayılar ECMAScript biçiminde (Python json.dumps 1.0 yazar; burada 1)",
+    "kanonikJson (RFC 8785) › sonlu olmayan sayı ve desteklenmeyen tip hata atar (sessiz düşürme yok)",
+    "kanonikJson (RFC 8785) › undefined alan atlanır; Date ISO metne döner (indirilen JSON ile aynı)",
+    "kanonikJson (RFC 8785) › metin kaçışı JSON.stringify ile aynı; Türkçe karakter kaçırılmaz",
+    "kanonikJson (RFC 8785) › hash deterministik ve anahtar sırasından bağımsız",
+    "KanitDefteri — hash zinciri + Ed25519 › zincir kurar ve doğrular; ilk kayıt 64 sıfıra bağlanır",
+    "KanitDefteri — hash zinciri + Ed25519 › anahtar kalıcı: yeni örnek aynı parmak izini ve zinciri görür",
+    "KanitDefteri — hash zinciri + Ed25519 › eşzamanlı eklemeler sıraya girer (yarış yok)",
+    "KanitDefteri — hash zinciri + Ed25519 › kayıt içeriği değiştirilirse tespit edilir",
+    "KanitDefteri — hash zinciri + Ed25519 › ortadan kayıt silinirse zincir kopukluğu tespit edilir",
+    "KanitDefteri — hash zinciri + Ed25519 › hash yeniden hesaplansa bile imza sahteciliği tespit edilir",
+    "KanitDefteri — hash zinciri + Ed25519 › son kaydı bozulmuş deftere sessizce ekleme yapılmaz"
+   ]
+  },
+  "tests/kanit-harp.test.ts": {
+   "sinif": "C",
+   "gecen": 11,
+   "atlanan": 0,
+   "kalan": 0,
+   "neden": "HARP dış çapası (ADR-004 md. 4, dış sistem)"
+  },
+  "tests/kanit-rota.test.ts": {
+   "sinif": "B",
+   "gecen": 6,
+   "atlanan": 0,
+   "kalan": 0,
+   "testler": [
+    "/api/evidence › geçerli istek → imzalı makbuz; aktör OTURUMDAN (istemci beyanından değil)",
+    "/api/evidence › istemci aktör/sıra gönderse de sunucu kendi değerini yazar",
+    "/api/evidence › oturumsuz → 401, deftere yazılmaz",
+    "/api/evidence › geçersiz gövde → 400 (hash biçimi, boş dosya no, bozuk JSON)",
+    "/api/evidence › defter yazılamazsa 500 ve makbuz YOK (audit ikincil, kayıt sayılmaz)",
+    "/api/evidence › genel anahtar açık; doğrulama uç noktası oturum ister"
+   ]
+  },
+  "tests/kanit-uctan-uca.test.ts": {
+   "sinif": "B",
+   "gecen": 8,
+   "atlanan": 0,
+   "kalan": 0,
+   "testler": [
+    "kanıt paketi — yürütücü + defter › demo veriden paket ÜRETİLMEZ (eskiden \"court-admissible\" paket çıkıyordu)",
+    "kanıt paketi — yürütücü + defter › gerçek veride KAYITLI: tüm satırların hash'i, oturumdaki aktör, defter sırası",
+    "kanıt paketi — yürütücü + defter › oturum yoksa paket KAYITSIZ işaretlenir ve bunu söyler",
+    "kanıt paketi — bağımsız Python doğrulayıcısı › JS sayı biçimi Python es_sayi ile bayt bayt aynı (RFC 8785)",
+    "kanıt paketi — bağımsız Python doğrulayıcısı › KAYITLI paket + defter: GEÇERLİ (çıkış 0)",
+    "kanıt paketi — bağımsız Python doğrulayıcısı › tek hücre değiştirilirse BAŞARISIZ (çıkış 1)",
+    "kanıt paketi — bağımsız Python doğrulayıcısı › paket ve makbuz birlikte değiştirilse de imza yakalar (çıkış 1)",
+    "kanıt paketi — bağımsız Python doğrulayıcısı › KAYITSIZ paket: EKSİK (çıkış 2), yanlış anahtar: BAŞARISIZ (çıkış 1)"
+   ]
+  },
+  "tests/matris.test.ts": {
+   "sinif": "A",
+   "gecen": 477,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/ml-dugumleri.test.ts": {
+   "sinif": "A",
+   "gecen": 38,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/ml-gradient_boosting.test.ts": {
+   "sinif": "A",
+   "gecen": 2,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/ml-hierarchical.test.ts": {
+   "sinif": "A",
+   "gecen": 2,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/ml-logistic_regression.test.ts": {
+   "sinif": "A",
+   "gecen": 2,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/ml-node.test.ts": {
+   "sinif": "A",
+   "gecen": 7,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/ml-pca.test.ts": {
+   "sinif": "A",
+   "gecen": 2,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/ml-result-format.test.ts": {
+   "sinif": "A",
+   "gecen": 3,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/ml-svm.test.ts": {
+   "sinif": "A",
+   "gecen": 2,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/motor-dogruluk.test.ts": {
+   "sinif": "A",
+   "gecen": 12,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/numeric-rows.test.ts": {
+   "sinif": "A",
+   "gecen": 3,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/oracle.test.ts": {
+   "sinif": "A",
+   "gecen": 7,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/python-export.test.ts": {
+   "sinif": "A",
+   "gecen": 13,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/recommendations.test.ts": {
+   "sinif": "A",
+   "gecen": 12,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/saat-dilimi.test.ts": {
+   "sinif": "C",
+   "gecen": 0,
+   "atlanan": 0,
+   "kalan": 0,
+   "neden": "canlı MySQL zaman damgası (DataFlow'da 0 test koşuyor); SQLite + ISO-8601 UTC"
+  },
+  "tests/storage.test.ts": {
+   "sinif": "B",
+   "gecen": 3,
+   "atlanan": 0,
+   "kalan": 0,
+   "testler": [
+    "storage (local backend) › defaults to the local backend when S3 is not configured",
+    "storage (local backend) › round-trips bytes through save + read",
+    "storage (local backend) › deletes an object"
+   ]
+  },
+  "tests/suc-analizi-nodes.test.ts": {
+   "sinif": "A",
+   "gecen": 6,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/suc-bridge.test.ts": {
+   "sinif": "A",
+   "gecen": 11,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/veri-deposu.test.ts": {
+   "sinif": "A",
+   "gecen": 10,
+   "atlanan": 0,
+   "kalan": 0
+  },
+  "tests/workflow-router.test.ts": {
+   "sinif": "B",
+   "gecen": 20,
+   "atlanan": 0,
+   "kalan": 0,
+   "testler": [
+    "Workflow CRUD › Create › should create a workflow with all fields",
+    "Workflow CRUD › Create › should create a workflow with minimal fields",
+    "Workflow CRUD › Create › should create a police workflow with KVKK metadata",
+    "Workflow CRUD › Create › should auto-increment version on creation",
+    "Workflow CRUD › Read › should list workflows for a user",
+    "Workflow CRUD › Read › should get a workflow by ID",
+    "Workflow CRUD › Read › should return undefined for non-existent workflow",
+    "Workflow CRUD › Read › should sort workflows by updatedAt descending",
+    "Workflow CRUD › Update › should update workflow name and description",
+    "Workflow CRUD › Update › should update workflow status to published",
+    "Workflow CRUD › Update › should update nodes and edges",
+    "Workflow CRUD › Update › should update updatedAt timestamp on modification",
+    "Workflow CRUD › Delete › should delete a workflow",
+    "Workflow CRUD › Delete › should only delete the specified workflow",
+    "Workflow Ownership › should enforce user isolation - users cannot see others workflows",
+    "Workflow Ownership › should track workflow ownership correctly",
+    "Execution Tracking › should record a workflow execution",
+    "Execution Tracking › should complete an execution with results",
+    "Execution Tracking › should record a failed execution",
+    "Execution Tracking › should list executions sorted by startedAt descending"
+   ]
+  },
+  "tests/yurutucu.test.ts": {
+   "sinif": "A",
+   "gecen": 13,
+   "atlanan": 0,
+   "kalan": 0
+  }
+ }
+}

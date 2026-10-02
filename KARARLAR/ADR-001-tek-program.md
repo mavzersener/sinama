@@ -77,6 +77,7 @@ kapanır.
 | A3 | Kapandı — 29.09.2026 | BMK v0: ön-kayıt `db8bf95` (11:47:42, sonuç görülmeden kilit) → ölçüm `ef1b5a6`. 15 ölçütün 6'sı geçti; kod incelemesinden yazılan 6/6 öngörü doğrulandı; öngörülmeyen 3 başarısızlık keşifle açıklandı (biri ölçüt tasarım hatası, v1'de düzeltilecek). CI `36519746996`: Windows/py3.14'te üretilen sonuç Linux/py3.12'de birebir yeniden üretildi. Bulgular: `kiyas/sonuclar/v0_bulgular.md` |
 | A4 | Kapandı — 02.10.2026 (proje sahibinin onayı) | Araç dürüstlüğü + bilim katmanı v1 ([ADR-002](ADR-002-bilim-katmani.md)): A4.1–A4.16; 10 ön-kayıtlı kıyasta (BMK v0–v9) 37/96 → 90/96; kalan 6 ölçüt ölçülmüş ve belgeli (yöntem/bilgi sınırı, bir ölçüt hatası). [Kapanış dosyası](A4-kapanis-dosyasi.md). CI `36977568707` (`253bfc3`): BMK v0–v9 Linux/py3.12'de birebir (v8, v9 Windows/py3.14'te üretildi), çekirdek tam kapı Linux ve Windows — hepsi yeşil |
 | A5 | Kapandı — 02.10.2026 (proje sahibinin "tüm aşamaları tamamla" talimatıyla) | [ADR-003](ADR-003-a5-arka-uc-rehberli.md); BMK v10 0/7 → 7/7 (CI `36984030467` Linux'ta birebir); üç ekran Playwright ile uçtan uca 2/2 (TR + EN); internetsiz kurulum temiz ortamda doğrulandı. [Kapanış dosyası](A5-kapanis-dosyasi.md) |
+| A6 | Açık — 02.10.2026 | [ADR-004](ADR-004-a6-atolye.md) (varsayılanlarla); eşdeğerlik ön-kaydı `uygulama/atolye_esdegerlik/ESDEGERLIK.md` — DataFlow başlangıcı 1047 test (1040 geçti) |
 
 ## Kapanan konular
 

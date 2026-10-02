@@ -1,0 +1,5 @@
+{
+ "algoritma": "Ed25519",
+ "pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEADfpzUlL22jRM08i8OG/eDou+hwOTV75/Cok4SGK/tPw=\n-----END PUBLIC KEY-----\n",
+ "kaynak": "DataFlow@5ea8652 api/lib/kanitDefteri.ts ile üretildi (sentetik 3 kayıt)"
+}

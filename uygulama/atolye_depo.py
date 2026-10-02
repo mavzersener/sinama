@@ -100,24 +100,56 @@ def iso(deger):
 
 
 class AtolyeDeposu:
-    """DataFlow tablolarının SQLite deposu; tek bağlantı, kilitle sıralı yazım."""
+    """DataFlow tablolarının SQLite deposu; kilitle sıralı erişim.
+
+    Dosya veritabanında her sorgu kendi bağlantısını açıp kapatır: süreç ömrü boyunca açık
+    bağlantı kalmaz (testlerde ve yeniden başlatmada sızıntı yok). `:memory:` tek kalıcı
+    bağlantı kullanır (yoksa her bağlantı ayrı, boş bir veritabanı olurdu).
+    """
 
     def __init__(self, yol):
         self.yol = yol
-        if yol != ":memory:":
-            os.makedirs(os.path.dirname(os.path.abspath(yol)), exist_ok=True)
-        self._db = sqlite3.connect(yol, check_same_thread=False)
-        self._db.row_factory = sqlite3.Row
         self._kilit = threading.Lock()
         self._son_an = ""
+        self._kalici = None
+        if yol == ":memory:":
+            self._kalici = self._ac()
+        else:
+            os.makedirs(os.path.dirname(os.path.abspath(yol)), exist_ok=True)
         with self._kilit:
-            self._db.executescript(SEMA)
-            self._db.commit()
+            db = self._kalici or self._ac()
+            try:
+                db.executescript(SEMA)
+                db.commit()
+            finally:
+                if db is not self._kalici:
+                    db.close()
         self._yerel = self._yerel_kullaniciyi_kur()
 
+    def _ac(self):
+        db = sqlite3.connect(self.yol, check_same_thread=False)
+        db.row_factory = sqlite3.Row
+        return db
+
+    def _sorgu(self, sql, arg=(), yaz=False):
+        """SQL → (satırlar, lastrowid, rowcount)."""
+        with self._kilit:
+            db = self._kalici or self._ac()
+            try:
+                imlec = db.execute(sql, list(arg))
+                satirlar = imlec.fetchall()
+                if yaz:
+                    db.commit()
+                return satirlar, imlec.lastrowid, imlec.rowcount
+            finally:
+                if db is not self._kalici:
+                    db.close()
+
     def kapat(self):
-        """Bağlantıyı kapatır."""
-        self._db.close()
+        """Kalıcı bağlantıyı (yalnız `:memory:`) kapatır; dosya deposunda açık bağlantı yoktur."""
+        if self._kalici is not None:
+            self._kalici.close()
+            self._kalici = None
 
     # ── iç yardımcılar ──────────────────────────────────────────────────
     def _an(self):
@@ -140,12 +172,9 @@ class AtolyeDeposu:
 
     def _ekle(self, tablo, degerler):
         alanlar = list(degerler)
-        with self._kilit:
-            imlec = self._db.execute(
-                f"INSERT INTO {tablo} ({','.join(alanlar)}) VALUES ({','.join('?' * len(alanlar))})",
-                [degerler[a] for a in alanlar])
-            self._db.commit()
-            kimlik = imlec.lastrowid
+        _, kimlik, _ = self._sorgu(
+            f"INSERT INTO {tablo} ({','.join(alanlar)}) VALUES ({','.join('?' * len(alanlar))})",
+            [degerler[a] for a in alanlar], yaz=True)
         return self._bul(tablo, kimlik)
 
     def _bul(self, tablo, kimlik, **kosul):
@@ -154,7 +183,8 @@ class AtolyeDeposu:
             if deger is not None:
                 sql += f" AND {alan} = ?"
                 arg.append(deger)
-        return self._satir(tablo, self._db.execute(sql, arg).fetchone())
+        satirlar = self._sorgu(sql, arg)[0]
+        return self._satir(tablo, satirlar[0] if satirlar else None)
 
     def _liste(self, tablo, kosul, sira, limit=None, offset=0):
         sql, arg = f"SELECT * FROM {tablo}", []
@@ -165,14 +195,14 @@ class AtolyeDeposu:
         if limit is not None:
             sql += " LIMIT ? OFFSET ?"
             arg += [int(limit), int(offset or 0)]
-        return [self._satir(tablo, r) for r in self._db.execute(sql, arg).fetchall()]
+        return [self._satir(tablo, r) for r in self._sorgu(sql, arg)[0]]
 
     def _say(self, tablo, kosul=None):
         sql, arg = f"SELECT count(*) FROM {tablo}", []
         if kosul:
             sql += " WHERE " + " AND ".join(f"{a} = ?" for a in kosul)
             arg = list(kosul.values())
-        return self._db.execute(sql, arg).fetchone()[0]
+        return self._sorgu(sql, arg)[0][0][0]
 
     def _guncelle(self, tablo, kimlik, alanlar, **kosul):
         if not alanlar:
@@ -185,10 +215,7 @@ class AtolyeDeposu:
             if deger is not None:
                 sql += f" AND {alan} = ?"
                 arg.append(deger)
-        with self._kilit:
-            n = self._db.execute(sql, arg).rowcount
-            self._db.commit()
-        return n
+        return self._sorgu(sql, arg, yaz=True)[2]
 
     def _sil(self, tablo, kimlik, **kosul):
         sql, arg = f"DELETE FROM {tablo} WHERE id = ?", [kimlik]
@@ -196,17 +223,13 @@ class AtolyeDeposu:
             if deger is not None:
                 sql += f" AND {alan} = ?"
                 arg.append(deger)
-        with self._kilit:
-            n = self._db.execute(sql, arg).rowcount
-            self._db.commit()
-        return n
+        return self._sorgu(sql, arg, yaz=True)[2]
 
     # ── kullanıcı ───────────────────────────────────────────────────────
     def _yerel_kullaniciyi_kur(self):
-        r = self._db.execute("SELECT * FROM users WHERE unionId = ?",
-                             (YEREL_KULLANICI["unionId"],)).fetchone()
-        if r is not None:
-            return dict(r)
+        r = self._sorgu("SELECT * FROM users WHERE unionId = ?", (YEREL_KULLANICI["unionId"],))[0]
+        if r:
+            return dict(r[0])
         an = self._an()
         return self._ekle("users", {**YEREL_KULLANICI, "createdAt": an, "updatedAt": an,
                                     "lastSignInAt": an})
@@ -347,8 +370,8 @@ class AtolyeDeposu:
     def geri_bildirim_ozeti(self):
         """nodeType başına up/down sayıları (DataFlow feedback.summary)."""
         ozet = {}
-        for r in self._db.execute("SELECT nodeType, rating, count(*) AS n FROM feedback "
-                                  "WHERE nodeType IS NOT NULL GROUP BY nodeType, rating"):
+        for r in self._sorgu("SELECT nodeType, rating, count(*) AS n FROM feedback "
+                             "WHERE nodeType IS NOT NULL GROUP BY nodeType, rating")[0]:
             girdi = ozet.setdefault(r["nodeType"], {"up": 0, "down": 0})
             if r["rating"] in ("up", "down"):
                 girdi[r["rating"]] += r["n"]

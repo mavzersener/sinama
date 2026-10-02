@@ -470,20 +470,21 @@ def bagla(app: FastAPI, kok, arac_calistir, motor, hata_sinifi, ajan_url=None, k
     @r.post("/api/datasets/upload")
     async def yukle(request: Request):
         """Çok parçalı CSV yükleme: dosya + üst veri kaydı."""
-        form = await request.form()
-        dosya = form.get("file")
-        if dosya is None or isinstance(dosya, str):
-            return JSONResponse(status_code=400, content={"error": "A 'file' field is required"})
-        veri = await dosya.read()
+        async with request.form() as form:   # geçici dosyalar blok sonunda kapanır
+            dosya = form.get("file")
+            if dosya is None or isinstance(dosya, str):
+                return JSONResponse(status_code=400, content={"error": "A 'file' field is required"})
+            veri = await dosya.read()
+            dosya_adi = dosya.filename or "veri.csv"
+            ad = str(form.get("name") or dosya_adi)
+            ayrac = str(form.get("delimiter") or ",")
+            baslikli = str(form.get("hasHeader") or "true") != "false"
         if len(veri) > MAKS_YUKLEME:
             return JSONResponse(status_code=413, content={"error": "File exceeds the maximum allowed size"})
-        ad = str(form.get("name") or dosya.filename or "veri.csv")
-        ayrac = str(form.get("delimiter") or ",")
-        baslikli = str(form.get("hasHeader") or "true") != "false"
         ust = csv_ust_verisi(veri.decode("utf-8", errors="replace"), ayrac[:1] or ",", baslikli)
-        anahtar = depolama_anahtari(kullanici["id"], dosya.filename or "veri.csv")
+        anahtar = depolama_anahtari(kullanici["id"], dosya_adi)
         dosyalar.kaydet(anahtar, veri)
-        satir = depo.veri_seti_ekle(kullanici["id"], ad, dosya.filename or "veri.csv", ust["columns"],
+        satir = depo.veri_seti_ekle(kullanici["id"], ad, dosya_adi, ust["columns"],
                                     ust["rowCount"], len(veri), storageKey=anahtar, status="ready")
         return {"id": satir["id"], "name": ad, "filename": satir["filename"], "columns": ust["columns"],
                 "rowCount": ust["rowCount"], "sizeBytes": len(veri)}

@@ -1,2 +1,2 @@
 # -*- coding: utf-8 -*-
-"""Sınama uygulaması (A5, ADR-003): FastAPI arka ucu + Rehberli ön yüz."""
+"""Sınama uygulaması: FastAPI arka ucu + Rehberli (A5, ADR-003) ve Atölye (A6, ADR-004) ön yüzleri."""

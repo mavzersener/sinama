@@ -3,7 +3,8 @@ r"""
 a5_paketle.py — internetsiz (air-gap) kurulum paketi (A5, ADR-003 "Sonuçlar").
 
 Paket: depo kaynağı (`git archive HEAD` — yalnız izlenen dosyalar; çalışma ağacındaki
-veri, .env ve oturumlar ASLA girmez), derlenmiş ön yüz (`uygulama/web/dist`), Python
+veri, .env ve oturumlar ASLA girmez), derlenmiş ön yüzler (`uygulama/web/dist` Rehberli,
+`uygulama/atolye/dist` Atölye — A6), Python
 tekerlekleri (`pip download`; paketleme anında internet gerekir, kurulumda gerekmez),
 KURULUM.md, Windows başlatıcısı ve her dosyanın SHA-256 listesi. Çıktı depo DIŞINDA
 olmalıdır (depo içine yazmayı reddeder).
@@ -27,6 +28,7 @@ import zipfile
 
 KOK = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DIST = os.path.join(KOK, "uygulama", "web", "dist")
+ATOLYE_DIST = os.path.join(KOK, "uygulama", "atolye", "dist")   # A6 (ADR-004): /atolye/
 GEREKSINIMLER = os.path.join(KOK, "uygulama", "gereksinimler.txt")
 
 KURULUM = """# Sınama — internetsiz kurulum (A5)
@@ -46,7 +48,8 @@ Paket: `{ad}` · commit `{commit}` · {tarih} · tekerlekler: Python {py}, {plat
        set PYTHONUTF8=1
        python -m uygulama --veri-koku C:\\suc_veri --ac
 
-   Tarayıcı http://127.0.0.1:8810 adresinde açılır; yalnız bu bilgisayardan erişilir.
+   Tarayıcı http://127.0.0.1:8810 adresinde açılır (Rehberli); düğüm editörü Atölye
+   http://127.0.0.1:8810/atolye/ adresindedir. Yalnız bu bilgisayardan erişilir.
 5. Dil modeli opsiyoneldir (`--dil-modeli http://127.0.0.1:8080`); yoksa `--dil-modeli yok`.
 6. Bütünlük: `SHA256SUMS.txt` her dosyanın özetini taşır.
 """
@@ -118,6 +121,8 @@ def paketle(cikti, python_surumu=None, platform=None, tekerlek=True):
         raise SystemExit(f"çıktı depo içinde olamaz: {cikti}")
     if not os.path.isfile(os.path.join(DIST, "index.html")):
         raise SystemExit("ön yüz derlenmemiş: cd uygulama/web && npm ci && npm run build")
+    if not os.path.isfile(os.path.join(ATOLYE_DIST, "index.html")):
+        raise SystemExit("Atölye derlenmemiş: cd uygulama/atolye && npm ci && npm run build")
     if git("status", "--porcelain", "--untracked-files=no").strip():
         raise SystemExit("izlenen dosyalarda commit'lenmemiş değişiklik var: paket HEAD'i yansıtmaz")
     commit = git("rev-parse", "--short", "HEAD").decode().strip()
@@ -126,6 +131,7 @@ def paketle(cikti, python_surumu=None, platform=None, tekerlek=True):
         hedef = os.path.join(gecici, ad)
         kaynak_ac(hedef)
         shutil.copytree(DIST, os.path.join(hedef, "sinama", "uygulama", "web", "dist"))
+        shutil.copytree(ATOLYE_DIST, os.path.join(hedef, "sinama", "uygulama", "atolye", "dist"))
         if tekerlek:
             tekerlekler(hedef, python_surumu, platform)
         py = python_surumu or f"{sys.version_info.major}.{sys.version_info.minor}"

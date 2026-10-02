@@ -1,0 +1,57 @@
+{
+  "kimlik": "V17",
+  "ad": "A5 Rehberli arka uç: HTTP akışı MCP ile aynı hükmü verir, veri kökü depo dışında, ekran sözleşmesi, iki dil, dil modelsiz çalışma",
+  "surum": "v10",
+  "dayanak": "ADR-003 md. 5 (A5 uygulamasından ÖNCE ön-kayıt). A5 çıkış ölçütü 'üç ekran uçtan uca'; bu kıyas ekranların beslendiği HTTP sözleşmesini CI'da ölçer. Tarayıcıdan uçtan uca denetim ayrıca yerelde yapılır ve A5 kapanış dosyasına yazılır (CI'da tarayıcı yok).",
+  "cikti_sozlesmesi": {
+    "modul": "uygulama.sunucu (depo kökünden içe aktarılır)",
+    "fabrika": "uygulama_olustur(veri_koku, dil_modeli_url) → ASGI uygulaması; veri kökü depo içindeyse istisna fırlatır; SINAMA_VERI_KOKU ve SINAMA_LOG_DIR'i veri köküne ayarlar",
+    "sabitler": "VARSAYILAN_HOST, VARSAYILAN_PORT",
+    "uclar": {
+      "GET /api/saglik": "{durum, veri_koku, dil_modeli: bool, surum}",
+      "POST /api/oneri": "{soru} → {soru_turu, kaynak: 'kural' | 'dil_modeli', ...}",
+      "POST /api/calisma": "{soru_turu, amac, onaylayan?, soru?, kanal_alan?, mo_alan?, bolge_alan?, mudahale?, kontrol?, tampon?, kesinti_tarihi?} → {oturum_id, hipotezler, plan, uyarilar}",
+      "GET /api/calisma/{oturum_id}/plan": "sinama_plani çıktısı",
+      "POST /api/calisma/{oturum_id}/kanit": "{satirlar} → kanıt özeti",
+      "POST /api/calisma/{oturum_id}/hukum": "{oturum_id, hipotezler, sinamalar, hukum, uyarilar}",
+      "POST /api/calisma/{oturum_id}/sonuc": "{sonuc_turu, onaylayan, onay_notu?} — onaylayan yoksa 4xx"
+    },
+    "ceviri": "uygulama/web/src/i18n/tr.json ve en.json — düz anahtar → metin",
+    "hata": "modül ya da uç yoksa / hata verirse o akış BAŞARISIZ; hiç yanıt yoksa oranlar 0"
+  },
+  "akislar": {
+    "v3": {"vaka": "kiyas/v3/vakalar/v9_hukum.json", "senaryolar": "hepsi (7)", "tohumlar": {"bas": 10401, "adet": 2}},
+    "v7": {"vaka": "kiyas/v7/vakalar/v13_etki.json", "senaryolar": ["gercek_etki", "kontrolsuz", "yer_degistirme"],
+           "tohumlar": {"bas": 10401, "adet": 2}},
+    "onaylayan": "BMK v10 (doğrulayıcı senaryolarda)",
+    "dil_modeli_url": "http://127.0.0.1:9 (erişilemez — dil modeli KAPALI)"
+  },
+  "oneri_sorulari": {
+    "Son 12 ayda hırsızlık arttı mı?": "ARTIS",
+    "Devriye artırımı bölgedeki suçları azalttı mı?": "ETKI",
+    "Olaylar belirli yerlerde yoğunlaşıyor mu?": "YOGUNLASMA",
+    "Bu hırsızlıklar aynı seriden mi?": "SERI"
+  },
+  "tohum_ayrimi": "v9 10201–10400; v10 10401–10402 (eşdeğerlik ölçümü; tasarım keşfi 900–9999).",
+  "cekirdek_olcutleri": [
+    {"kimlik": "K17.1", "aciklama": "Eşdeğerlik: HTTP dört adımlı akışın hükmü (kategori, en güçlü rakip, rakipler, kurallar, paket hash'i) MCP rehberli_calisma ile birebir aynı olan akış oranı", "yon": ">=", "esik": 1.0},
+    {"kimlik": "K17.2", "aciklama": "Veri kökü: akışlar boyunca depo içinde yeni/değişen dosya yok VE oturum dosyaları veri kökünde VE veri kökü depo içindeyken fabrika reddediyor (1 = hepsi)", "yon": ">=", "esik": 1.0},
+    {"kimlik": "K17.3", "aciklama": "Ekran sözleşmesi: Plan (H_bilinmeyen sonda, ulaşılabilir en üst kategori, rakip çözülebilirliği) ve Hüküm (kategori, kurallar, rakipler, sonraki en iyi kanıt, taslak, insan onayı, H_bilinmeyen notu) alanları tam VE onaylayansız SONUÇ 4xx olan akış oranı", "yon": ">=", "esik": 1.0},
+    {"kimlik": "K17.4", "aciklama": "Yasak alan yok: hiçbir JSON yanıtında olasılık/güven/yüzde/skor anahtarı bulunmayan yanıt oranı", "yon": ">=", "esik": 1.0},
+    {"kimlik": "K17.5", "aciklama": "İki dil: tr ve en sözlükleri aynı anahtar kümesinde, boş değersiz; çekirdekten türetilen aileleri (kategori, rakip durumu, birincil durum, RAK rakipleri, soru türü, amaç, hüküm kuralları) ve kaynaktaki her t('…') anahtarını kapsıyor (1 = tam)", "yon": ">=", "esik": 1.0},
+    {"kimlik": "K17.6", "aciklama": "Dil modeli kapalıyken: sağlık dil_modeli=false, dört öneri sorusunun dördü kural kaynağıyla doğru tür, tüm akışlar hatasız (1 = hepsi)", "yon": ">=", "esik": 1.0},
+    {"kimlik": "K17.7", "aciklama": "Bağlanma: VARSAYILAN_HOST = 127.0.0.1 ve VARSAYILAN_PORT = 8810 (1 = ikisi)", "yon": ">=", "esik": 1.0}
+  ],
+  "ongoruler": {
+    "K17.1": "BAŞARISIZ beklenir (başlangıç): uygulama.sunucu yok",
+    "K17.2": "BAŞARISIZ beklenir (başlangıç): fabrika yok",
+    "K17.3": "BAŞARISIZ beklenir (başlangıç): uç yok",
+    "K17.4": "BAŞARISIZ beklenir (başlangıç): hiç yanıt yok → 0",
+    "K17.5": "BAŞARISIZ beklenir (başlangıç): sözlükler yok",
+    "K17.6": "BAŞARISIZ beklenir (başlangıç): uç yok",
+    "K17.7": "BAŞARISIZ beklenir (başlangıç): modül yok"
+  },
+  "uygulama_ongorusu": {
+    "hepsi": "7/7 — arka uç ayrıntılı bilim araçlarını arac_calistir ile çağırdığı için K17.1 A4.14 eşdeğerliğinden gelir; en riskli ölçüt K17.5 (kaynakta unutulan t() anahtarı) ve K17.2 (çekirdeğin cwd düşmesi: cekirdek/oturumlar'da bugün 35 oturum dosyası duruyor — A3 bulgusu canlı)"
+  }
+}

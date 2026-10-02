@@ -22,7 +22,7 @@ Programın bilimsel gücünü **ölçmek** için gerçeği önceden bilinen sent
    görünür. İlk ölçüm `sonuclar/v0_ilk_olcum.json`'da dondurulmuştur (önce/sonra için).
 6. **Tohum ayrımı.** Her sürümün ölçüm tohumları ayrıdır (v0 1–30, v1 101–130,
    v2 201–230, v3 301–330, v4 401–430, v5 501–700, v6 701–880; 900'ün altı tükendi →
-   v7'den itibaren 10000+: v7 10001–10100, v8 10101–10200, v9 10201–10400). Bir ön-kayıttan sonra yapılan YÖNTEM TASARIMI keşfi yalnız
+   v7'den itibaren 10000+: v7 10001–10100, v8 10101–10200, v9 10201–10400, v10 10401–10402). Bir ön-kayıttan sonra yapılan YÖNTEM TASARIMI keşfi yalnız
    900–9999 tohumlarıyla yapılır; ölçüm tohumları tasarımda kullanılmaz — yöntem ölçüm
    verisine uydurulursa önce/sonra farkı iyimser yanlı olur.
 
@@ -66,6 +66,12 @@ Programın bilimsel gücünü **ölçmek** için gerçeği önceden bilinen sent
 - **v9** (`v9/`): V16 CUSUM kalibrasyonu — v8'in V15 senaryoları, YENİ ve 200'er tohumla
   (v8 ölçüm tohumları K15.1 teşhisinde incelendi); ek ölçüt: üç değişimsiz senaryonun 600
   serisinde havuzlanmış yanlış alarm ≤ 0,07. Tohum 10201–10400.
+- **v10** (`v10/`): V17 A5 Rehberli arka uç (ADR-003) — HTTP dört adımlı akışın hükmü MCP
+  `rehberli_calisma` ile birebir (v3 ve v7 senaryolarından 20 akış), veri kökü depo dışında
+  (depo içi veri kökü reddi dahil), Plan/Hüküm ekran sözleşmesi, yasak alan yokluğu, tr/en
+  sözlük tamlığı (çekirdekten türetilen aileler + kaynaktaki her t() anahtarı), dil modeli
+  kapalıyken tam akış ve kural tabanlı öneri, 127.0.0.1:8810. Tarayıcıdan uçtan uca denetim
+  CI dışında, yerelde. Tohum 10401–10402.
 
 ## Düzeyler
 

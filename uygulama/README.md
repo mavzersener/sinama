@@ -39,6 +39,16 @@ tekerlekleri, `KURULUM.md`, `baslat.bat` ve `SHA256SUMS.txt` tek zip'te; çıkt�
 olmalıdır. Tekerlekler paketleyen yorumlayıcı içindir (farklı hedef: `--python-surumu`,
 `--platform`).
 
+## Uçtan uca ekran testi
+
+```bash
+cd uygulama/web && npm run build && npm run e2e
+```
+
+Playwright gerçek tarayıcıda üç ekranı gerçek arka uçla koşar (`e2e/sunucu.py`: geçici veri
+kökü, BMK üreteçlerinden sentetik veri, dil modeli kapalı). Python yorumlayıcısı
+`SINAMA_PY` ile verilebilir. CI'da `uygulama` işinde koşar.
+
 ## Ölçüm
 
 BMK v10 (`kiyas/v10/`): HTTP hükmü = MCP hükmü, veri kökü, ekran sözleşmesi, yasak alanlar,

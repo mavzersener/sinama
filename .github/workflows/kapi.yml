@@ -100,7 +100,7 @@ jobs:
     name: uygulama (A5 arka uç)
     needs: bekci
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
@@ -116,6 +116,9 @@ jobs:
       - name: Ön yüz — tür denetimi ve derleme
         working-directory: uygulama/web
         run: npm ci --no-audit --no-fund && npm run build
+      - name: Üç ekran uçtan uca (Playwright, gerçek arka uç, sentetik veri)
+        working-directory: uygulama/web
+        run: npx playwright install --with-deps chromium && npm run e2e
 
   cekirdek:
     name: çekirdek tam kapı (${{ matrix.os }}, py${{ matrix.python }})

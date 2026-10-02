@@ -6,9 +6,9 @@ Dağınık projelerden hasatla kurulur. İşe başlamadan bu dosyayı, ADR-001'i
 
 ## Şu anki aşama
 
-**A6 — Atölye (açık, [ADR-004](KARARLAR/ADR-004-a6-atolye.md)):** DataFlow'un no-code
-editörü ve 22 ucu tek FastAPI sürecine; ölçüt DataFlow testleriyle eşdeğerlik
-(`uygulama/atolye_esdegerlik/`). A0–A5 kapandı (kapanış dosyaları `KARARLAR/`); depo GitHub'da özel
+**A7 — Kaynak depoların dondurulması (açık, proje sahibinin onayını bekliyor):**
+`betikler/a7_dondur.py` kuru çalıştırması hazır; kaynak depoya yazmak yalnız açık onayla.
+A0–A6 kapandı (kapanış dosyaları `KARARLAR/`); depo GitHub'da özel
 (`origin`), D: diskinde yedekli (`yedek`). Aşama tablosu ve ilerleme ADR-001'dedir.
 Aynı anda tek aşama açıktır; aşamayı proje sahibi kapatır. GitHub'a her push proje
 sahibinin onayıyla yapılır; D: yedeğine commit sonrası otomatik gider.

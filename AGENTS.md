@@ -6,9 +6,10 @@ Dağınık projelerden hasatla kurulur. İşe başlamadan bu dosyayı, ADR-001'i
 
 ## Şu anki aşama
 
-**A4 — bilimsel güç (açık):** BMK v0 bulgularının giderilmesi; ilk iş seri
-eşleştirme ve Gi* yanlış alarmı (`kiyas/sonuclar/v0_bulgular.md`). A0–A3 kapandı; depo
-GitHub'da özel (`origin`), D: diskinde yedekli (`yedek`). Aşama tablosu ve ilerleme ADR-001'dedir.
+**A5 — tek arka uç ve Rehberli yüz (açık, [ADR-003](KARARLAR/ADR-003-a5-arka-uc-rehberli.md)):**
+FastAPI arka ucu ve üç ekran (Soru → Plan → Hüküm), Türkçe + İngilizce; ölçüm BMK v10.
+A0–A4 kapandı (A4 kanıtı: `KARARLAR/A4-kapanis-dosyasi.md`); depo GitHub'da özel
+(`origin`), D: diskinde yedekli (`yedek`). Aşama tablosu ve ilerleme ADR-001'dedir.
 Aynı anda tek aşama açıktır; aşamayı proje sahibi kapatır. GitHub'a her push proje
 sahibinin onayıyla yapılır; D: yedeğine commit sonrası otomatik gider.
 
@@ -16,7 +17,7 @@ sahibinin onayıyla yapılır; D: yedeğine commit sonrası otomatik gider.
 
 1. **Özel veri ve sır depoya giremez.** Gerçek veri (CSV/XLSX/JSONL/DB), oturum ve
    kanıt kayıtları, Bilgi Notları, `.env`, anahtarlar. Veri kökü depo dışındadır
-   ve `SINAMA_VERI_KOKU` ile verilir (yerelde `C:\Users\ASUS\Documents\suc_veri`).
+   ve `SINAMA_VERI_KOKU` ile verilir (verilmezse `%LOCALAPPDATA%\sinama`, ADR-003).
    Test verisi yalnız sentetiktir ve yalnız `*/sentetik/` altında durur.
    `betikler/veri_bekcisi.py` commit ve push'ta çalışır — devre dışı bırakma,
    kuralı gevşetme; gerekçeli istisna yalnız `betikler/bekci_izinleri.txt`.

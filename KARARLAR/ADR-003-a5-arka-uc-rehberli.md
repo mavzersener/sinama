@@ -1,8 +1,8 @@
-# ADR-003 — A5: tek arka uç ve Rehberli yüz (TASLAK)
+# ADR-003 — A5: tek arka uç ve Rehberli yüz
 
-- **Durum:** TASLAK — 01.10.2026. Proje sahibinin onayını bekliyor; **uygulama yok.**
-  Otonom çalışma sırasında yazıldı ("karar gereken kısımlarda varsayılan tercih");
-  aşağıdaki her varsayılan tercih işaretlidir ve değiştirilebilir.
+- **Durum:** Kabul edildi — 02.10.2026 (proje sahibinin onayı: varsayılan tercihlerle;
+  arayüzde İngilizce seçeneği de bulunur — DataFlow'da olduğu gibi). Taslak 01.10.2026'da
+  otonom çalışma sırasında yazılmıştı.
 - **Kapsam:** ADR-001 aşama tablosu A5 ("Tek arka uç ve Rehberli yüz — üç ekran uçtan
   uca"). A4 kapanmadan A5 açılmaz (ADR-001: aynı anda tek aşama; kapanış sahibindedir).
 
@@ -21,7 +21,7 @@
 - DataFlow'un React bileşenleri (C:\Projects\DataFlow) hasat kaynağıdır; Node arka ucu A6'da
   taşınır.
 
-## Karar önerisi
+## Karar
 
 1. **Tek süreç, tek port.** FastAPI arka ucu çekirdeği süreç içinde çağırır — ayrı
    hesap motoru yok; HTTP uçları araç kayıt defterinin (`ARACLAR`, `arac_calistir`) ince
@@ -40,8 +40,14 @@
      sonraki en iyi kanıt, H_bilinmeyen notu; "taslak" damgası; insan onayıyla SONUÇ.
      → `hukum`, `dongu_sonuc`
    Olasılık, yüzde ya da güven puanı gösterilmez (AGENTS kural 6).
+   **Dil:** Türkçe varsayılan, İngilizce seçenek (DataFlow `src/i18n.ts` düzeni: tr/en
+   sözlükleri, seçim tarayıcıda kalıcı). Çevrilen: arayüz metinleri, kategoriler, rakip
+   durumları, soru türleri, amaçlar, RAK rakip adları ve hüküm kuralları (kod anahtarlı).
+   Çekirdeğin ürettiği gerekçe cümleleri v1'de Türkçe kalır ve İngilizce arayüzde de
+   öyle gösterilir (sayılar kanıt kaydına bağlıdır; makine çevirisi araya girmez).
 3. **Veri kökü zorunlu ve depo dışı.** `SINAMA_VERI_KOKU` (oturumlar, kanıt zinciri,
-   yüklenen veri); *varsayılan tercih:* `%LOCALAPPDATA%\sinama`. Çalışma dizinine düşme
+   yüklenen veri); verilmezse `%LOCALAPPDATA%\sinama` (Linux: `~/.local/share/sinama`);
+   düzen: `veri/` (girdi ve yüklemeler), `oturumlar/` (oturum + kanıt zinciri). Çalışma dizinine düşme
    kaldırılır; veri kökü depo içindeyse arka uç başlamayı reddeder (bekçinin yazım
    zamanı karşılığı). A3 bulgusu böylece kapanır.
 4. **Dil modeli opsiyonel.** Yalnız (a) serbest soru metninden soru türü ve parametre
@@ -61,14 +67,22 @@
 Atölye / no-code editör (A6), çok kullanıcı ve kimlik doğrulama (tek kullanıcı, yerel),
 uzak barındırma, dil modeliyle hüküm üretimi.
 
-## Proje sahibine açık sorular
+## Açık soruların yanıtları (02.10.2026)
 
-1. Port ve veri kökü varsayılanları uygun mu?
-2. Dil modeli yardımı (öneri + sadeleştirme) A5'e girsin mi, yoksa A5 dil modelsiz mi?
-3. Arayüz dili yalnız Türkçe mi (varsayılan tercih: evet)?
-4. P06 geri taşıma kararı (ADR-001 açık konu) A5 öncesi mi, A6'da mı?
+1. Port 8810, veri kökü yukarıdaki gibi — **kabul** (varsayılan).
+2. Dil modeli yardımı (öneri + sadeleştirme) A5'e **girer**, md. 4'teki sınırlarla;
+   kapalıyken akış tam çalışır (BMK v10'da ölçülür).
+3. Arayüz **Türkçe + İngilizce** (yukarıda "Dil").
+4. P06 geri taşıma **A6'da** (varsayılan): DataFlow'un Sınama'ya geçişiyle birlikte.
 
-## Sonuçlar (onaylanırsa)
+## Uygulama düzeni
+
+- `uygulama/` (depo kökünde): FastAPI arka ucu (`uygulama/sunucu.py`) ve ön yüz kaynağı
+  (`uygulama/web/`, Vite + React + Tailwind, DataFlow'dan hasat). `cekirdek/` saf standart
+  kitaplık kalır; FastAPI bağımlılığı yalnız `uygulama/`'dadır. Derlenmiş ön yüz
+  (`uygulama/web/dist/`) depoya girmez; arka uç varsa onu sunar.
+
+## Sonuçlar
 
 - (+) Program ilk kez kullanıcı yüzü kazanır; hesap tek motorda kalır.
 - (+) Veri kökü sorunu yapısal olarak kapanır.

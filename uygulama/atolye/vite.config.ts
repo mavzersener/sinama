@@ -1,9 +1,7 @@
-import devServer from "@hono/vite-dev-server"
 import path from "path"
 const __dirname = import.meta.dirname
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
-import { inspectAttr } from 'kimi-plugin-inspect-react'
 import { createRequire } from "module"
 
 // Sürüm TEK KAYNAKTAN gelir: package.json. Arayüzde elle yazılan sürüm
@@ -12,17 +10,20 @@ import { createRequire } from "module"
 const pkg = createRequire(import.meta.url)("./package.json") as { version: string }
 
 // https://vite.dev/config/
+// Sınama (A6): Atölye aynı FastAPI sürecinden /atolye/ altında sunulur (tek süreç,
+// tek port — ADR-004). Geliştirmede /api istekleri arka uca (127.0.0.1:8810) aktarılır;
+// Hono dev sunucusu ve Kimi denetim eklentisi kaldırıldı.
 export default defineConfig({
+  base: "/atolye/",
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version),
   },
-  plugins: [
-    devServer({ entry: "api/boot.ts", exclude: [/^\/(?!api\/).*$/] }),
-    inspectAttr(), react()],
+  plugins: [react()],
   server: {
     host: "127.0.0.1",
     port: 3000,
     fs: { strict: false },
+    proxy: { "/api": "http://127.0.0.1:8810" },
   },
   resolve: {
     alias: {
@@ -34,7 +35,7 @@ export default defineConfig({
   },
   envDir: path.resolve(__dirname),
   build: {
-    outDir: path.resolve(__dirname, "dist/public"),
+    outDir: path.resolve(__dirname, "dist"),
     emptyOutDir: true,
     rollupOptions: {
       output: {

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-python -m uygulama [--port 8810] [--veri-koku DIZIN] [--dil-modeli URL|yok]
+python -m uygulama [--port 8810] [--veri-koku DIZIN] [--dil-modeli URL|yok] [--ac]
 
 Yalnız geri döngü adresine bağlanır (AGENTS: sunucuyu 0.0.0.0'a bağlama).
 """
@@ -17,10 +17,15 @@ def main(argv=None):
     ap.add_argument("--veri-koku", default=None, help="depo dışı veri kökü (SINAMA_VERI_KOKU)")
     ap.add_argument("--dil-modeli", default=VARSAYILAN_DIL_MODELI,
                     help="OpenAI uyumlu yerel sunucu; 'yok' → dil modeli kapalı")
+    ap.add_argument("--ac", action="store_true", help="başlayınca tarayıcıyı aç")
     a = ap.parse_args(argv)
     import uvicorn
     app = uygulama_olustur(veri_koku=a.veri_koku,
                            dil_modeli_url=None if a.dil_modeli == "yok" else a.dil_modeli)
+    if a.ac:
+        import threading
+        import webbrowser
+        threading.Timer(1.5, webbrowser.open, (f"http://{VARSAYILAN_HOST}:{a.port}",)).start()
     uvicorn.run(app, host=VARSAYILAN_HOST, port=a.port, log_level="warning")
     return 0
 

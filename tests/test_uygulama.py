@@ -170,6 +170,40 @@ class TestArkaUc(unittest.TestCase):
         oid2 = self.c.post("/api/calisma", json={"soru_turu": "ARTIS", "amac": "kesifsel"}).json()["oturum_id"]
         self.assertEqual(self.c.post(f"/api/calisma/{oid2}/sade").status_code, 409)
 
+    def test_dil_modeli_yollari_sahte_sunucuyla(self):
+        from unittest import mock
+        istekler, cevap = [], {"icerik": ""}
+
+        def sahte(url, yol, govde=None, zaman=0.8):
+            istekler.append((yol, govde))
+            if yol == "/health":
+                return {"status": "ok"}
+            return {"choices": [{"message": {"content": cevap["icerik"], "reasoning_content": "düşünüyor"}}]}
+
+        c = TestClient(uyg.uygulama_olustur(veri_koku=self.kok, dil_modeli_url="http://sahte"))
+        with mock.patch.object(uyg, "_dil_modeli_istek", sahte):
+            self.assertIs(c.get("/api/saglik").json()["dil_modeli"], True)
+            # düşünme kipine harcanmış boş içerik → kural tabanlı öneriye düşer
+            self.assertEqual(c.post("/api/oneri", json={"soru": "arttı mı"}).json(),
+                             {"soru_turu": "ARTIS", "kaynak": "kural"})
+            sohbet = [g for y, g in istekler if y == "/v1/chat/completions"][-1]
+            self.assertEqual(sohbet["chat_template_kwargs"], {"enable_thinking": False})
+            self.assertEqual(sohbet["temperature"], 0)
+            cevap["icerik"] = "ETKI"
+            self.assertEqual(c.post("/api/oneri", json={"soru": "arttı mı"}).json(),
+                             {"soru_turu": "ETKI", "kaynak": "dil_modeli"})
+            cevap["icerik"] = "ARTIS ya da ETKI"          # belirsiz yanıt kabul edilmez
+            self.assertEqual(c.post("/api/oneri", json={"soru": "arttı mı"}).json()["kaynak"], "kural")
+            oid, h = self.akis({"soru_turu": "ARTIS", "amac": "kesifsel"}, aylik_kayitlar())
+            kategori = h["hukum"]["kategori"]
+            cevap["icerik"] = f"Hüküm {kategori}; olasılık 80"     # sayı → sözleşme ihlali
+            self.assertEqual(c.post(f"/api/calisma/{oid}/sade", json={"dil": "tr"}).status_code, 422)
+            cevap["icerik"] = "Hüküm net değil."                   # kategori yok (tr) → ihlal
+            self.assertEqual(c.post(f"/api/calisma/{oid}/sade", json={"dil": "tr"}).status_code, 422)
+            cevap["icerik"] = f"Birincil hipotez {uyg._kucult(kategori)} kaldı."  # Türkçe küçültme (I→ı)
+            y = c.post(f"/api/calisma/{oid}/sade", json={"dil": "tr"}).json()
+            self.assertEqual((y["kaynak"], y["baglayici"]), ("dil_modeli", False))
+
     def test_on_yuz_yoksa_bilgi(self):
         if os.path.isfile(os.path.join(uyg.WEB_DIST, "index.html")):
             self.assertEqual(self.c.get("/").status_code, 200)

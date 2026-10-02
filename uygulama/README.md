@@ -26,6 +26,18 @@ Tarayıcı: <http://127.0.0.1:8810>. Yalnız geri döngü adresine bağlanır.
   türü önerisi ve hükmün sade dille özeti; sayı üretmez, hükmü değiştiremez. Kapalıyken
   öneri kural tabanlıdır ve akış tam çalışır.
 - Geliştirme: arka uç çalışırken `cd uygulama/web && npm run dev` (Vite, `/api` arka uca aktarılır).
+- `--ac` başlayınca tarayıcıyı açar.
+
+## İnternetsiz kurulum paketi
+
+```bash
+PYTHONUTF8=1 python betikler/a5_paketle.py --cikti C:/paketler
+```
+
+Depo kaynağı (`git archive HEAD`, yalnız izlenen dosyalar), derlenmiş ön yüz, Python
+tekerlekleri, `KURULUM.md`, `baslat.bat` ve `SHA256SUMS.txt` tek zip'te; çıktı depo dışında
+olmalıdır. Tekerlekler paketleyen yorumlayıcı içindir (farklı hedef: `--python-surumu`,
+`--platform`).
 
 ## Ölçüm
 

@@ -46,10 +46,14 @@ SONUC_ALANLARI = ("sonuc_turu", "onaylayan", "onay_notu", "bulgular")
 ONIZLEME_DEGER_SINIRI = 30   # daha çok farklı değeri olan sütun kategorik sayılmaz
 # Kural tabanlı öneri: sıra önemlidir (ETKİ sorusu "artırımı" içerebilir).
 ONERI_KURALLARI = (
-    ("ETKI", ("azalt", "etki", "müdahale", "işe yara", "önle", "sonrasında düş")),
-    ("SERI", ("seri", "aynı fail", "aynı kişi", "dizi halinde")),
-    ("YOGUNLASMA", ("yoğunlaş", "kümelen", "sıcak nokta", "belirli yer", "hangi bölge", "nerede")),
-    ("ARTIS", ("art", "yüksel", "çoğal", "eğilim", "trend")),
+    ("ETKI", ("azalt", "etki", "müdahale", "işe yara", "önle", "sonra düş", "sonrasında düş",
+              "reduce", "impact", "effect", "after the", "since the")),
+    ("SERI", ("seri", "aynı fail", "aynı kişi", "aynı ekip", "aynı grup", "dizi halinde",
+              "series", "same offender", "same group", "linked")),
+    ("YOGUNLASMA", ("yoğunlaş", "kümelen", "toplan", "sıcak nokta", "belirli yer", "hangi bölge",
+                    "nerede", "concentrat", "cluster", "hot spot", "hotspot", "where")),
+    ("ARTIS", ("art", "yüksel", "çoğal", "eğilim", "trend", "increase", "go up", "went up", "rise",
+               "rising")),
 )
 _MOTOR = threading.Lock()   # tek motor, tek kullanıcı: çekirdek çağrıları sırayla
 # Hata tipi → HTTP durumu (DataFlow ml-service suc köprüsünden kavram hasadı): kapı reddi
@@ -104,9 +108,12 @@ def dil_modeli_erisilebilir(url):
 
 def _sohbet(url, sistem, kullanici, en_cok=200):
     """OpenAI uyumlu sohbet tamamlaması; metin ya da None."""
+    # Düşünme kipi kapatılır: Qwen3.8 gibi modeller aksi hâlde sınırlı token bütçesini
+    # reasoning_content'e harcayıp content'i BOŞ döndürüyordu (a5_dil_modeli keşfi).
     y = _dil_modeli_istek(url, "/v1/chat/completions", {
         "messages": [{"role": "system", "content": sistem}, {"role": "user", "content": kullanici}],
-        "temperature": 0, "max_tokens": en_cok}, zaman=60)
+        "temperature": 0, "max_tokens": en_cok,
+        "chat_template_kwargs": {"enable_thinking": False}}, zaman=60)
     try:
         return y["choices"][0]["message"]["content"].strip()
     except (TypeError, KeyError, IndexError, AttributeError):

@@ -68,7 +68,7 @@ def log(*a, seviye="INFO"):
 
 def audit_kur():
     """Dönen rotasyonlu audit logu; yalnız meta veri, asla argüman değeri yok."""
-    log_dizin = os.environ.get("SINAMA_LOG_DIR") or os.getcwd()
+    log_dizin = _log_dir()
     os.makedirs(log_dizin, exist_ok=True)
     yol = os.path.join(log_dizin, "sinama_audit.log")
     h = logging.handlers.RotatingFileHandler(
@@ -456,7 +456,9 @@ SEMA_REG = sema({"X": {"type": "array", "minItems": 1,
 
 
 def _log_dir():
-    return os.environ.get("SINAMA_LOG_DIR") or os.getcwd()
+    """Oturum, kanıt zinciri ve denetim logunun dizini: SINAMA_LOG_DIR, yoksa veri
+    kökü (ADR-003 md. 3 — çalışma dizinine düşme kaldırıldı)."""
+    return os.environ.get("SINAMA_LOG_DIR") or veri.veri_koku()
 
 
 def _profil_kayit(a, sayisal_alan=None):

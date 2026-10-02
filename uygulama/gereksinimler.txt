@@ -1,0 +1,5 @@
+# A5 arka ucu (ADR-003) — çekirdek standart kitaplıkla çalışır; bunlar yalnız uygulama/ içindir.
+fastapi==0.122.0
+uvicorn==0.38.0
+# testler (TestClient)
+httpx==0.28.1

@@ -17,9 +17,23 @@ IZINLI_UZANTILAR = {".csv", ".tsv", ".txt"}
 MAKS_DOSYA_MB = 50
 
 
+def varsayilan_veri_koku():
+    """Ortam değişkeni yoksa veri kökü (ADR-003 md. 3): Windows'ta
+    %LOCALAPPDATA%\\sinama, diğerlerinde $XDG_DATA_HOME/sinama ya da
+    ~/.local/share/sinama. Çalışma dizinine DÜŞÜLMEZ: depo içinden çalışan bir
+    araç çağrısı oturum ve kanıt kaydını depoya yazıyordu (A3 bulgusu; A4.15
+    testleri cekirdek/oturumlar'a 35 oturum bırakmıştı)."""
+    if os.name == "nt" and os.environ.get("LOCALAPPDATA"):
+        taban = os.environ["LOCALAPPDATA"]
+    else:
+        taban = os.environ.get("XDG_DATA_HOME") or os.path.join(
+            os.path.expanduser("~"), ".local", "share")
+    return os.path.join(taban, "sinama")
+
+
 def veri_koku():
-    """İzinli kök dizin: ortam değişkeni, yoksa çalışma dizini."""
-    return os.path.realpath(os.environ.get("SINAMA_VERI_KOKU") or os.getcwd())
+    """İzinli kök dizin: SINAMA_VERI_KOKU, yoksa varsayilan_veri_koku()."""
+    return os.path.realpath(os.environ.get("SINAMA_VERI_KOKU") or varsayilan_veri_koku())
 
 
 def guvenli_yol(yol, kok=None, izinli_uzantilar=None):

@@ -27,34 +27,34 @@
       "olcutler": [
         {
           "kimlik": "K17.1",
-          "deger": 0.0,
+          "deger": 1.0,
           "yon": ">=",
           "esik": 1.0,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir (başlangıç): uygulama.sunucu yok"
         },
         {
           "kimlik": "K17.2",
-          "deger": 0.0,
+          "deger": 1.0,
           "yon": ">=",
           "esik": 1.0,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir (başlangıç): fabrika yok"
         },
         {
           "kimlik": "K17.3",
-          "deger": 0.0,
+          "deger": 1.0,
           "yon": ">=",
           "esik": 1.0,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir (başlangıç): uç yok"
         },
         {
           "kimlik": "K17.4",
-          "deger": 0.0,
+          "deger": 1.0,
           "yon": ">=",
           "esik": 1.0,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir (başlangıç): hiç yanıt yok → 0"
         },
         {
@@ -67,54 +67,31 @@
         },
         {
           "kimlik": "K17.6",
-          "deger": 0.0,
+          "deger": 1.0,
           "yon": ">=",
           "esik": 1.0,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir (başlangıç): uç yok"
         },
         {
           "kimlik": "K17.7",
-          "deger": 0.0,
+          "deger": 1.0,
           "yon": ">=",
           "esik": 1.0,
-          "gecti": false,
+          "gecti": true,
           "ongoru": "BAŞARISIZ beklenir (başlangıç): modül yok"
         }
       ],
       "ek_olcumler": {
         "akis_sayisi": 20,
-        "yanit_sayisi": 0,
-        "oturum_dosyasi": 0,
+        "yanit_sayisi": 84,
+        "oturum_dosyasi": 40,
         "depoda_yeni_ya_da_degisen": [],
         "eksik_ceviri": [
           "tr.json yok"
         ],
-        "esdeger_olmayan": [
-          "v3/artefakt/10401",
-          "v3/artefakt/10402",
-          "v3/gercek_artis/10401",
-          "v3/gercek_artis/10402",
-          "v3/gercek_artis_kesifsel/10401",
-          "v3/gercek_artis_kesifsel/10402",
-          "v3/odakli/10401",
-          "v3/odakli/10402",
-          "v3/csr/10401",
-          "v3/csr/10402",
-          "v3/seri/10401",
-          "v3/seri/10402",
-          "v3/seri_yok/10401",
-          "v3/seri_yok/10402",
-          "v7/gercek_etki/10401",
-          "v7/gercek_etki/10402",
-          "v7/kontrolsuz/10401",
-          "v7/kontrolsuz/10402",
-          "v7/yer_degistirme/10401",
-          "v7/yer_degistirme/10402"
-        ],
-        "hata": {
-          "ModuleNotFoundError": 1
-        }
+        "esdeger_olmayan": [],
+        "hata": {}
       }
     }
   ]

@@ -9,6 +9,7 @@ import math
 import os
 import random
 import sys
+import tempfile
 import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -17,6 +18,20 @@ from sinama.arayuz import sunucu  # noqa: E402
 from sinama.cekirdek import ileri, mekan  # noqa: E402
 
 BAS = datetime.date(2024, 1, 1)
+_ESKI_LOG = os.environ.get("SINAMA_LOG_DIR")
+
+
+def setUpModule():
+    """Araç çağrıları keşif oturumu yazar: geçici dizine (yalıtılmış koşuda da)."""
+    os.environ["SINAMA_LOG_DIR"] = tempfile.mkdtemp(prefix="kirilma_nni_")
+
+
+def tearDownModule():
+    """Ortamı geri yükler."""
+    if _ESKI_LOG is None:
+        os.environ.pop("SINAMA_LOG_DIR", None)
+    else:
+        os.environ["SINAMA_LOG_DIR"] = _ESKI_LOG
 
 
 def poisson(r, lam):

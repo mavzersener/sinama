@@ -2,6 +2,16 @@
 
 ## [Yayımlanmamış]
 
+### Veri kökü: çalışma dizinine düşme kaldırıldı (A5.1, ADR-003 md. 3)
+- `guvenlik.varsayilan_veri_koku()`: SINAMA_VERI_KOKU yoksa `%LOCALAPPDATA%\sinama`
+  (Linux: `$XDG_DATA_HOME/sinama` ya da `~/.local/share/sinama`); `veri_koku()` ve
+  `ortak._log_dir()` / denetim logu artık çalışma dizinine DÜŞMEZ (SINAMA_LOG_DIR yoksa
+  veri kökü). Depo içinden yapılan araç çağrıları oturum ve kanıt kaydını depoya
+  yazıyordu (A3 bulgusu; `cekirdek/oturumlar`'da 35 test oturumu bulundu).
+- `test_kirilma_nni` kendi geçici oturum dizinini kurar (yalıtılmış koşu hijyeni).
+Testler: `test_veri_koku.py` (platform varsayılanları, cwd'ye düşmeme, ortam önceliği).
+Arka uç (`uygulama/`, BMK v10 6/7) çekirdeğin dışında; bkz. `kiyas/v10/sonuclar/ilerleme.md`.
+
 ### Kalıcı artış alarmı: Anscombe dönüşümü (A4.16)
 BMK v9 ön-kaydı (5bb9a45; v8 K15.1 teşhisi, yeni tohumlar) başlangıcı 5/7 → 6/7.
 - `ileri.kirilma_cusum`: dönem sayımları kendinden standartlaştırmadan önce

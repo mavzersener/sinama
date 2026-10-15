@@ -7,7 +7,8 @@ hipotezi, rakip açıklamaları ve "bilinmeyen" seçeneğini sınanabilir biçim
 uygun yöntemleri kendisi seçer ve sonucu kanıtı, belirsizliği ve en güçlü rakip
 açıklamasıyla birlikte sunar.
 
-> **Durum: A7 — kaynak depoların dondurulması (onay bekliyor).** Çekirdek (`cekirdek/`),
+> **Durum: A7 uygulandı — kaynak depolar donduruldu (15.10.2026); kapanış CI sonrası.**
+> Çekirdek (`cekirdek/`),
 > bilim katmanı ve BMK v0–v10 (`kiyas/`), tek süreç arka uç ile iki yüz — Rehberli `/`,
 > Atölye `/atolye/` (`uygulama/`) — tamam; A0–A6 kapanış dosyaları `KARARLAR/`'da.
 > Karar: [KARARLAR/ADR-001](KARARLAR/ADR-001-tek-program.md) ·
